@@ -21,7 +21,7 @@ public class GLTest
 {
 	static double rotateRate = .1;
 	static double[] modelpyr = {0,0,0};
-	static double[][] rot = new double[4][4];
+	static double[][] rot = DrawnObject.identityMatrix();
 	static double speed = .3;
 	static double[] rankin = { 0, 0, 0 };
 	static double rex[] = { 0, 0, 0 };
@@ -56,7 +56,7 @@ public class GLTest
 	{
 
 		
-		objects.add(new DrawnObject(makeCube(), new double[] { 2, 0, 2 }, ObjectType.LINE, red));
+		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, ObjectType.LINE, red));
 		try
 		{
 			Display.setDisplayModeAndFullscreen(new DisplayMode(1280, 1024));
@@ -271,6 +271,12 @@ public class GLTest
 		rot[0][1] = Math.sin(modelpyr[0]);
 		rot[1][0] = -Math.sin(modelpyr[0]);
 		rot[1][1] = Math.cos(modelpyr[0]);
+		try {
+			Thread.sleep(30);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		for(DrawnObject d: objects){
 			d.transformVertices(rot);
 		}
