@@ -28,7 +28,7 @@ public class DrawnObject
 
 	// Returns the location of the object in spherical coordinates, [r,theta,phi]
 	
-	public double[][] identityMatrix(){
+	public static double[][] identityMatrix(){
 		return new double[][]{
 				{1,0,0,0},
 				{0,1,0,0},
