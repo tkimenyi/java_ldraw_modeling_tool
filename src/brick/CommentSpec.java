@@ -24,7 +24,7 @@ public class CommentSpec implements BrickSpec {
 	}
 
 	@Override
-	public boolean isCommment() {
+	public boolean isCommment() { 
 		return true;
 	}
 	
