@@ -66,6 +66,9 @@ public class DrawnObject
 		setSphericalCoordiates(rtp);
 	}
 	public void transformVertices(){
+		transformVertices(transformation);
+	}
+	public void transformVertices(double[][] transformation){
 		for (double[] vertex : vertices)
 		{
 			vertex[0] = vertex[0]*transformation[0][0] + vertex[1]*transformation[0][1] + vertex[2]*transformation[0][2];
@@ -84,11 +87,11 @@ public class DrawnObject
 			}
 		}
 		else{
-			transformVertices();
+			//transformVertices();
 			glBegin(GL_LINE_LOOP);
 			glColor3f(color[0], color[1], color[2]);
 			for(double[] vertex : vertices){
-				glVertex3d(vertex[0], vertex[1], vertex[2]);
+				glVertex3d(vertex[0]+location[0], vertex[1] + location[1], vertex[2] + location[2]);
 				
 			}
 			glEnd();

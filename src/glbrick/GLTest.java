@@ -21,6 +21,7 @@ public class GLTest
 {
 	static double rotateRate = .1;
 	static double[] modelpyr = {0,0,0};
+	static double[][] rot = new double[4][4];
 	static double speed = .3;
 	static double[] rankin = { 0, 0, 0 };
 	static double rex[] = { 0, 0, 0 };
@@ -265,10 +266,19 @@ public class GLTest
 		{
 			modelpyr[2] -= rotateRate;
 		}
-		glRotated(modelpyr[0], 1, 0, 0);
+		if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) || Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)){
+		rot[0][0] = Math.cos(modelpyr[0]);
+		rot[0][1] = Math.sin(modelpyr[0]);
+		rot[1][0] = -Math.sin(modelpyr[0]);
+		rot[1][1] = Math.cos(modelpyr[0]);
+		for(DrawnObject d: objects){
+			d.transformVertices(rot);
+		}
+		}
+		/*glRotated(modelpyr[0], 1, 0, 0);
 		glRotated(modelpyr[1], 0, 1, 0);
 		glRotated(modelpyr[2], 0, 0, 1);
-		
+		*/
 	}
 
 	static void display() throws InterruptedException
@@ -322,7 +332,6 @@ public class GLTest
 		drawCubek(0, 0, -4, red);
 		drawCubek(4, 0, 0, blue);
 		drawCubek(0, 0, 4, green);
-		
 		drawCubek(-4, 0, 0, yellow);
 
 
@@ -426,7 +435,7 @@ public class GLTest
 		rotateScene();
 		for (DrawnObject obj : objects)
 		{
-			drawCube(obj);
+			obj.draw();
 		}
 		
 	}
