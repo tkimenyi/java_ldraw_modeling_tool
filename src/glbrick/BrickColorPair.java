@@ -3,23 +3,26 @@ package glbrick;
 //Disposable, hopefully low-memory pair class.
 //Used primarily to keep track of a brick's previous color before selection.
 public class BrickColorPair {
-	private final BrickObject brick;
-	private final int colorCode;
+	//private final DrawnObject brick; 
+	//private final int colorCode;
 	
-	public BrickColorPair(BrickObject brick){
+	//probably deprecated code
+	
+	/*
+	public BrickColorPair(DrawnObject brick){
 		this.brick = brick;
 		colorCode = brick.findColor();
 		//System.out.println("Made new brick with color code " + colorCode);
 	}
 	
 	//Version to use when forcefully overwriting the color.
-	public BrickColorPair(BrickObject brick, int color){
+	public BrickColorPair(DrawnObject brick, int color){
 		this.brick = brick;
 		colorCode = color;
 		//System.out.println("Made new brick with color code " + colorCode);
 	}
 
-	public BrickObject getBrick() {
+	public DrawnObject getBrick() {
 		return brick;
 	}
 
@@ -40,14 +43,14 @@ public class BrickColorPair {
 		if(other instanceof BrickColorPair){
 			if(brick.equals(((BrickColorPair)other).getBrick())) return true;
 			return false;
-		} if(other instanceof BrickObject){
+		} if(other instanceof DrawnObject){
 			//Wanted to use this for easier contains() calls... Doesn't work.
 			//contains() checks the class for me. Leaving this anyway.
-			if(brick.equals((BrickObject)other)) return true;
+			if(brick.equals((DrawnObject)other)) return true;
 			return false;
 		} else {
 			return false;
 		}
-	}
+	} */
 
 }
