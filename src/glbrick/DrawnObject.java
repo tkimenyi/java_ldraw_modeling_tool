@@ -1,4 +1,5 @@
 package glbrick;
+
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -10,7 +11,7 @@ public class DrawnObject
 {
 
 	public float[] color;
-	ArrayList<DrawnObject> children; //Non-parts will have no children.
+	ArrayList<DrawnObject> children; // Non-parts will have no children.
 	double[][] transformation;
 	public double[] location; // In Cartesian
 	public ArrayList<double[]> vertices = new ArrayList<double[]>();
@@ -22,37 +23,35 @@ public class DrawnObject
 		this.vertices = vertices;
 		this.location = location;
 		this.color = color;
-
 	}
-	
-	
-	//constructor for non linetype 1 specs
+
+	// constructor for non linetype 1 specs
 	public DrawnObject(ArrayList<double[]> vertices, float[] color)
 	{
-		this(vertices, new double[] {0,0,0}, identityMatrix(),color, new ArrayList<DrawnObject>());
-	}
-	
-	public DrawnObject(ArrayList<double[]> vertices, double[] location, float[] color)
-	{
-		this(vertices, location, identityMatrix(),color, new ArrayList<DrawnObject>());
-	}
-	
-	//constructor for linetype 1's
-	public DrawnObject(double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
-	{
-		this(new ArrayList<double[]>(), location, transformation,color, children);
+		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
 
-	// Returns the location of the object in spherical coordinates, [r,theta,phi]
-	
-	public static double[][] identityMatrix(){
-		return new double[][]{
-				{1,0,0,0},
-				{0,1,0,0},
-				{0,0,1,0}, 
-				{0,0,0,1}};
-		
+	// constructor for testing purposes
+	public DrawnObject(ArrayList<double[]> vertices, double[] location, float[] color)
+	{
+		this(vertices, location, identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
+
+	// constructor for linetype 1's
+	public DrawnObject(double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
+	{
+		this(new ArrayList<double[]>(), location, transformation, color, children);
+	}
+
+	public static double[][] identityMatrix()
+	{
+		return new double[][] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
+	}
+
+	// Returns the location of the object in spherical coordinates,
+	// [r,theta,phi]
+	// These three are -------------------------------------------------------
 	public double[] getSphericalCoordinates()
 	{
 		double[] rtp = new double[3];
@@ -82,32 +81,40 @@ public class DrawnObject
 		rtp[2] += phi;
 		setSphericalCoordiates(rtp);
 	}
-	public void transformVertices(){
+
+	// ---------------methods used to perform a rendering test (the spiral galaxy test).
+	public void transformVertices()
+	{
 		transformVertices(transformation);
 	}
+
+	// This method will change later because of how rendering is currently handled. The transformations should not modify the set of vertices.
 	public void transformVertices(double[][] transformation)
 	{
-		
-		for(int i =0; i<vertices.size();i++)
-		{	double[] vertex = vertices.get(i);
-			vertex = matrixMult(transformation, vertex);	
+
+		for (int i = 0; i < vertices.size(); i++)
+		{
+			double[] vertex = vertices.get(i);
+			vertex = matrixMult(transformation, vertex);
 			vertices.set(i, vertex);
-			
+
 		}
 	}
-	
+
 	public double[] matrixMult(double[][] m, double[] v)
 	{
-		double[] newv = new double[v.length];	
-		newv[0] = v[0]*m[0][0] + v[1]*m[0][1] + v[2]*m[0][2];
-		newv[1] = v[0]*m[1][0] + v[1]*m[1][1] + v[2]*m[1][2];
-		newv[2] = v[0]*m[2][0] + v[1]*m[2][1] + v[2]*m[2][2];
+		double[] newv = new double[v.length];
+		newv[0] = v[0] * m[0][0] + v[1] * m[0][1] + v[2] * m[0][2];
+		newv[1] = v[0] * m[1][0] + v[1] * m[1][1] + v[2] * m[1][2];
+		newv[2] = v[0] * m[2][0] + v[1] * m[2][1] + v[2] * m[2][2];
 		return newv;
 	}
-	
-	public double[] copyArray(double[] vertex){
+
+	public double[] copyArray(double[] vertex)
+	{
 		double[] newVertex = new double[vertex.length];
-		for(int i =0;i<vertex.length;i++){
+		for (int i = 0; i < vertex.length; i++)
+		{
 			newVertex[i] = vertex[i];
 		}
 		return newVertex;
@@ -121,14 +128,14 @@ public class DrawnObject
 			{
 				child.draw();
 			}
-		}
-		else{
-			//transformVertices();
+		} else
+		{
 			glBegin(GL_LINE_LOOP);
 			glColor3f(color[0], color[1], color[2]);
-			for(double[] vertex : vertices){
-				glVertex3d(vertex[0]+location[0], vertex[1] + location[1], vertex[2] + location[2]);
-				
+			for (double[] vertex : vertices)
+			{
+				glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
+
 			}
 			glEnd();
 		}
