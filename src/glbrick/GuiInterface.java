@@ -8,6 +8,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+
+
 public class GuiInterface extends JFrame{
 	JMenuBar menuBar;
 	JMenu file, edit,animate, view, help;
@@ -18,6 +20,7 @@ public class GuiInterface extends JFrame{
 	JMenuItem newFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete;
 	
 	public GuiInterface() {
+
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		edit = new JMenu("Edit");
@@ -25,7 +28,6 @@ public class GuiInterface extends JFrame{
 		animate = new JMenu("Animate");
 		help = new JMenu("Help");
 		
-
 		
 		toolBar = new JToolBar();
 		cameraPos = new JLabel("Camera Position");
@@ -145,14 +147,18 @@ public class GuiInterface extends JFrame{
 		
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws InterruptedException{
 		SwingUtilities.invokeLater(new Runnable (){
 			public void run(){
 				GuiInterface gui  = new GuiInterface();
 
 				gui.setVisible(true);
+				
+				
 			}
+			
 		});
+			
 	}
-
+	
 }
