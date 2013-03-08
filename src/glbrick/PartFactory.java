@@ -36,6 +36,7 @@ public class PartFactory {
 	}
 
 	public PartSpec getPart(String partName) throws PartNotFoundException {
+		partName = partName.toLowerCase();
 		if (parts.containsKey(partName)) {
 			return parts.get(partName);
 		} else {
@@ -53,15 +54,26 @@ public class PartFactory {
 			throw new PartNotFoundException(partName);
 		}
 	}
+	public String mkString(String[] strArr){
 
+		String printstr = "";
+		for (String s : strArr){
+		printstr += s + " ";	
+		}
+		
+		return printstr;
+	}
 	private PartSpec tryFile(String path, String partName) throws FileNotFoundException, PartNotFoundException {
 		String filename = path + File.separator + brickUtilities.fixPath(partName);
 		Scanner s = new Scanner(new File(filename));
 		PartSpec result = new PartSpec(partName, colors);
 		while (s.hasNextLine()) {
-			String[] lineParts = s.nextLine().split("\\s+");
+			String snl = s.nextLine();
+			//System.out.println(snl);
+			String[] lineParts = snl.split("\\s+");
 			if (lineParts.length > 0 && lineParts[0].length() > 0) {
 				int code = Integer.parseInt(lineParts[0]);
+				//System.out.println(mkString(lineParts));
 				if (code == 0) {
 					result.addLine(new CommentSpec(lineParts));
 				} else if (code == 1) {

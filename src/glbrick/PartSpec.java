@@ -1,39 +1,48 @@
 package glbrick;
 
-public class PartSpec {
+import java.util.ArrayList;
 
-	public PartSpec(String partName, ColorBase colors) {
-		// TODO Auto-generated constructor stub
-		
+
+public class PartSpec implements BrickSpec {
+	private ArrayList<BrickSpec> lines;
+	private String name;
+	private ColorBase colors;
+	PartSpec(String name, ColorBase colors) {
+		this.name = name;
+		this.colors = colors;
+		lines = new ArrayList<BrickSpec>();
+	}
+	public void debugging(){
+		System.out.println("something worked");
 	}
 
+	void addLine(BrickSpec l) {
+		//System.out.println("am I called");
+		lines.add(l);
+	}
+	public String toString() {
+		String result = "";
+		for (BrickSpec ln: lines) {
+			result += ln + "\n";
+		}
+		return result;
+	}
+
+	public boolean isCommment() {
+		return false;
+	}
+
+	/*public DrawnObject toDrawnObject(ArrayList<double[]> transformation) {
+		//willing to bet this constructor isn't so good
+		return null;
+	}*/
+
+	public DrawnObject toDrawnObject() {
+		//willing to bet this constructor isn't so good
+		return null;
+	}
 	public void addLine(CommentSpec commentSpec) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addLine(SubpartSpec subpartSpec) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addLine(TriangleSpec triangleSpec) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addLine(QuadSpec quadSpec) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addLine(OptionalLineSpec optionalLineSpec) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addLine(LineSpec lineSpec) {
-		// TODO Auto-generated method stub
+		// does nothing
 		
 	}
 

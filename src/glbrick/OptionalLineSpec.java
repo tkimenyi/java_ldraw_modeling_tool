@@ -19,7 +19,7 @@ public class OptionalLineSpec implements BrickSpec {
 		return false;
 	}
 
-	@Override
+
 	public DrawnObject toDrawnObject(ArrayList<double[]> vs, double[] loc,
 			ObjectType type, float[] color) {
 		// TODO Auto-generated method stub
