@@ -7,6 +7,7 @@ public class QuadSpec implements BrickSpec {
 	public QuadSpec(String[] lineParts) {
 		super();
 		// TODO Auto-generated constructor stub
+		//blah blah
 	}
 
 	public QuadSpec(String[] lineParts, ColorBase colors) { 
