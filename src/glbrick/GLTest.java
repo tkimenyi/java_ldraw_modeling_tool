@@ -272,14 +272,15 @@ public class GLTest
 		rot[1][0] = -Math.sin(modelpyr[0]);
 		rot[1][1] = Math.cos(modelpyr[0]);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(90);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		for(DrawnObject d: objects){
 			d.transformVertices(rot);
-		}
+			System.out.println(d.vertices.get(2)[0]);
+			}
 		}
 		/*glRotated(modelpyr[0], 1, 0, 0);
 		glRotated(modelpyr[1], 0, 1, 0);
