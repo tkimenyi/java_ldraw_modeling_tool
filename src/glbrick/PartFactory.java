@@ -83,7 +83,13 @@ public class PartFactory {
 				} else if (code == 3) {
 					result.addLine(new TriangleSpec(lineParts, colors));
 				} else if (code == 4) {
+					try{
 					result.addLine(new QuadSpec(lineParts, colors));
+					}
+					catch ( ArrayIndexOutOfBoundsException e){
+						System.out.println(snl);
+					}
+					
 				} else if (code == 5) {
 					result.addLine(new OptionalLineSpec(lineParts, colors));
 				}
