@@ -38,3 +38,4 @@ public class OptionalLineSpec implements BrickSpec {
 		return false;
 	}
 }
+

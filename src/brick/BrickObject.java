@@ -16,6 +16,7 @@ public class BrickObject extends Object3D {
 	private float rotZ = 0;
 	
 	
+	
 	private int colorCode;
 	private ColorBase colors;
 	private String name;
@@ -86,6 +87,7 @@ public class BrickObject extends Object3D {
 		Color c = colorCode == EDGE_COLOR ? colors.getEdgeColor(findColor()) : colors.getColor(findColor());
 		setAdditionalColor(c);
 	}
+	
 	
 	
 	//Basic translation stuff for now, ignoring any sort of relative positions.

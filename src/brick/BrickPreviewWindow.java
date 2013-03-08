@@ -24,6 +24,7 @@ public class BrickPreviewWindow extends BrickPanel
 		buildAll();
 	}
 	
+	
 	public void setupListeners(){
 		mroc = new MouseRotateObjectController(this);
 		addMouseListener(mroc);

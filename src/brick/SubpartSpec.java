@@ -36,3 +36,4 @@ public class SubpartSpec implements BrickSpec {
 		return false;
 	}
 }
+

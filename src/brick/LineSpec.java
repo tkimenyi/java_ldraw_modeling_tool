@@ -19,6 +19,7 @@ public class LineSpec implements BrickSpec {
 	public String toString() {
 		return "2 " + c + " " + one.x + " " + one.y + " " + one.z + " " + two.x + " " + two.y + " " + two.z;
 	}
+	
 
 	@Override
 	public BrickObject toBrickObject(Matrix m, BrickPanel world) {

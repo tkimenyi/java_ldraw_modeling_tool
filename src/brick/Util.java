@@ -30,6 +30,7 @@ public class Util {
 	public static String fixPath(String s) {
 		return s.replace('\\', File.separatorChar);
 	}
+	
 
 	public static Object3D makeLineFrom(SimpleVector start, SimpleVector end, float width) {
 		SimpleVector diff = end.calcSub(start); 
