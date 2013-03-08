@@ -6,7 +6,6 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
 
-
 public class DrawnObject
 {
 	ObjectType type;
@@ -15,7 +14,6 @@ public class DrawnObject
 	double[][] transformation;
 	public double[] location; // In Cartesian
 	public ArrayList<double[]> vertices = new ArrayList<double[]>();
-	public boolean isSelected;
 
 	public DrawnObject(ArrayList<double[]> vs, double[] loc, ObjectType type, float[] color)
 	{
@@ -27,6 +25,7 @@ public class DrawnObject
 		this.color = color;
 		this.type = type;
 	}
+
 	// Returns the location of the object in spherical coordinates, [r,theta,phi]
 	
 	public static double[][] identityMatrix(){
@@ -69,22 +68,32 @@ public class DrawnObject
 	public void transformVertices(){
 		transformVertices(transformation);
 	}
-	public void transformVertices(double[][] transformation){
-		for (double[] vertex : vertices)
-		{
-			vertex[0] = vertex[0]*transformation[0][0] + vertex[1]*transformation[0][1] + vertex[2]*transformation[0][2];
-			vertex[1] = vertex[0]*transformation[1][0] + vertex[1]*transformation[1][1] + vertex[2]*transformation[1][2];
-			vertex[2] = vertex[0]*transformation[2][0] + vertex[1]*transformation[2][1] + vertex[2]*transformation[2][2];
+	public void transformVertices(double[][] transformation)
+	{
+		
+		for(int i =0; i<vertices.size();i++)
+		{	double[] vertex = vertices.get(i);
+			vertex = matrixMult(transformation, vertex);	
+			vertices.set(i, vertex);
+			
 		}
 	}
 	
-	public float[] getSelectedColor(){
-		float[] newKolor = new float[3];
-		newKolor[0] = (float)Math.abs(1-color[0]);
-		newKolor[1] = (float)Math.abs(1-color[1]);
-		newKolor[2] = (float)Math.abs(1-color[2]);
-		return color;
-		
+	public double[] matrixMult(double[][] m, double[] v)
+	{
+		double[] newv = new double[v.length];	
+		newv[0] = v[0]*m[0][0] + v[1]*m[0][1] + v[2]*m[0][2];
+		newv[1] = v[0]*m[1][0] + v[1]*m[1][1] + v[2]*m[1][2];
+		newv[2] = v[0]*m[2][0] + v[1]*m[2][1] + v[2]*m[2][2];
+		return newv;
+	}
+	
+	public double[] copyArray(double[] vertex){
+		double[] newVertex = new double[vertex.length];
+		for(int i =0;i<vertex.length;i++){
+			newVertex[i] = vertex[i];
+		}
+		return newVertex;
 	}
 
 	public void draw()
