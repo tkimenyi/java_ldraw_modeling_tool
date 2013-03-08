@@ -8,22 +8,39 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class DrawnObject
 {
-	ObjectType type;
+
 	public float[] color;
 	ArrayList<DrawnObject> children; //Non-parts will have no children.
 	double[][] transformation;
 	public double[] location; // In Cartesian
 	public ArrayList<double[]> vertices = new ArrayList<double[]>();
 
-	public DrawnObject(ArrayList<double[]> vs, double[] loc, ObjectType type, float[] color)
+	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
 	{
-		children = new ArrayList<DrawnObject>();
-		transformation = identityMatrix();
-		
-		vertices = vs;
-		location = loc;
+		this.children = children;
+		this.transformation = transformation;
+		this.vertices = vertices;
+		this.location = location;
 		this.color = color;
-		this.type = type;
+
+	}
+	
+	
+	//constructor for non linetype 1 specs
+	public DrawnObject(ArrayList<double[]> vertices, float[] color)
+	{
+		this(vertices, new double[] {0,0,0}, identityMatrix(),color, new ArrayList<DrawnObject>());
+	}
+	
+	public DrawnObject(ArrayList<double[]> vertices, double[] location, float[] color)
+	{
+		this(vertices, location, identityMatrix(),color, new ArrayList<DrawnObject>());
+	}
+	
+	//constructor for linetype 1's
+	public DrawnObject(double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
+	{
+		this(new ArrayList<double[]>(), location, transformation,color, children);
 	}
 
 	// Returns the location of the object in spherical coordinates, [r,theta,phi]

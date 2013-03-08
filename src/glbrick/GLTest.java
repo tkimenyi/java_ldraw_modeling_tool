@@ -52,11 +52,13 @@ public class GLTest
 	
 	static ArrayList<DrawnObject> objects = new ArrayList<DrawnObject>();
 
+	
+	
 	public static void main(String[] args) throws InterruptedException
 	{
 
 		
-		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, ObjectType.LINE, red));
+		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, red));
 		try
 		{
 			Display.setDisplayModeAndFullscreen(new DisplayMode(1280, 1024));
