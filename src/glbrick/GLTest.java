@@ -13,9 +13,9 @@ import org.lwjgl.util.Color;
 import org.lwjgl.util.glu.GLU;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
+//import static org.lwjgl.opengl.GL12.*;
+//import static org.lwjgl.opengl.GL13.*;
+//import static org.lwjgl.opengl.GL20.*;
 
 public class GLTest
 {
