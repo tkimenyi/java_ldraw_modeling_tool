@@ -64,6 +64,26 @@ public class Tests
 		catch (PartNotFoundException e){
 		}
 	}
+	
+	
+	@Test
+	public void test3() throws FileNotFoundException
+	{
+		//test succeeds if it doesn't crash
+		ldrawParseTest ldp = new ldrawParseTest();
+
+
+		try{
+			//assertTrue(ldp.lDrawTest("s/.dat"));
+			System.out.println("test");
+			assertTrue(ldp.lDrawTest("s/2902s01.dat"));
+			System.out.println("test2");
+			//assertTrue(ldp.lDrawTest("s/.dat"));
+			
+		}
+		catch (PartNotFoundException e){
+		}
+	}
 
 }
 
