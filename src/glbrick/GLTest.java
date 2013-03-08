@@ -237,7 +237,7 @@ public class GLTest
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
 		{
 			double[] loc = new double[] { rex[0], rex[1], rex[2] };
-			objects.add(new DrawnObject(makeCube(), loc, ObjectType.LINE, color));
+			objects.add(new DrawnObject(makeCube(), loc, color));
 		}
 
 	}
