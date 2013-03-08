@@ -87,7 +87,12 @@ public class PartFactory {
 					result.addLine(new QuadSpec(lineParts, colors));
 					}
 					catch ( ArrayIndexOutOfBoundsException e){
-						System.out.println(snl);
+						System.out.println("Bad stuff happening");
+						System.out.println(e);
+						System.out.println("Array:" + lineParts);
+						System.out.println("Source string: '" + snl + "'");
+						System.out.println("next line: " + s.hasNextLine());
+						System.out.println("next line: " + s.nextLine());
 					}
 					
 				} else if (code == 5) {
