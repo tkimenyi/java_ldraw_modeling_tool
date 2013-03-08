@@ -1,4 +1,6 @@
+package glbrick;
 import java.awt.*;
+
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -129,7 +131,7 @@ public class GuiInterface extends JFrame{
 		getContentPane().add(panel);
 		setJMenuBar(menuBar);
 		add(toolBar, BorderLayout.NORTH);
-		panel.add(cameraPos);
+		//panel.add(cameraPos);
        // panel.add(x1);
        // panel.add(y1);
        // panel.add(z1);
