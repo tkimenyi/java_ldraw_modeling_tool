@@ -33,7 +33,7 @@ public class OptionalLineObject extends BrickObject {
 	}
 	
 	public boolean showLine() {
-		//These changes are to naïvely deal with the camera hating the origin.
+		//These changes are to naï¿½vely deal with the camera hating the origin.
 		//Nulls happen when the projections are impossible, as such, it makes
 		//sense to return false when some such projection fails.
 		SimpleVector project1 = projectPoint(world, p1);
@@ -50,3 +50,4 @@ public class OptionalLineObject extends BrickObject {
 		return (ctrlSide1 < 0 && ctrlSide2 < 0) || (ctrlSide1 > 0 && ctrlSide2 > 0);
 	}
 }
+

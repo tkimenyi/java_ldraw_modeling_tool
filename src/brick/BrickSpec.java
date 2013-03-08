@@ -10,3 +10,4 @@ public interface BrickSpec {
 	public BrickObject toBrickObject(Matrix transformation, BrickPanel world);
 	
 }
+

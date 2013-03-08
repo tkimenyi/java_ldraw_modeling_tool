@@ -17,6 +17,7 @@ public class CommentSpec implements BrickSpec {
 		}
 		return result;
 	}
+	
 
 	@Override
 	public BrickObject toBrickObject(Matrix transformation, BrickPanel world) {

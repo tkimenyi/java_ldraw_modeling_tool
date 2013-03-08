@@ -2,22 +2,21 @@ package glbrick;
 import java.awt.*;
 
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 
 
 public class GuiInterface extends JFrame{
 	JMenuBar menuBar;
-	JMenu file, edit,animate, view, help;
+	JMenu file, edit,animate, view, help, modify;
 	JButton add, undo, Redo, zoomIn, zoomOut, newFileB, openFileB, closeB, saveB, saveAllB;
 	JToolBar toolBar;
 	JLabel cameraPos, cameraDirVect, editObjParam;
 	JTextField x1, y1, z1, x2, y2, z2, object, x3, y3, z3 ;
-	JMenuItem newFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete;
+	JMenuItem newFile, viewFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete, rotate, translate;
 	
 	public GuiInterface() {
 
@@ -27,6 +26,7 @@ public class GuiInterface extends JFrame{
 		view = new JMenu("View");
 		animate = new JMenu("Animate");
 		help = new JMenu("Help");
+		modify = new JMenu("Modify");
 		
 		
 		toolBar = new JToolBar();
@@ -89,7 +89,9 @@ public class GuiInterface extends JFrame{
 		selectAll = new JMenuItem("Select All", new ImageIcon("images/selectall.png"));
 		delete = new JMenuItem("delete", new ImageIcon("images/exit.png"));
 		exit  = new JMenuItem("Exit", new ImageIcon("images/exit.png"));
-
+		rotate = new JMenuItem("Rotate");
+		translate = new JMenuItem("Translate");
+		viewFile = new JMenuItem("View Parts");
 		
 		file.add(newFile);
 		file.add(openFile);
@@ -98,9 +100,19 @@ public class GuiInterface extends JFrame{
 		file.add(rename);
 		file.add(print);
 		file.add(close);
+		file.add(rotate);
+		file.add(translate);
+		
+		edit.add(cut);
+		edit.add(copy);
+		edit.add(selectAll);
+		edit.add(delete);
+		view.add(viewFile);
 		
 		menuBar.add(file);
 		menuBar.add(edit);
+		menuBar.add(view);
+		menuBar.add(modify);
 		menuBar.add(animate);
 		
 		toolBar.add(newFileB);
@@ -121,11 +133,8 @@ public class GuiInterface extends JFrame{
 		toolBar.addSeparator();
 		toolBar.add(zoomOut);
 		toolBar.addSeparator();
-
-		edit.add(cut);
-		edit.add(copy);
-		edit.add(selectAll);
-		edit.add(delete);
+		toolBar.add(zoomIn);
+		toolBar.addSeparator();
 		
 		
 		
@@ -134,16 +143,28 @@ public class GuiInterface extends JFrame{
 		setJMenuBar(menuBar);
 		add(toolBar, BorderLayout.NORTH);
 		//panel.add(cameraPos);
-       // panel.add(x1);
-       // panel.add(y1);
-       // panel.add(z1);
-        //panel.add(cameraDirVect, BorderLayout.CENTER);
-       // panel.add(editObjParam, BorderLayout.CENTER);
+		//panel.add(x1);
+		//panel.add(y1);
+		//panel.add(z1);
+       	//panel.add(cameraDirVect, BorderLayout.CENTER);
+		//panel.add(editObjParam, BorderLayout.CENTER);
 		//panel.setLayout();
 		setTitle("CAD GUI");
 		setSize(600, 600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		viewFile.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event){
+				try {
+					GLTest.main(new String[]{});
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+			
+		});
 		
 	}
 	

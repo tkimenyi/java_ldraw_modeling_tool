@@ -44,3 +44,4 @@ public class PartSpec implements BrickSpec {
 		return false;
 	}
 }
+

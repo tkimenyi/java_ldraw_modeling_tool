@@ -27,6 +27,7 @@ public class BrickViewer extends JFrame
 
 		Config.maxPolysVisible = 100000;
 
+		
 		setTitle("Brick Viewer");
 		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

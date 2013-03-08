@@ -36,3 +36,4 @@ public class QuadSpec implements BrickSpec {
 		return false;
 	}
 }
+
