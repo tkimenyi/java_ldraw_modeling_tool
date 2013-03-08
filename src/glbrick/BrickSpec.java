@@ -8,7 +8,7 @@ public boolean isCommment();
 	
 	public String toString();
 	
-	public DrawnObject toDrawnObject(ArrayList<double[]> vs, double[] loc, ObjectType type, float[] color);
+	//public DrawnObject toDrawnObject(ArrayList<double[]> vs, double[] loc, ObjectType type, float[] color);
 
 }
 
