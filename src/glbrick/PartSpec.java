@@ -13,7 +13,7 @@ public class PartSpec implements BrickSpec {
 		lines = new ArrayList<BrickSpec>();
 	}
 	public void debugging(){
-		System.out.println("something worked");
+		System.out.println("part name = " + name);
 	}
 
 	void addLine(BrickSpec l) {

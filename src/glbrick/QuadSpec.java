@@ -26,7 +26,20 @@ public class QuadSpec implements BrickSpec {
 		
 		//lineParts[0] is quad spec, so we already know that
 		
-		lineColorValue = Float.parseFloat(lineParts[1]);
+		//System.out.println(lineParts[1].);
+		if (lineParts[1].length() >2){
+			if (lineParts[1].contains("s")){
+				System.out.println("grrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+				lineColorValue = (float) Integer.decode(lineParts[1]);
+				System.out.println("lineColorValue = " + lineColorValue);
+			}
+		}
+		
+		else{
+			lineColorValue = Float.parseFloat(lineParts[1]);
+		}
+		
+		//lineColorValue = Float.parseFloat(lineParts[1]);
 		
 		one = new double[3];
 		two = new double[3];
