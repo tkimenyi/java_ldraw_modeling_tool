@@ -69,7 +69,7 @@ public class DrawnObject
 	public void setSphericalCoordiates(double[] rtp)
 	{
 		double r = rtp[0];
-		double theta = rtp[1];
+		double theta = rtp[1];//this has a compiler warning.  Ferrer suspects a bug.
 		double phi = rtp[2];
 
 		location[2] = r * Math.cos(phi);
@@ -107,6 +107,12 @@ public class DrawnObject
 
 	public double[] matrixMult(double[][] m, double[] v)
 	{
+		//maybe make this static since is does nothing with the data structure.
+		//or a utility object
+		//could also think about creating a matrix class...  oh wait.  there's a matrix class, but it's empty...
+		//apparently there are other empty classes.
+		//also, legoGeometry  isn't necessary, all the methods could be static
+		//similarily, objecttype should probably go away....
 		double[] newv = new double[v.length];
 		newv[0] = v[0] * m[0][0] + v[1] * m[0][1] + v[2] * m[0][2];
 		newv[1] = v[0] * m[1][0] + v[1] * m[1][1] + v[2] * m[1][2];
