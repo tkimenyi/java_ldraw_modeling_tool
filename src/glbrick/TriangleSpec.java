@@ -25,7 +25,7 @@ public class TriangleSpec implements BrickSpec {
 		
 		//lineParts[0] is quad spec, so we already know that
 		
-		lineColorValue = Float.parseFloat(lineParts[1]);
+		lineColorValue = glbrickUtilities.smartDecode(lineParts[1]);
 		one = new double[3];
 		two = new double[3];
 		three = new double[3];

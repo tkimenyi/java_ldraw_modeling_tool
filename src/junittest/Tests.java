@@ -35,6 +35,7 @@ public class Tests
 		}
 
 	}
+	
 
 	@Test
 	public void allPartTest() throws IOException
@@ -48,18 +49,20 @@ public class Tests
 			temp += i + ".dat";*/
 		//System.out.println(temp);
 		ArrayList<String> files = getFiles();
+		String finaloutPut = "";
 		System.out.println("test?");
 		int i = 0;
 		ldrawParseTest ldp = new ldrawParseTest();
 		for(String s : files){
-			System.out.println(s);
+			finaloutPut = finaloutPut + s +"\n";
 			try{
 				assertTrue(ldp.lDrawTest(s));
 			}
 			catch (PartNotFoundException e){
 			}
-			System.out.println(i++);
+			finaloutPut = finaloutPut + i++ +"\n";
 		}
+		System.out.println(finaloutPut);
 	}
 
 
