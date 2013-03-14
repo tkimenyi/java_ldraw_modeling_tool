@@ -51,13 +51,7 @@ public class LineSpec implements BrickSpec {
 	}
 	
 	public String toString(){
-
-		String printstr = "";
-		for (String s : lineParts){
-		printstr += s + " ";	
-		}
-		
-		return printstr;
+		return glbrickUtilities.stringer(vertices); // does what you think it does
 	}
 
 	

@@ -14,6 +14,7 @@ public class DrawnObject
 	//This code should be more commeneted, especially how these parts interact
 	//arraylist of children is clever, or so it appeared.  Maybe there should be a leaf for the bootom of the arraylist.
 	//evidently this is a prime candiate for unit testing....
+	
 	public float[] color;
 	ArrayList<DrawnObject> children; // Non-parts will have no children.
 	double[][] transformation;//this should probably be final as well...

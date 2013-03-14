@@ -37,7 +37,7 @@ public class Tests
 	}
 	
 
-	@Test
+	
 	public void allPartTest() throws IOException
 	{
 		//test succeeds if it doesn't crash
@@ -64,6 +64,32 @@ public class Tests
 		}
 		System.out.println(finaloutPut);
 	}
+	
+	
+	@Test
+	public void someParts() throws IOException
+	{
+		//test succeeds if it doesn't crash
+		ArrayList<String> files = new ArrayList<String>(1);
+		files.add("3003.dat");
+		String finaloutPut = "";
+		System.out.println("test?");
+		int i = 0;
+		ldrawParseTest ldp = new ldrawParseTest();
+		for(String s : files){
+			finaloutPut = finaloutPut + s +"\n";
+			try{
+				assertTrue(ldp.lDrawSingleTest(s));
+				
+			}
+			catch (PartNotFoundException e){
+			}
+			finaloutPut = finaloutPut + i++ +"\n";
+		}
+		System.out.println(finaloutPut);
+	}
+	
+	
 
 
 	public ArrayList<String> getFiles() throws IOException{
@@ -119,7 +145,6 @@ public class Tests
 	}
 
 
-	@Test
 	public void test3() throws FileNotFoundException
 	{
 		//test succeeds if it doesn't crash

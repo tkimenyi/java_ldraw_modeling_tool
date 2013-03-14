@@ -41,6 +41,19 @@ public class PartSpec implements BrickSpec {
 		//willing to bet this constructor isn't so good
 		return null;
 	}
+	
+	
+	public void treeTester(){
+		ArrayList<BrickSpec> ret = new ArrayList<BrickSpec>();
+		for (BrickSpec l : lines){
+			//System.out.println(l.toString());
+			l.toDrawnObject();
+		}
+		
+		
+	}
+	
+	
 	public void addLine(CommentSpec commentSpec) {
 		// does nothing
 		

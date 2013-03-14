@@ -7,6 +7,10 @@ public interface BrickSpec {
 public boolean isCommment();
 	
 	public String toString();
+
+	public DrawnObject toDrawnObject();
+	
+	
 	
 	//public DrawnObject toDrawnObject(ArrayList<double[]> vs, double[] loc, ObjectType type, float[] color);
 
