@@ -43,13 +43,13 @@ public class PartSpec implements BrickSpec {
 	}
 	
 	
-	public void treeTester(){
-		ArrayList<BrickSpec> ret = new ArrayList<BrickSpec>();
+	public ArrayList<DrawnObject> treeTester(){
+		ArrayList<DrawnObject> ret = new ArrayList<DrawnObject>();
 		for (BrickSpec l : lines){
 			//System.out.println(l.toString());
-			l.toDrawnObject();
+			ret.add(l.toDrawnObject());
 		}
-		
+		return ret;
 		
 	}
 	
