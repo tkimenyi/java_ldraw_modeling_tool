@@ -25,14 +25,9 @@ String[] lineParts;
 		// TODO Auto-generated constructor stub
 	}
 	public String toString(){
-
-		String printstr = "";
-		for (String s : lineParts){
-		printstr += s + " ";	
-		}
-		
-		return printstr;
+		return glbrickUtilities.stringer(vertices); // does what you think it does
 	}
+	
 	public SubpartSpec(String[] lineParts, PartFactory partFactory) throws PartNotFoundException {
 		this.lineParts = lineParts;
 		
@@ -74,6 +69,13 @@ String[] lineParts;
 
 
 	public DrawnObject toDrawnObject(float[] color) {
+		float[] temp = new float[]{1f,1f,1f}; 
+		subpart.toDrawnObject();
+		return new DrawnObject(vertices, temp);
+
+	}
+	public DrawnObject toDrawnObject() {
+		//something about lineColorValue;
 		float[] temp = new float[]{1f,1f,1f}; 
 		subpart.toDrawnObject();
 		return new DrawnObject(vertices, temp);

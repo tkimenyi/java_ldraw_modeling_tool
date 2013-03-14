@@ -22,7 +22,7 @@ public class QuadSpec implements BrickSpec {
 	}
 
 	public QuadSpec(String[] lineParts, ColorBase colors) { 
-		
+		System.out.println("quadspec called");
 		
 		//lineParts[0] is quad spec, so we already know that
 		
@@ -69,13 +69,7 @@ public class QuadSpec implements BrickSpec {
 	}
 	
 	public String toString(){
-
-		String printstr = "";
-		for (String s : lineParts){
-		printstr += s + " ";	
-		}
-		
-		return printstr;
+		return glbrickUtilities.stringer(vertices); // does what you think it does
 	}
 
 	
@@ -83,6 +77,7 @@ public class QuadSpec implements BrickSpec {
 		float[] temp = new float[]{1f,1f,1f}; 
 		return new DrawnObject(vertices, temp);
 	}
+	
 
 
 
