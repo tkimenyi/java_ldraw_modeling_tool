@@ -41,7 +41,7 @@ String[] lineParts;
 		row2 = new double[3];
 		row3 = new double[3];
 		
-		lineColorValue = Float.parseFloat(lineParts[1]);
+		lineColorValue = glbrickUtilities.smartDecode(lineParts[1]);
 		
 		loc[0] = Double.parseDouble(lineParts[2]);
 		loc[1] = Double.parseDouble(lineParts[3]);
