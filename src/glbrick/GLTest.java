@@ -187,18 +187,22 @@ public class GLTest
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))
 		{
 			rex[2] -= .3;
+			modelloc[2] -= .3;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_S))
 		{
 			rex[2] += .3;
+			modelloc[2] += .3;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D))
 		{
 			rex[0] += .3;
+			modelloc[0] += .3;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_A))
 		{
 			rex[0] -= .3;
+			modelloc[0] -= .3;
 		}
 	}
 
@@ -275,30 +279,30 @@ public class GLTest
 		{
 			modelpyr[2] -= rotateRate;
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) || Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2))
-		{
-			rot[0][0] = Math.cos(modelpyr[0]);
-			rot[0][1] = Math.sin(modelpyr[0]);
-			rot[1][0] = -Math.sin(modelpyr[0]);
-			rot[1][1] = Math.cos(modelpyr[0]);
-			try
-			{
-				Thread.sleep(90);
-			} catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			for (DrawnObject d : objects)
-			{
-				d.transformVertices(rot);
-				System.out.println(d.vertices.get(2)[0]);
-			}
-		}
-		/*glRotated(modelpyr[0], 1, 0, 0);
+//		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) || Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2))
+//		{
+//			rot[0][0] = Math.cos(modelpyr[0]);
+//			rot[0][1] = Math.sin(modelpyr[0]);
+//			rot[1][0] = -Math.sin(modelpyr[0]);
+//			rot[1][1] = Math.cos(modelpyr[0]);
+//			try
+//			{
+//				Thread.sleep(90);
+//			} catch (InterruptedException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			for (DrawnObject d : objects)
+//			{
+//				d.transformVertices(rot);
+//				System.out.println(d.vertices.get(2)[0]);
+//			}
+//		}
 		glRotated(modelpyr[1], 0, 1, 0);
+		glRotated(modelpyr[0], 1, 0, 0);
 		glRotated(modelpyr[2], 0, 0, 1);
-		*/
+		
 	}
 
 	static void display() throws InterruptedException, PartNotFoundException
@@ -319,7 +323,7 @@ public class GLTest
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
 		{
 			Thread.sleep(90);
-			addObject("car.4dat");
+			addObject("car.dat");
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_G))
 		{
@@ -347,12 +351,16 @@ public class GLTest
 
 		updateSpeed();
 		moveshit();
-		drawObjects();
+
+		
 
 		drawCubek(0, 0, -4, red);
 		drawCubek(4, 0, 0, blue);
 		drawCubek(0, 0, 4, green);
 		drawCubek(-4, 0, 0, yellow);
+		
+		glTranslated(modelloc[0],modelloc[1],modelloc[2]);
+		drawObjects();
 
 		glFlush();
 	}
