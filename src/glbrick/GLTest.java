@@ -34,7 +34,7 @@ public class GLTest
 	static double[] notTheOrigin = { 0, 100, 0 };
 	static boolean freeCamera = true;
 	static double rotateSpeed = 1;
-	static double movementSpeed = .2;
+	static double movementSpeed = .8;
 	static boolean gridEnabled = false;
 	static float[] red = { 1, 0, 0 };
 	static float[] blue = { 0, 0, 1 };
