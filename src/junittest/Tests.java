@@ -23,7 +23,7 @@ public class Tests
 
 
 	//put test back!!!!
-	@Test
+	
 	public void test()
 	{
 		try
@@ -72,7 +72,7 @@ public class Tests
 	}
 	
 	
-	
+	@Test
 	public void someParts() throws IOException
 	{
 		//test succeeds if it doesn't crash
@@ -93,6 +93,7 @@ public class Tests
 			finaloutPut = finaloutPut + i++ +"\n";
 		}
 		System.out.println(finaloutPut);
+		test();
 	}
 	
 	
