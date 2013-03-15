@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 
 public class PartSpec implements BrickSpec {
-	private ArrayList<BrickSpec> lines;
+	private ArrayList<BrickSpec> children;
 	private String name;
 	private ColorBase colors;
 	PartSpec(String name, ColorBase colors) {
 		this.name = name;
 		this.colors = colors;
-		lines = new ArrayList<BrickSpec>();
+		children = new ArrayList<BrickSpec>();
 	}
 	public void debugging(){
 		System.out.println("part name = " + name);
@@ -18,11 +18,11 @@ public class PartSpec implements BrickSpec {
 
 	void addLine(BrickSpec l) {
 		//System.out.println("am I called");
-		lines.add(l);
+		children.add(l);
 	}
 	public String toString() {
 		String result = "";
-		for (BrickSpec ln: lines) {
+		for (BrickSpec ln: children) {
 			result += ln + "\n";
 		}
 		return result;
@@ -32,32 +32,29 @@ public class PartSpec implements BrickSpec {
 		return false;
 	}
 
-	/*public DrawnObject toDrawnObject(ArrayList<double[]> transformation) {
-		//willing to bet this constructor isn't so good
-		return null;
-	}*/
 
-	public DrawnObject toDrawnObject() {
-		//willing to bet this constructor isn't so good
-		return null;
+	public DrawnObject toDrawnObject() 
+	{
+		ArrayList<DrawnObject> tempchildren = new ArrayList<DrawnObject>();
+		for(BrickSpec child : children)
+		{
+			tempchildren.add(child.toDrawnObject());		
+		}
+		return new DrawnObject(tempchildren);
 	}
 	
 	
-	public ArrayList<DrawnObject> treeTester(){
+	public ArrayList<DrawnObject> treeTester()
+	{
 		ArrayList<DrawnObject> ret = new ArrayList<DrawnObject>();
-		for (BrickSpec l : lines){
+		for (BrickSpec l : children){
 			//System.out.println(l.toString());
 			ret.add(l.toDrawnObject());
 		}
 		return ret;
 		
 	}
-	
-	
-	public void addLine(CommentSpec commentSpec) {
-		// does nothing
-		
-	}
+
 
 }
  

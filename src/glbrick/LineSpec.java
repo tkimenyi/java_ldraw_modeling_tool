@@ -25,7 +25,7 @@ public class LineSpec implements BrickSpec {
 		
 		//lineParts[0] is quad spec, so we already know that
 		
-		lineColorValue = glbrickUtilities.smartDecode(lineParts[1]);
+		lineColorValue = Float.parseFloat(lineParts[1]);//glbrickUtilities.smartDecode(lineParts[1]);
 		
 		one = new double[3];
 		two = new double[3];
@@ -51,7 +51,7 @@ public class LineSpec implements BrickSpec {
 	}
 	
 	public String toString(){
-		return glbrickUtilities.stringer(vertices); // does what you think it does
+		return "";//glbrickUtilities.stringer(vertices); // does what you think it does
 	}
 
 	

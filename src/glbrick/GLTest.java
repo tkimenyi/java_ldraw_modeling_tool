@@ -1,4 +1,5 @@
 package glbrick;
+import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.nio.ByteOrder;
@@ -19,6 +20,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class GLTest
 {
+	static PartFactory pf;
 	static double rotateRate = .1;
 	static double[] modelpyr = {0,0,0};
 	static double[][] rot = DrawnObject.identityMatrix();
@@ -54,10 +56,11 @@ public class GLTest
 
 	
 	
-	public static void main(String[] args) throws InterruptedException
+	public static void main(String[] args) throws InterruptedException, FileNotFoundException, PartNotFoundException
 	{
 
 		
+		pf = new PartFactory("ldraw");
 		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, red));
 		try
 		{
@@ -230,6 +233,12 @@ public class GLTest
 		}
 		glEnd();
 	}
+	
+	static void addObject(String partname) throws PartNotFoundException
+	{
+			double[] loc = new double[] { rex[0], rex[1], rex[2] };
+			objects.add(pf.getPart(partname).toDrawnObject());
+	}
 
 	static void addCubes(float[] color) throws InterruptedException
 	{
@@ -290,7 +299,7 @@ public class GLTest
 		*/
 	}
 
-	static void display() throws InterruptedException
+	static void display() throws InterruptedException, PartNotFoundException
 	{
 		
 		// These three lines are necessary custodial commands. Don't touch em.
@@ -304,7 +313,11 @@ public class GLTest
 		// END CAMERA MOVEMENT CODE
 		//
 		//
-		addCubes(white);
+		//addCubes(white);
+		if(Keyboard.isKeyDown(Keyboard.KEY_COMMA)){
+			Thread.sleep(90);
+			addObject("car.4dat");
+		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_G))
 		{
 			gridEnabled = !gridEnabled;
@@ -335,7 +348,6 @@ public class GLTest
 
 		updateSpeed();
 		moveshit();
-		
 		drawObjects();
 		
 		drawCubek(0, 0, -4, red);

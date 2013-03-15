@@ -7,16 +7,17 @@ import java.util.ArrayList;
 public class SubpartSpec implements BrickSpec {
 	
 	
-String[] lineParts;
-	
+
+	String[] lineParts;
 	//private int c;
-	private double[] loc, row1, row2, row3;
+	private double[] loc = {0,0,0};
+	private double[][] trans = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
 	private ArrayList<double[]> vertices;
 	@SuppressWarnings("unused")
 	private ColorBase colors;
 	float lineColorValue;
 	String partName = "";
-	private PartSpec subpart;
+	private PartSpec part;
 	
 	
 
@@ -25,37 +26,28 @@ String[] lineParts;
 		// TODO Auto-generated constructor stub
 	}
 	public String toString(){
-		return glbrickUtilities.stringer(vertices); // does what you think it does
+		return "";//glbrickUtilities.stringer(vertices); // does what you think it does
 	}
 	
-	public SubpartSpec(String[] lineParts, PartFactory partFactory) throws PartNotFoundException {
+	public SubpartSpec(String[] lineParts, PartFactory partFactory) throws PartNotFoundException 
+	{
 		this.lineParts = lineParts;
-		
-		loc = new double[3];
-		row1 = new double[3];
-		row2 = new double[3];
-		row3 = new double[3];
-		
-		lineColorValue = glbrickUtilities.smartDecode(lineParts[1]);
-		
+
+		lineColorValue = Float.parseFloat(lineParts[1]);
+
 		loc[0] = Double.parseDouble(lineParts[2]);
 		loc[1] = Double.parseDouble(lineParts[3]);
 		loc[2] = Double.parseDouble(lineParts[4]);
+
+		for (int i = 5; i <= 13; i++)
+		{
+			trans[(i-5) / 3][(i-5) % 3] = Double.parseDouble(lineParts[i]);
+		}
 		
-		row1[0] = Double.parseDouble(lineParts[5]);
-		row1[1] = Double.parseDouble(lineParts[6]);
-		row1[2] = Double.parseDouble(lineParts[7]);
-		
-		row2[0] = Double.parseDouble(lineParts[8]);
-		row2[1] = Double.parseDouble(lineParts[9]);
-		row2[2] = Double.parseDouble(lineParts[10]);
-		
-		row3[0] = Double.parseDouble(lineParts[11]);
-		row3[1] = Double.parseDouble(lineParts[12]);
-		row3[2] = Double.parseDouble(lineParts[13]);
-		
+
 		partName = lineParts[14];
-		this.subpart = partFactory.getPart(this.partName);
+		
+		this.part = partFactory.getPart(this.partName);
 		
 		//1 colour x y z a b c d e f g h i part.dat
 		
@@ -67,18 +59,17 @@ String[] lineParts;
 		return false;
 	}
 
-
-	public DrawnObject toDrawnObject(float[] color) {
-		float[] temp = new float[]{1f,1f,1f}; 
-		subpart.toDrawnObject();
-		return new DrawnObject(vertices, temp);
-
-	}
-	public DrawnObject toDrawnObject() {
+	public DrawnObject toDrawnObject() 
+	{
 		//something about lineColorValue;
 		float[] temp = new float[]{1f,1f,1f}; 
-		subpart.toDrawnObject();
-		return new DrawnObject(vertices, temp);
+		DrawnObject tempmodel = part.toDrawnObject();
+		tempmodel.setLocation(loc);
+		tempmodel.setTransformation(trans);
+		return tempmodel;
+		
+		
+		
 
 	}
 

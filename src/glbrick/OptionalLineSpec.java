@@ -28,8 +28,7 @@ public class OptionalLineSpec implements BrickSpec {
 
 	@Override
 	public DrawnObject toDrawnObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DrawnObject();
 	}
 	
 

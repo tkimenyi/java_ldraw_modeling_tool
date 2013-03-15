@@ -9,28 +9,37 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class DrawnObject
 {
-
-	//these should probably not be public...
-	//This code should be more commeneted, especially how these parts interact
-	//arraylist of children is clever, or so it appeared.  Maybe there should be a leaf for the bootom of the arraylist.
-	//evidently this is a prime candiate for unit testing....
-	
-	public float[] color;
-	ArrayList<DrawnObject> children; // Non-parts will have no children.
-	double[][] transformation;//this should probably be final as well...
-	public double[] location; // In Cartesian
+	private boolean comment = false;
+	public float[] color = { 1, 1, 1 }; // Default is white
+	ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
+	double[][] transformation = identityMatrix();
+	public double[] location = { 0, 0, 0 }; // In Cartesian
 	public ArrayList<double[]> vertices = new ArrayList<double[]>();
 
+	//This is only called by the CommentSpec.toDrawnObject() method.
+	public DrawnObject()
+	{
+		comment = true;
+	}
+
+	//Constructor for a general DrawnObject that requires all of the fields set. This one will not be called except internally (I think)
+	//However, I don't want to make it private just yet.
 	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
 	{
 		this.children = children;
 		this.transformation = transformation;
 		this.vertices = vertices;
+		transformVertices();
 		this.location = location;
 		this.color = color;
 	}
 
-	// constructor for non linetype 1 specs
+	public DrawnObject(ArrayList<DrawnObject> children)
+	{
+		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, identityMatrix(), new float[] { 1, 1, 1 }, children);
+	}
+
+	// constructor for non-linetype 1 specs
 	public DrawnObject(ArrayList<double[]> vertices, float[] color)
 	{
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
@@ -46,6 +55,55 @@ public class DrawnObject
 	public DrawnObject(double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
+	}
+
+	public void setTransformation(double[][] trans)
+	{
+		for (int i = 0; i < trans.length; i++)
+		{
+			for (int j = 0; j < trans[0].length; j++)
+			{
+				transformation[i][j] = trans[i][j];
+			}
+		}
+		transformALL(transformation);
+
+	}
+
+	public void setLocation(double[] loc)
+	{
+		location[0] = loc[0];
+		location[1] = loc[1];
+		location[2] = loc[2];
+		for (DrawnObject child : children)
+		{
+			child.setLocation(loc);
+		}
+	}
+
+	public void transformALL(double[][] trans)
+	{
+		transformVertices(trans);
+
+		for (DrawnObject d : children)
+		{
+			d.transformVertices(trans);
+		}
+	}
+
+	public void move(double[] vector)
+	{
+		location[0] += vector[0];
+		location[1] += vector[1];
+		location[2] += vector[2];
+	}
+
+	public void moveALL(double[] vector)
+	{
+		move(vector);
+		//for(int i = 0; i < children.size(); i++){
+		//	children.get(i).moveALL(vector);
+		//}
 	}
 
 	public static double[][] identityMatrix()
@@ -70,7 +128,7 @@ public class DrawnObject
 	public void setSphericalCoordiates(double[] rtp)
 	{
 		double r = rtp[0];
-		double theta = rtp[1];//this has a compiler warning.  Ferrer suspects a bug.
+		double theta = rtp[1];
 		double phi = rtp[2];
 
 		location[2] = r * Math.cos(phi);
@@ -88,6 +146,7 @@ public class DrawnObject
 	}
 
 	// ---------------methods used to perform a rendering test (the spiral galaxy test).
+
 	public void transformVertices()
 	{
 		transformVertices(transformation);
@@ -104,16 +163,11 @@ public class DrawnObject
 			vertices.set(i, vertex);
 
 		}
+
 	}
 
 	public double[] matrixMult(double[][] m, double[] v)
 	{
-		//maybe make this static since is does nothing with the data structure.
-		//or a utility object
-		//could also think about creating a matrix class...  oh wait.  there's a matrix class, but it's empty...
-		//apparently there are other empty classes.
-		//also, legoGeometry  isn't necessary, all the methods could be static
-		//similarily, objecttype should probably go away....
 		double[] newv = new double[v.length];
 		newv[0] = v[0] * m[0][0] + v[1] * m[0][1] + v[2] * m[0][2];
 		newv[1] = v[0] * m[1][0] + v[1] * m[1][1] + v[2] * m[1][2];
@@ -133,6 +187,9 @@ public class DrawnObject
 
 	public void draw()
 	{
+		if (comment)
+			return;
+
 		if (children.size() > 0)
 		{
 			for (DrawnObject child : children)
@@ -151,6 +208,16 @@ public class DrawnObject
 			glEnd();
 		}
 
+	}
+
+	public String toString()
+	{
+		return "Location: " + location[0] + ", " + location[1] + ", " + location[2];
+	}
+
+	public boolean isComment()
+	{
+		return comment;
 	}
 
 }
