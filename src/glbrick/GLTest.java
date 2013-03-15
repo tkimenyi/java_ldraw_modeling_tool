@@ -1,4 +1,5 @@
 package glbrick;
+
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class GLTest
 {
 	static PartFactory pf;
 	static double rotateRate = .1;
-	static double[] modelpyr = {0,0,0};
+	static double[] modelpyr = { 0, 0, 0 };
+	static double[] modelloc = { 0, 0, 0 };
 	static double[][] rot = DrawnObject.identityMatrix();
 	static double speed = .3;
 	static double[] rankin = { 0, 0, 0 };
@@ -51,15 +53,12 @@ public class GLTest
 	static double[] xneg = { -1, 0, 0 };
 
 	static boolean keyPressed = false;
-	
+
 	static ArrayList<DrawnObject> objects = new ArrayList<DrawnObject>();
 
-	
-	
 	public static void main(String[] args) throws InterruptedException, FileNotFoundException, PartNotFoundException
 	{
 
-		
 		pf = new PartFactory("ldraw");
 		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, red));
 		try
@@ -103,12 +102,12 @@ public class GLTest
 		if (Keyboard.isKeyDown(Keyboard.KEY_ADD))
 		{
 			speed += .01;
-			rotateRate+=.01;
+			rotateRate += .01;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT))
 		{
 			speed -= .01;
-			rotateRate-=.01;
+			rotateRate -= .01;
 		}
 	}
 
@@ -233,10 +232,9 @@ public class GLTest
 		}
 		glEnd();
 	}
-	
+
 	static void addObject(String partname) throws PartNotFoundException
 	{
-			double[] loc = new double[] { rex[0], rex[1], rex[2] };
 			objects.add(pf.getPart(partname).toDrawnObject());
 	}
 
@@ -277,20 +275,24 @@ public class GLTest
 		{
 			modelpyr[2] -= rotateRate;
 		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) || Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)){
-		rot[0][0] = Math.cos(modelpyr[0]);
-		rot[0][1] = Math.sin(modelpyr[0]);
-		rot[1][0] = -Math.sin(modelpyr[0]);
-		rot[1][1] = Math.cos(modelpyr[0]);
-		try {
-			Thread.sleep(90);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(DrawnObject d: objects){
-			d.transformVertices(rot);
-			System.out.println(d.vertices.get(2)[0]);
+		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) || Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2))
+		{
+			rot[0][0] = Math.cos(modelpyr[0]);
+			rot[0][1] = Math.sin(modelpyr[0]);
+			rot[1][0] = -Math.sin(modelpyr[0]);
+			rot[1][1] = Math.cos(modelpyr[0]);
+			try
+			{
+				Thread.sleep(90);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			for (DrawnObject d : objects)
+			{
+				d.transformVertices(rot);
+				System.out.println(d.vertices.get(2)[0]);
 			}
 		}
 		/*glRotated(modelpyr[0], 1, 0, 0);
@@ -301,7 +303,7 @@ public class GLTest
 
 	static void display() throws InterruptedException, PartNotFoundException
 	{
-		
+
 		// These three lines are necessary custodial commands. Don't touch em.
 		glMatrixMode(GL_MODELVIEW);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -314,7 +316,8 @@ public class GLTest
 		//
 		//
 		//addCubes(white);
-		if(Keyboard.isKeyDown(Keyboard.KEY_COMMA)){
+		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
+		{
 			Thread.sleep(90);
 			addObject("car.4dat");
 		}
@@ -327,14 +330,12 @@ public class GLTest
 		{
 			reorganize(speed);
 		}
-		
+
 		glRotatef(roll, 0, 0, 1);
 		glRotatef(pitch, 1, 0, 0);
 		glRotatef(yaw, 0, 1, 0);
 
 		glTranslated(X, Y, Z);
-
-
 
 		if (gridEnabled)
 		{
@@ -344,20 +345,30 @@ public class GLTest
 
 		drawCrosshair(rex, white);
 
-		
-
 		updateSpeed();
 		moveshit();
 		drawObjects();
-		
+
 		drawCubek(0, 0, -4, red);
 		drawCubek(4, 0, 0, blue);
 		drawCubek(0, 0, 4, green);
 		drawCubek(-4, 0, 0, yellow);
 
-
 		glFlush();
 	}
+
+	static void rotateModel(double angle)
+	{
+		modelpyr[1] += angle;
+	}
+
+	static void translateModel(double x, double y, double z)
+	{
+		modelloc[0] += x;
+		modelloc[1] += y;
+		modelloc[2] += z;
+	}
+	
 
 	static void drawCrosshair(double[] loc, float color[])
 	{
@@ -458,7 +469,7 @@ public class GLTest
 		{
 			obj.draw();
 		}
-		
+
 	}
 
 	static double sine(double angle)
