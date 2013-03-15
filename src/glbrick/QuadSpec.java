@@ -28,10 +28,10 @@ public class QuadSpec implements BrickSpec {
 		
 		//System.out.println(lineParts[1].);
 		
-			//lineColorValue = glbrickUtilities.smartDecode(lineParts[1]);
+			lineColorValue = glbrickUtilities.smartDecode(lineParts[1]);
 		
 		
-		lineColorValue = Float.parseFloat(lineParts[1]);
+		//lineColorValue = Float.parseFloat(lineParts[1]);
 		
 		one = new double[3];
 		two = new double[3];
