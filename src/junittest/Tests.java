@@ -23,7 +23,7 @@ public class Tests
 
 
 	//put test back!!!!
-
+	@Test
 	public void test()
 	{
 		try
@@ -31,6 +31,12 @@ public class Tests
 			GLTest.main(new String[]{});
 		} catch (InterruptedException e)
 		{
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PartNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -66,7 +72,7 @@ public class Tests
 	}
 	
 	
-	@Test
+	
 	public void someParts() throws IOException
 	{
 		//test succeeds if it doesn't crash
