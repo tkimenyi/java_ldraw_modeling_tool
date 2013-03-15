@@ -239,6 +239,8 @@ public class GLTest
 
 	static void addObject(String partname) throws PartNotFoundException
 	{
+			System.out.println(pf);
+			System.out.println(partname);
 			objects.add(pf.getPart(partname).toDrawnObject());
 	}
 
