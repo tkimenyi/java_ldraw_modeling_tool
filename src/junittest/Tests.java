@@ -133,6 +133,9 @@ public class Tests
 	}
 
 
+	/**
+	 * @throws FileNotFoundException
+	 */
 	public void test2() throws FileNotFoundException
 	{
 		//test succeeds if it doesn't crash

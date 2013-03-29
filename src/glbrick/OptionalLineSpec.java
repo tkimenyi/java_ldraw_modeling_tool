@@ -1,6 +1,5 @@
 package glbrick;
 
-import java.util.ArrayList;
 
 public class OptionalLineSpec implements BrickSpec {
 
@@ -20,11 +19,11 @@ public class OptionalLineSpec implements BrickSpec {
 	}
 
 
-	public DrawnObject toDrawnObject(ArrayList<double[]> vs, double[] loc,
+	/*public DrawnObject toDrawnObject(ArrayList<double[]> vs, double[] loc,
 			ObjectType type, float[] color) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	@Override
 	public DrawnObject toDrawnObject() {

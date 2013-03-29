@@ -10,21 +10,49 @@ import static org.lwjgl.opengl.GL11.*;
 public class DrawnObject
 {
 	private boolean comment = false;
-	public float[] color = { 1, 1, 1 }; // Default is white
-	ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
-	double[][] transformation = identityMatrix();
-	public double[] location = { 0, 0, 0 }; // In Cartesian
-	public ArrayList<double[]> vertices = new ArrayList<double[]>();
+	private double[] color = { 1, 1, 1 }; // Default is white
+	private ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
+	private double[][] transformation = identityMatrix();
+	private double[] location = { 0, 0, 0 }; // In Cartesian
+	private ArrayList<double[]> vertices = new ArrayList<double[]>();
 
 	//This is only called by the CommentSpec.toDrawnObject() method.
 	public DrawnObject()
 	{
 		comment = true;
 	}
-
+	public double getRed(){
+		return color[0];
+	}
+	public double getGreen(){
+		return color[1];
+	}public double getBlue(){
+		return color[2];
+	}
+	public double[] doubleCopy(double[] d){
+		double[] n = new double[d.length];
+		for (int i =0; i < d.length; i++){
+			n[i] = d[i];
+		}
+		return n;
+	}
+	public ArrayList<double[]> doubleArrListCopy(ArrayList<double[]> d){
+		ArrayList<double[]> n = new ArrayList<double[]>();
+		for (double[] i: d){
+			n.add(i);		}
+		return n;
+	}
+	
+	public double[] getLocation(){
+		return doubleCopy(location);
+	}
+	public ArrayList<double[]> getVertices(){
+		return doubleArrListCopy(vertices);
+	}
+	
 	//Constructor for a general DrawnObject that requires all of the fields set. This one will not be called except internally (I think)
 	//However, I don't want to make it private just yet.
-	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
+	private DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
 	{
 		this.children = children;
 		this.transformation = transformation;
@@ -36,23 +64,23 @@ public class DrawnObject
 
 	public DrawnObject(ArrayList<DrawnObject> children)
 	{
-		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, identityMatrix(), new float[] { 1, 1, 1 }, children);
+		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, identityMatrix(), new double[] { 1, 1, 1 }, children);
 	}
 
 	// constructor for non-linetype 1 specs
-	public DrawnObject(ArrayList<double[]> vertices, float[] color)
+	public DrawnObject(ArrayList<double[]> vertices, double[] color)
 	{
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
 
 	// constructor for testing purposes
-	public DrawnObject(ArrayList<double[]> vertices, double[] location, float[] color)
+	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[] color)
 	{
 		this(vertices, location, identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
 
 	// constructor for linetype 1's
-	public DrawnObject(double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
+	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
 	}
@@ -70,15 +98,20 @@ public class DrawnObject
 
 	}
 
-	public void setLocation(double[] loc)
+	public void setParentLocation(double[] loc)
 	{
 		location[0] = loc[0];
 		location[1] = loc[1];
 		location[2] = loc[2];
-//		for (DrawnObject child : children)
-//		{
-//			child.setLocation(loc);
-//		}
+	}
+
+	public void setLocation(double[] loc)
+	{
+		setParentLocation(loc);
+		for (DrawnObject child : children)
+		{
+			child.setLocation(loc);
+		}
 	}
 
 	public void transformALL(double[][] trans)
@@ -128,7 +161,7 @@ public class DrawnObject
 	public void setSphericalCoordiates(double[] rtp)
 	{
 		double r = rtp[0];
-		double theta = rtp[1];
+		//double theta = rtp[1];
 		double phi = rtp[2];
 
 		location[2] = r * Math.cos(phi);
@@ -198,18 +231,63 @@ public class DrawnObject
 			}
 		} else
 		{
-			glBegin(GL_LINE_LOOP);
-			glColor3f(color[0], color[1], color[2]);
+			glColor3d(color[0], color[1], color[2]);
+			int type = vertices.size();
+			if (type == 2)
+			{
+				glBegin(GL_LINE);
+			}
+			if (type == 3)
+			{
+				glBegin(GL_TRIANGLES);
+			}
+			if (type == 4)
+			{
+				glBegin(GL_QUADS);
+			}
+			double[] v1 = vertices.get(0);
+			double[] v2 = vertices.get(1);
+			double[] normal = cross_product(v1, v2);
+			normal = normalize(normal);
+			glNormal3d(normal[0], normal[1], normal[2]);
+
 			for (double[] vertex : vertices)
 			{
 				glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
 
 			}
 			glEnd();
-		}
 
+		}
 	}
-	public double[][] getTransformation(){
+
+	//		public void draw()
+	//		{
+	//			if (comment)
+	//				return;
+	//	
+	//			if (children.size() > 0)
+	//			{
+	//				for (DrawnObject child : children)
+	//				{
+	//					child.draw();
+	//				}
+	//			} else
+	//			{
+	//				glBegin(GL_LINE_LOOP);
+	//				glColor3f(color[0], color[1], color[2]);
+	//				for (double[] vertex : vertices)
+	//				{
+	//					glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
+	//	
+	//				}
+	//				glEnd();
+	//			}
+	//	
+	//		}
+
+	public double[][] getTransformation()
+	{
 		return transformation;
 	}
 
@@ -238,4 +316,44 @@ public class DrawnObject
 		return comment;
 	}
 
+	public double[] subtract(double[] v1, double[] v2)
+	{
+		double[] result = new double[v1.length];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = v1[i] - v2[i];
+		}
+		return result;
+	}
+
+	public double magnitude(double[] v)
+	{
+		double result = 0;
+		for (double i : v)
+		{
+			result += i * i;
+		}
+		return Math.sqrt(result);
+	}
+
+	public double[] normalize(double[] v)
+	{
+		double[] result = new double[v.length];
+		result[0] = v[0] / magnitude(v);
+		result[1] = v[1] / magnitude(v);
+		result[2] = v[2] / magnitude(v);
+		return result;
+	}
+
+	public double[] cross_product(double[] v1, double[] v2)
+	{
+		double[] result = new double[v1.length];
+
+		result[0] = v1[1] * v2[2] - v1[2] * v2[1];
+		result[1] = v1[2] * v2[0] - v1[0] * v2[2];
+		result[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+		return result;
+
+	}
 }

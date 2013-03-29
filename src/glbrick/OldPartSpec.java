@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public class OldPartSpec implements BrickSpec {
 	private ArrayList<BrickSpec> lines;
-	private String name;
-	private ColorBase colors;
+	//private String name;
+	//private ColorBase colors;
 	OldPartSpec(String name, ColorBase colors) {
-		this.name = name;
-		this.colors = colors;
+		//this.name = name;
+		//this.colors = colors;
 		lines = new ArrayList<BrickSpec>();
 	}
 	public void debugging(){

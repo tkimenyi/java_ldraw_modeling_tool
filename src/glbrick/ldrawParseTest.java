@@ -17,7 +17,13 @@ public class ldrawParseTest {
 	public boolean lDrawTest(String pn) throws FileNotFoundException, PartNotFoundException{
 		PartFactory fact = new PartFactory(ldrawPath);
 		PartSpec model = fact.getPart(pn);
+		if (model != null){
 		return true;
+		}
+		else{
+			return false; 
+			
+		}
 	}
 	
 	
