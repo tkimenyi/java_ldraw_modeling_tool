@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL43.*;
 public class GLWindow
 {
 
-	FloatBuffer lightpos = BufferUtils.createFloatBuffer(3);
+	FloatBuffer lightpos = BufferUtils.createFloatBuffer(4);
 	DoubleBuffer matrax = BufferUtils.createDoubleBuffer(16);
 	PartFactory pf;
 	double rotateRate = .1;
@@ -68,6 +68,15 @@ public class GLWindow
 		Display.setDisplayModeAndFullscreen(new DisplayMode(1280, 1024));
 		Display.create();
 	}
+	public static FloatBuffer vector_to_buffer(float[] vector){
+		FloatBuffer result = BufferUtils.createFloatBuffer(vector.length);
+		for(int i =0; i <vector.length;i++){
+			result.put(vector[i]);
+		}
+		result.position(0);
+		
+		return result;
+	}
 
 	public static DoubleBuffer matrix_to_buffer(double[][] trans)
 	{
@@ -91,9 +100,10 @@ public class GLWindow
 		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, white));
 
 
-		//glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
+		glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
 		glEnable(GL_COLOR_MATERIAL);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_DEPTH_TEST);
 		glShadeModel(GL_SMOOTH);
@@ -102,6 +112,8 @@ public class GLWindow
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 1.2, 2000.0);
 		glMatrixMode(GL_MODELVIEW);
 		glViewport(0, 0, 1280, 1024);
+		
+		glLight(GL_LIGHT0, GL_AMBIENT_AND_DIFFUSE, vector_to_buffer(new float[]{1,1,0,0}));
 		while (!Display.isCloseRequested())
 		{
 			display();
@@ -205,6 +217,10 @@ public class GLWindow
 		modelloc[1] += y;
 		modelloc[2] += z;
 	}
+	
+	void removeLastPiece(){
+		objects.remove(objects.size()-1);
+	}
 
 	void drawCrosshair(double[] loc, float color[])
 	{
@@ -281,6 +297,7 @@ public class GLWindow
 		{
 			glPushMatrix();
 			glTranslated(obj.getx(), obj.gety(), obj.getz());
+			glRotated(180, 1, 0, 0);
 			glMultMatrix(matrix_to_buffer(obj.getTransformation()));
 			obj.draw();
 			glPopMatrix();
@@ -439,14 +456,15 @@ public class GLWindow
 		}
 	}
 
-	void camera()
+	void camera() throws InterruptedException
 
 	{
 		if (Mouse.isButtonDown(0))
 		{
-			X = (Mouse.getX() - Display.getDisplayMode().getWidth() / 2.0) / 100.0;
-			Y = (Mouse.getY() - Display.getDisplayMode().getWidth() / 2.0) / 100.0;
-
+			//X = (Mouse.getX() - Display.getDisplayMode().getWidth() / 2.0) / 100.0;
+			//Y = (Mouse.getY() - Display.getDisplayMode().getWidth() / 2.0) / 100.0;
+			removeLastPiece();
+			Thread.sleep(100);
 		}
 		// Does not handle roll!
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
@@ -570,7 +588,7 @@ public class GLWindow
 		System.out.println(partname);
 		DrawnObject added = pf.getPart(partname).toDrawnObject();
 		added.setTransformation(scaleTransform(.3));
-		added.setLocation(rex);
+		added.setParentLocation(rex);
 		objects.add(added);
 	}
 

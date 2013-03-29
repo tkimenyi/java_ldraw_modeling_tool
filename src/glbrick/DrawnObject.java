@@ -70,15 +70,20 @@ public class DrawnObject
 
 	}
 
-	public void setLocation(double[] loc)
+	public void setParentLocation(double[] loc)
 	{
 		location[0] = loc[0];
 		location[1] = loc[1];
 		location[2] = loc[2];
-//		for (DrawnObject child : children)
-//		{
-//			child.setLocation(loc);
-//		}
+	}
+
+	public void setLocation(double[] loc)
+	{
+		setParentLocation(loc);
+		for (DrawnObject child : children)
+		{
+			child.setLocation(loc);
+		}
 	}
 
 	public void transformALL(double[][] trans)
@@ -198,18 +203,63 @@ public class DrawnObject
 			}
 		} else
 		{
-			glBegin(GL_LINE_LOOP);
 			glColor3f(color[0], color[1], color[2]);
+			int type = vertices.size();
+			if (type == 2)
+			{
+				glBegin(GL_LINE);
+			}
+			if (type == 3)
+			{
+				glBegin(GL_TRIANGLES);
+			}
+			if (type == 4)
+			{
+				glBegin(GL_QUADS);
+			}
+			double[] v1 = vertices.get(0);
+			double[] v2 = vertices.get(1);
+			double[] normal = cross_product(v1, v2);
+			normal = normalize(normal);
+			glNormal3d(normal[0], normal[1], normal[2]);
+
 			for (double[] vertex : vertices)
 			{
 				glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
 
 			}
 			glEnd();
-		}
 
+		}
 	}
-	public double[][] getTransformation(){
+
+	//		public void draw()
+	//		{
+	//			if (comment)
+	//				return;
+	//	
+	//			if (children.size() > 0)
+	//			{
+	//				for (DrawnObject child : children)
+	//				{
+	//					child.draw();
+	//				}
+	//			} else
+	//			{
+	//				glBegin(GL_LINE_LOOP);
+	//				glColor3f(color[0], color[1], color[2]);
+	//				for (double[] vertex : vertices)
+	//				{
+	//					glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
+	//	
+	//				}
+	//				glEnd();
+	//			}
+	//	
+	//		}
+
+	public double[][] getTransformation()
+	{
 		return transformation;
 	}
 
@@ -238,4 +288,44 @@ public class DrawnObject
 		return comment;
 	}
 
+	public double[] subtract(double[] v1, double[] v2)
+	{
+		double[] result = new double[v1.length];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = v1[i] - v2[i];
+		}
+		return result;
+	}
+
+	public double magnitude(double[] v)
+	{
+		double result = 0;
+		for (double i : v)
+		{
+			result += i * i;
+		}
+		return Math.sqrt(result);
+	}
+
+	public double[] normalize(double[] v)
+	{
+		double[] result = new double[v.length];
+		result[0] = v[0] / magnitude(v);
+		result[1] = v[1] / magnitude(v);
+		result[2] = v[2] / magnitude(v);
+		return result;
+	}
+
+	public double[] cross_product(double[] v1, double[] v2)
+	{
+		double[] result = new double[v1.length];
+
+		result[0] = v1[1] * v2[2] - v1[2] * v2[1];
+		result[1] = v1[2] * v2[0] - v1[0] * v2[2];
+		result[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+		return result;
+
+	}
 }
