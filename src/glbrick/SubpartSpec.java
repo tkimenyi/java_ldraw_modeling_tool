@@ -1,6 +1,5 @@
 package glbrick;
 
-import java.util.ArrayList;
 
 
 
@@ -12,7 +11,7 @@ public class SubpartSpec implements BrickSpec {
 	//private int c;
 	private double[] loc = {0,0,0};
 	private double[][] trans = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
-	private ArrayList<double[]> vertices;
+	//private ArrayList<double[]> vertices;
 	@SuppressWarnings("unused")
 	private ColorBase colors;
 	float lineColorValue;
@@ -62,7 +61,7 @@ public class SubpartSpec implements BrickSpec {
 	public DrawnObject toDrawnObject() 
 	{
 		//something about lineColorValue;
-		float[] temp = new float[]{1f,1f,1f}; 
+		//double[] temp = new double[]{1,1,1}; 
 		DrawnObject tempmodel = part.toDrawnObject();
 		
 		tempmodel.setLocation(loc);

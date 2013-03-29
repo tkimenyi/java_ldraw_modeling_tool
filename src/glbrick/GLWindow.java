@@ -1,26 +1,20 @@
 package glbrick;
 
 import java.io.FileNotFoundException;
-import java.nio.ByteBuffer;
+
 import java.util.ArrayList;
-import java.nio.ByteOrder;
+
 import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
+
 import java.nio.FloatBuffer;
 import org.lwjgl.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.Color;
-import org.lwjgl.util.glu.GLU;
+
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL43.*;
+
 
 public class GLWindow
 {
@@ -42,16 +36,16 @@ public class GLWindow
 	double rotateSpeed = 1;
 	double movementSpeed = .8;
 	boolean gridEnabled = false;
-	static float[] red = { 1, 0, 0 };
-	static float[] blue = { 0, 0, 1 };
-	static float[] green = { 0, 1, 0 };
-	static float[] yellow = { 1, 1, 0 };
-	static float[] white = { 1, 1, 1 };
+	static double[] red = { 1, 0, 0 };
+	static double[] blue = { 0, 0, 1 };
+	static double[] green = { 0, 1, 0 };
+	static double[] yellow = { 1, 1, 0 };
+	static double[] white = { 1, 1, 1 };
 	double piover180 = Math.PI / 180.;
 	double[] sineTable = buildSineTable();
 	double[] cosineTable = buildCosineTable();
 	double scalex, scaley, X, Y, Z;
-	float pitch, yaw, roll;
+	double pitch, yaw, roll;
 
 	double[] zpos = { 0, 0, 1 };
 	double[] zneg = { 0, 0, -1 };
@@ -174,9 +168,9 @@ public class GLWindow
 
 		handleKeyboardEvents();
 
-		glRotatef(roll, 0, 0, 1);
-		glRotatef(pitch, 1, 0, 0);
-		glRotatef(yaw, 0, 1, 0);
+		glRotated(roll, 0, 0, 1);
+		glRotated(pitch, 1, 0, 0);
+		glRotated(yaw, 0, 1, 0);
 
 		glTranslated(X, Y, Z);
 
@@ -222,14 +216,14 @@ public class GLWindow
 		objects.remove(objects.size()-1);
 	}
 
-	void drawCrosshair(double[] loc, float color[])
+	void drawCrosshair(double[] loc, double color[])
 	{
 
 		double x, y, z;
 		x = loc[0];
 		y = loc[1];
 		z = loc[2];
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
 		glVertex3d(0 + x, 0 + y, 0 + z);
 		glVertex3d(1 + x, 0 + y, 0 + z);
@@ -243,9 +237,9 @@ public class GLWindow
 		glEnd();
 	}
 
-	void drawGrid(int x, int y, int z, float[] color, double resolution, double[] loc)
+	void drawGrid(int x, int y, int z, double[] color, double resolution, double[] loc)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		for (double i = x * -1; i < x; i += resolution)
 		{
 			glBegin(GL_LINE_STRIP);
@@ -264,9 +258,9 @@ public class GLWindow
 
 	// This will draw a wireframe cube of a fixed size at the location (x,y,z)
 	// with color {red, green, blue}
-	void drawCubed(double x, double y, double z, float[] color)
+	void drawCubed(double x, double y, double z, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
 		glVertex3d(x, y, z);
 		glVertex3d(1 + x, y, z);
@@ -306,35 +300,35 @@ public class GLWindow
 
 	}
 
-	void drawCubek(float x, float y, float z, float[] color)
+	void drawCubek(double x, double y, double z, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
-		glVertex3f(x, y, z);
-		glVertex3f(1 + x, y, z);
-		glVertex3f(1 + x, 1 + y, z);
-		glVertex3f(x, 1 + y, z);
+		glVertex3d(x, y, z);
+		glVertex3d(1 + x, y, z);
+		glVertex3d(1 + x, 1 + y, z);
+		glVertex3d(x, 1 + y, z);
 
-		glVertex3f(x, 1 + y, -1 + z);
-		glVertex3f(x, y, -1 + z);
-		glVertex3f(1 + x, y, -1 + z);
-		glVertex3f(1 + x, 1 + y, -1 + z);
-		glVertex3f(x, 1 + y, -1 + z);
+		glVertex3d(x, 1 + y, -1 + z);
+		glVertex3d(x, y, -1 + z);
+		glVertex3d(1 + x, y, -1 + z);
+		glVertex3d(1 + x, 1 + y, -1 + z);
+		glVertex3d(x, 1 + y, -1 + z);
 
-		glVertex3f(x, 1 + y, z);
-		glVertex3f(x, y, z);
-		glVertex3f(x, y, -1 + z);
-		glVertex3f(1 + x, y, -1 + z);
-		glVertex3f(1 + x, y, z);
-		glVertex3f(1 + x, 1 + y, z);
-		glVertex3f(1 + x, 1 + y, -1 + z);
+		glVertex3d(x, 1 + y, z);
+		glVertex3d(x, y, z);
+		glVertex3d(x, y, -1 + z);
+		glVertex3d(1 + x, y, -1 + z);
+		glVertex3d(1 + x, y, z);
+		glVertex3d(1 + x, 1 + y, z);
+		glVertex3d(1 + x, 1 + y, -1 + z);
 		glEnd();
 
 	}
 
-	void drawSolidCube(double[] loc, double size, float[] color)
+	void drawSolidCube(double[] loc, double size, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_QUADS);
 
 		//Front and back faces
@@ -376,9 +370,9 @@ public class GLWindow
 		glEnd();
 	}
 
-	void drawCube(double[] xyz, double size, float[] color)
+	void drawCube(double[] xyz, double size, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
 		glVertex3d(xyz[0], xyz[1], xyz[2]);
 		glVertex3d(size + xyz[0], xyz[1], xyz[2]);
@@ -564,9 +558,9 @@ public class GLWindow
 	void drawCube(DrawnObject beta)
 	{
 		glBegin(GL_LINE_STRIP);
-		glColor3f(beta.color[0], beta.color[1], beta.color[2]);
-		double[] loc = beta.location;
-		for (double[] vertex : beta.vertices)
+		glColor3d(beta.getRed(), beta.getGreen(), beta.getBlue());
+		double[] loc = beta.getLocation();
+		for (double[] vertex : beta.getVertices())
 		{
 			glVertex3d(vertex[0] + loc[0], vertex[1] + loc[1], vertex[2] + loc[2]);
 		}
@@ -592,7 +586,7 @@ public class GLWindow
 		objects.add(added);
 	}
 
-	void addCubes(float[] color) throws InterruptedException
+	void addCubes(double[] color) throws InterruptedException
 	{
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class PartSpec implements BrickSpec {
 	private ArrayList<BrickSpec> children;
 	private String name;
-	private ColorBase colors;
+	//private ColorBase colors;
 	PartSpec(String name, ColorBase colors) {
 		this.name = name;
-		this.colors = colors;
+		//this.colors = colors;
 		children = new ArrayList<BrickSpec>();
 	}
 	public void debugging(){

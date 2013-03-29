@@ -3,17 +3,15 @@ package junittest;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
-import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 import glbrick.GLTest;
 import glbrick.PartNotFoundException;
-import glbrick.PartSpec;
-import glbrick.brickUtilities;
 import glbrick.ldrawParseTest;
 
 import org.junit.Test;
@@ -132,44 +130,6 @@ public class Tests
 
 	}
 
-
-	public void test2() throws FileNotFoundException
-	{
-		//test succeeds if it doesn't crash
-		ldrawParseTest ldp = new ldrawParseTest();
-
-
-		try{
-			//assertTrue(ldp.lDrawTest("s/.dat"));
-			System.out.println("test");
-			assertTrue(ldp.lDrawTest("s/2902s01.dat"));
-			System.out.println("test2");
-			//assertTrue(ldp.lDrawTest("s/.dat"));
-
-		}
-		catch (PartNotFoundException e){
-		}
-	}
-
-
-	public void test3() throws FileNotFoundException
-	{
-		//test succeeds if it doesn't crash
-		ldrawParseTest ldp = new ldrawParseTest();
-
-
-		try{
-			//assertTrue(ldp.lDrawTest("s/.dat"));
-			System.out.println("test");
-			assertTrue(ldp.lDrawTest("s/2902s01.dat"));
-			System.out.println("test2");
-			//assertTrue(ldp.lDrawTest("s/.dat"));
-
-		}
-		catch (PartNotFoundException e){
-			System.out.println(e);
-		}
-	}
 
 }
 

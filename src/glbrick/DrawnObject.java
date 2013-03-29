@@ -10,21 +10,49 @@ import static org.lwjgl.opengl.GL11.*;
 public class DrawnObject
 {
 	private boolean comment = false;
-	public float[] color = { 1, 1, 1 }; // Default is white
-	ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
-	double[][] transformation = identityMatrix();
-	public double[] location = { 0, 0, 0 }; // In Cartesian
-	public ArrayList<double[]> vertices = new ArrayList<double[]>();
+	private double[] color = { 1, 1, 1 }; // Default is white
+	private ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
+	private double[][] transformation = identityMatrix();
+	private double[] location = { 0, 0, 0 }; // In Cartesian
+	private ArrayList<double[]> vertices = new ArrayList<double[]>();
 
 	//This is only called by the CommentSpec.toDrawnObject() method.
 	public DrawnObject()
 	{
 		comment = true;
 	}
-
+	public double getRed(){
+		return color[0];
+	}
+	public double getGreen(){
+		return color[1];
+	}public double getBlue(){
+		return color[2];
+	}
+	public double[] doubleCopy(double[] d){
+		double[] n = new double[d.length];
+		for (int i =0; i < d.length; i++){
+			n[i] = d[i];
+		}
+		return n;
+	}
+	public ArrayList<double[]> doubleArrListCopy(ArrayList<double[]> d){
+		ArrayList<double[]> n = new ArrayList<double[]>();
+		for (double[] i: d){
+			n.add(i);		}
+		return n;
+	}
+	
+	public double[] getLocation(){
+		return doubleCopy(location);
+	}
+	public ArrayList<double[]> getVertices(){
+		return doubleArrListCopy(vertices);
+	}
+	
 	//Constructor for a general DrawnObject that requires all of the fields set. This one will not be called except internally (I think)
 	//However, I don't want to make it private just yet.
-	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
+	private DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
 	{
 		this.children = children;
 		this.transformation = transformation;
@@ -36,23 +64,23 @@ public class DrawnObject
 
 	public DrawnObject(ArrayList<DrawnObject> children)
 	{
-		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, identityMatrix(), new float[] { 1, 1, 1 }, children);
+		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, identityMatrix(), new double[] { 1, 1, 1 }, children);
 	}
 
 	// constructor for non-linetype 1 specs
-	public DrawnObject(ArrayList<double[]> vertices, float[] color)
+	public DrawnObject(ArrayList<double[]> vertices, double[] color)
 	{
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
 
 	// constructor for testing purposes
-	public DrawnObject(ArrayList<double[]> vertices, double[] location, float[] color)
+	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[] color)
 	{
 		this(vertices, location, identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
 
 	// constructor for linetype 1's
-	public DrawnObject(double[] location, double[][] transformation, float[] color, ArrayList<DrawnObject> children)
+	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
 	}
@@ -133,7 +161,7 @@ public class DrawnObject
 	public void setSphericalCoordiates(double[] rtp)
 	{
 		double r = rtp[0];
-		double theta = rtp[1];
+		//double theta = rtp[1];
 		double phi = rtp[2];
 
 		location[2] = r * Math.cos(phi);
@@ -203,7 +231,7 @@ public class DrawnObject
 			}
 		} else
 		{
-			glColor3f(color[0], color[1], color[2]);
+			glColor3d(color[0], color[1], color[2]);
 			int type = vertices.size();
 			if (type == 2)
 			{
