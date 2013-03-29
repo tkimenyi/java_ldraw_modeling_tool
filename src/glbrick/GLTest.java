@@ -1,18 +1,11 @@
 package glbrick;
 
 import java.io.FileNotFoundException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.nio.ByteOrder;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-import java.nio.FloatBuffer;
-import org.lwjgl.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.Color;
-import org.lwjgl.util.glu.GLU;
+
 
 import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.opengl.GL12.*;
@@ -36,16 +29,16 @@ public class GLTest
 	static double rotateSpeed = 1;
 	static double movementSpeed = .8;
 	static boolean gridEnabled = false;
-	static float[] red = { 1, 0, 0 };
-	static float[] blue = { 0, 0, 1 };
-	static float[] green = { 0, 1, 0 };
-	static float[] yellow = { 1, 1, 0 };
-	static float[] white = { 1, 1, 1 };
+	static double[] red = { 1, 0, 0 };
+	static double[] blue = { 0, 0, 1 };
+	static double[] green = { 0, 1, 0 };
+	static double[] yellow = { 1, 1, 0 };
+	static double[] white = { 1, 1, 1 };
 	static double piover180 = Math.PI / 180.;
 	static double[] sineTable = buildSineTable();
 	static double[] cosineTable = buildCosineTable();
 	static double scalex, scaley, X, Y, Z;
-	static float pitch, yaw, roll;
+	static double pitch, yaw, roll;
 
 	static double[] zpos = { 0, 0, 1 };
 	static double[] zneg = { 0, 0, -1 };
@@ -225,17 +218,18 @@ public class GLTest
 		return vertices;
 	}
 
-	static void drawCube(DrawnObject beta)
+		//should go to the code grave, but alas, it's not my code
+	/*static void drawCube(DrawnObject beta)
 	{
 		glBegin(GL_LINE_STRIP);
-		glColor3f(beta.color[0], beta.color[1], beta.color[2]);
+		glColor3d(beta.color[0], beta.color[1], beta.color[2]);
 		double[] loc = beta.location;
 		for (double[] vertex : beta.vertices)
 		{
 			glVertex3d(vertex[0] + loc[0], vertex[1] + loc[1], vertex[2] + loc[2]);
 		}
 		glEnd();
-	}
+	}*/
 
 	static void addObject(String partname) throws PartNotFoundException
 	{
@@ -244,7 +238,7 @@ public class GLTest
 			objects.add(pf.getPart(partname).toDrawnObject());
 	}
 
-	static void addCubes(float[] color) throws InterruptedException
+	static void addCubes(double[] color) throws InterruptedException
 	{
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
@@ -337,9 +331,9 @@ public class GLTest
 			reorganize(speed);
 		}
 
-		glRotatef(roll, 0, 0, 1);
-		glRotatef(pitch, 1, 0, 0);
-		glRotatef(yaw, 0, 1, 0);
+		glRotated(roll, 0, 0, 1);
+		glRotated(pitch, 1, 0, 0);
+		glRotated(yaw, 0, 1, 0);
 
 		glTranslated(X, Y, Z);
 
@@ -380,13 +374,13 @@ public class GLTest
 	}
 	
 
-	static void drawCrosshair(double[] loc, float color[])
+	static void drawCrosshair(double[] loc, double color[])
 	{
 		double x, y, z;
 		x = loc[0];
 		y = loc[1];
 		z = loc[2];
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
 		glVertex3d(0 + x, 0 + y, 0 + z);
 		glVertex3d(1 + x, 0 + y, 0 + z);
@@ -403,7 +397,7 @@ public class GLTest
 	static void drawSineWave()
 	{
 
-		glColor3f(0.0f, 0f, 1.0f);
+		glColor3d(0.0f, 0f, 1.0f);
 		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i < 36000; i += 1)
 		{
@@ -415,7 +409,7 @@ public class GLTest
 
 	static void drawCosineWave()
 	{
-		glColor3f(0.0f, .5f, 0);
+		glColor3d(0.0f, .5f, 0);
 		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i < 36000; i += 1)
 		{
@@ -425,9 +419,9 @@ public class GLTest
 		glEnd();
 	}
 
-	static void drawGrid(int x, int y, int z, float[] color, double resolution, double[] loc)
+	static void drawGrid(int x, int y, int z, double[] color, double resolution, double[] loc)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		for (double i = x * -1; i < x; i += resolution)
 		{
 			glBegin(GL_LINE_STRIP);
@@ -446,9 +440,9 @@ public class GLTest
 
 	// This will draw a wireframe cube of a fixed size at the location (x,y,z)
 	// with color {red, green, blue}
-	static void drawCubed(double x, double y, double z, float[] color)
+	static void drawCubed(double x, double y, double z, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
 		glVertex3d(x, y, z);
 		glVertex3d(1 + x, y, z);
@@ -498,35 +492,35 @@ public class GLTest
 		return cosineTable[Math.abs((int) ((angle % 360) * 100))];
 	}
 
-	static void drawCubek(float x, float y, float z, float[] color)
+	static void drawCubek(double x, double y, double z, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
-		glVertex3f(x, y, z);
-		glVertex3f(1 + x, y, z);
-		glVertex3f(1 + x, 1 + y, z);
-		glVertex3f(x, 1 + y, z);
+		glVertex3d(x, y, z);
+		glVertex3d(1 + x, y, z);
+		glVertex3d(1 + x, 1 + y, z);
+		glVertex3d(x, 1 + y, z);
 
-		glVertex3f(x, 1 + y, -1 + z);
-		glVertex3f(x, y, -1 + z);
-		glVertex3f(1 + x, y, -1 + z);
-		glVertex3f(1 + x, 1 + y, -1 + z);
-		glVertex3f(x, 1 + y, -1 + z);
+		glVertex3d(x, 1 + y, -1 + z);
+		glVertex3d(x, y, -1 + z);
+		glVertex3d(1 + x, y, -1 + z);
+		glVertex3d(1 + x, 1 + y, -1 + z);
+		glVertex3d(x, 1 + y, -1 + z);
 
-		glVertex3f(x, 1 + y, z);
-		glVertex3f(x, y, z);
-		glVertex3f(x, y, -1 + z);
-		glVertex3f(1 + x, y, -1 + z);
-		glVertex3f(1 + x, y, z);
-		glVertex3f(1 + x, 1 + y, z);
-		glVertex3f(1 + x, 1 + y, -1 + z);
+		glVertex3d(x, 1 + y, z);
+		glVertex3d(x, y, z);
+		glVertex3d(x, y, -1 + z);
+		glVertex3d(1 + x, y, -1 + z);
+		glVertex3d(1 + x, y, z);
+		glVertex3d(1 + x, 1 + y, z);
+		glVertex3d(1 + x, 1 + y, -1 + z);
 		glEnd();
 
 	}
 
-	static void drawCube(double[] xyz, double size, float[] color)
+	static void drawCube(double[] xyz, double size, double[] color)
 	{
-		glColor3f(color[0], color[1], color[2]);
+		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_LINE_STRIP);
 		glVertex3d(xyz[0], xyz[1], xyz[2]);
 		glVertex3d(size + xyz[0], xyz[1], xyz[2]);

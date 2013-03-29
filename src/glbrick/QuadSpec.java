@@ -74,7 +74,7 @@ public class QuadSpec implements BrickSpec {
 
 	
 	public DrawnObject toDrawnObject() {
-		float[] temp = new float[]{1f,1f,1f}; 
+		double[] temp = new double[]{1,1,1d}; 
 		return new DrawnObject(vertices, temp);
 	}
 	
