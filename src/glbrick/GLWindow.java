@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL43.*;
 
 public class GLWindow
 {
-	
+
 	FloatBuffer lightpos = BufferUtils.createFloatBuffer(3);
 	DoubleBuffer matrax = BufferUtils.createDoubleBuffer(16);
 	PartFactory pf;
@@ -64,24 +64,25 @@ public class GLWindow
 
 	public GLWindow() throws LWJGLException
 	{
-		
+
 		Display.setDisplayModeAndFullscreen(new DisplayMode(1280, 1024));
 		Display.create();
 	}
 
-	void puttin(double[][] trans)
+	public static DoubleBuffer matrix_to_buffer(double[][] trans)
 	{
-		
-
+		int size = trans[0].length*trans.length;
+		DoubleBuffer buffer = BufferUtils.createDoubleBuffer(size);
 		for (int i = 0; i < trans.length; i++)
 		{
 			for (int j = 0; j < trans[0].length; j++)
 			{
-				matrax.put(trans[j][i]);
+				buffer.put(trans[i][j]);
 			}
 		}
-		matrax.position(0);
-
+		buffer.position(0);
+		return buffer;
+		
 	}
 
 	public void run() throws InterruptedException, PartNotFoundException, FileNotFoundException
@@ -89,10 +90,8 @@ public class GLWindow
 		pf = new PartFactory("ldraw");
 		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, white));
 
-		double[][] trans = { { 2, 0, 0, 0 }, { 0, 13, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-		puttin(trans);
 
-		glEnable(GL_LIGHTING);
+		//glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 		glEnable(GL_COLOR_MATERIAL);
 		glDepthFunc(GL_LEQUAL);
@@ -120,7 +119,7 @@ public class GLWindow
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
 		{
 			Thread.sleep(90);
-			addObject("car.dat");
+			addObject("3003.dat");
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_G))
 		{
@@ -131,6 +130,24 @@ public class GLWindow
 		{
 			reorganize(speed);
 		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_U))
+		{
+			translateModel(0, 0, -.4);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_J))
+		{
+			translateModel(0, 0, .4);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_H))
+		{
+			translateModel(-.4, 0, 0);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_K))
+		{
+			translateModel(.4, 0, 0);
+		}
+
 	}
 
 	void display() throws InterruptedException, PartNotFoundException
@@ -163,23 +180,23 @@ public class GLWindow
 		moveModel();
 
 		drawCubek(0, 0, -4, red);
-		
 
 		glPushMatrix();
-		glMultMatrix(matrax);
+		glTranslated(50, 4, 9);
 		drawCubek(-4, 0, 0, yellow);
 		glPopMatrix();
 
 		glTranslated(modelloc[0], modelloc[1], modelloc[2]);
 		rotateScene();
-		drawSolidCube(new double[] {2, 2, 2},4,green);
+		drawSolidCube(new double[] { 2, 2, 2 }, 4, green);
 		drawObjects();
 		glFlush();
 	}
 
-	void rotateModel(double angle)
+	void rotateModel(double zangle, double xangle)
 	{
-		modelpyr[1] += angle;
+		modelpyr[1] += zangle;
+		modelpyr[0] += xangle;
 	}
 
 	void translateModel(double x, double y, double z)
@@ -191,7 +208,7 @@ public class GLWindow
 
 	void drawCrosshair(double[] loc, float color[])
 	{
-		
+
 		double x, y, z;
 		x = loc[0];
 		y = loc[1];
@@ -259,9 +276,15 @@ public class GLWindow
 	// Currently creates a line loop for the given vertices in the DrawnObject
 	void drawObjects()
 	{
+		
 		for (DrawnObject obj : objects)
 		{
+			glPushMatrix();
+			glTranslated(obj.getx(), obj.gety(), obj.getz());
+			glMultMatrix(matrix_to_buffer(obj.getTransformation()));
 			obj.draw();
+			glPopMatrix();
+			
 		}
 
 	}
@@ -292,12 +315,11 @@ public class GLWindow
 
 	}
 
-
 	void drawSolidCube(double[] loc, double size, float[] color)
 	{
 		glColor3f(color[0], color[1], color[2]);
 		glBegin(GL_QUADS);
-		
+
 		//Front and back faces
 		glNormal3d(0, 0, -1);
 		glVertex3d(loc[0], loc[1], loc[2]);
@@ -305,35 +327,35 @@ public class GLWindow
 		glVertex3d(size + loc[0], size + loc[1], loc[2]);
 		glVertex3d(loc[0], size + loc[1], loc[2]);
 		glNormal3d(0, 0, 1);
-		glVertex3d(loc[0], loc[1], loc[2]+size);
-		glVertex3d(size + loc[0], loc[1], loc[2]+size);
-		glVertex3d(size + loc[0], size + loc[1], loc[2]+size);
-		glVertex3d(loc[0], size + loc[1], loc[2]+size);
-		
+		glVertex3d(loc[0], loc[1], loc[2] + size);
+		glVertex3d(size + loc[0], loc[1], loc[2] + size);
+		glVertex3d(size + loc[0], size + loc[1], loc[2] + size);
+		glVertex3d(loc[0], size + loc[1], loc[2] + size);
+
 		//Top and bottom
-		glNormal3d(0,-1,0);
-		glVertex3d(loc[0],loc[1],loc[2]);
-		glVertex3d(loc[0]+size,loc[1],loc[2]);
-		glVertex3d(loc[0]+size,loc[1],loc[2]+size);
-		glVertex3d(loc[0],loc[1],loc[2]+size);
-		glNormal3d(0,1,0);
-		glVertex3d(loc[0],loc[1]+size,loc[2]);
-		glVertex3d(loc[0]+size,loc[1]+size,loc[2]);
-		glVertex3d(loc[0]+size,loc[1]+size,loc[2]+size);
-		glVertex3d(loc[0],loc[1]+size,loc[2]+size);
-		
+		glNormal3d(0, -1, 0);
+		glVertex3d(loc[0], loc[1], loc[2]);
+		glVertex3d(loc[0] + size, loc[1], loc[2]);
+		glVertex3d(loc[0] + size, loc[1], loc[2] + size);
+		glVertex3d(loc[0], loc[1], loc[2] + size);
+		glNormal3d(0, 1, 0);
+		glVertex3d(loc[0], loc[1] + size, loc[2]);
+		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
+		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
+		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
+
 		//Left and Right
-		glNormal3d(-1,0,0);
-		glVertex3d(loc[0],loc[1],loc[2]);
-		glVertex3d(loc[0],loc[1],loc[2]+size);
-		glVertex3d(loc[0],loc[1]+size,loc[2]+size);
-		glVertex3d(loc[0],loc[1]+size,loc[2]);
+		glNormal3d(-1, 0, 0);
+		glVertex3d(loc[0], loc[1], loc[2]);
+		glVertex3d(loc[0], loc[1], loc[2] + size);
+		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
+		glVertex3d(loc[0], loc[1] + size, loc[2]);
 		glNormal3d(1, 0, 0);
-		glVertex3d(loc[0]+size,loc[1],loc[2]);
-		glVertex3d(loc[0]+size,loc[1],loc[2]+size);
-		glVertex3d(loc[0]+size,loc[1]+size,loc[2]+size);
-		glVertex3d(loc[0]+size,loc[1]+size,loc[2]);
-		
+		glVertex3d(loc[0] + size, loc[1], loc[2]);
+		glVertex3d(loc[0] + size, loc[1], loc[2] + size);
+		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
+		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
+
 		glEnd();
 	}
 
@@ -461,7 +483,7 @@ public class GLWindow
 			movementSpeed += .01;
 			System.out.println("MOVEMENT SPEED = " + movementSpeed);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_U))
+		if (Keyboard.isKeyDown(Keyboard.KEY_Y))
 		{
 			movementSpeed -= .01;
 			System.out.println("MOVEMENT SPEED = " + movementSpeed);
@@ -483,22 +505,22 @@ public class GLWindow
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))
 		{
 			rex[2] -= .3;
-			modelloc[2] -= .3;
+			//modelloc[2] -= .3;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_S))
 		{
 			rex[2] += .3;
-			modelloc[2] += .3;
+			//modelloc[2] += .3;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D))
 		{
 			rex[0] += .3;
-			modelloc[0] += .3;
+			//	modelloc[0] += .3;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_A))
 		{
 			rex[0] -= .3;
-			modelloc[0] -= .3;
+			//modelloc[0] -= .3;
 		}
 	}
 
@@ -532,12 +554,24 @@ public class GLWindow
 		}
 		glEnd();
 	}
+	
+	double[][] scaleTransform(double scale){
+		return new double[][]{
+				{scale,0,0,0},
+				{0,scale,0,0},
+				{0,0,scale,0},
+				{0,0,0,1}
+				};
+	}
 
 	void addObject(String partname) throws PartNotFoundException
 	{
 		System.out.println(objects.isEmpty());
 		System.out.println(partname);
-		objects.add(pf.getPart(partname).toDrawnObject());
+		DrawnObject added = pf.getPart(partname).toDrawnObject();
+		added.setTransformation(scaleTransform(.3));
+		added.setLocation(rex);
+		objects.add(added);
 	}
 
 	void addCubes(float[] color) throws InterruptedException
