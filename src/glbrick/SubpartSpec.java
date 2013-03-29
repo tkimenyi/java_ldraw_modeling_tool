@@ -64,6 +64,7 @@ public class SubpartSpec implements BrickSpec {
 		//something about lineColorValue;
 		float[] temp = new float[]{1f,1f,1f}; 
 		DrawnObject tempmodel = part.toDrawnObject();
+		
 		tempmodel.setLocation(loc);
 		tempmodel.setTransformation(trans);
 		return tempmodel;
