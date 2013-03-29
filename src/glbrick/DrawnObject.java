@@ -75,10 +75,10 @@ public class DrawnObject
 		location[0] = loc[0];
 		location[1] = loc[1];
 		location[2] = loc[2];
-		for (DrawnObject child : children)
-		{
-			child.setLocation(loc);
-		}
+//		for (DrawnObject child : children)
+//		{
+//			child.setLocation(loc);
+//		}
 	}
 
 	public void transformALL(double[][] trans)
@@ -208,6 +208,24 @@ public class DrawnObject
 			glEnd();
 		}
 
+	}
+	public double[][] getTransformation(){
+		return transformation;
+	}
+
+	public double getx()
+	{
+		return location[0];
+	}
+
+	public double gety()
+	{
+		return location[1];
+	}
+
+	public double getz()
+	{
+		return location[2];
 	}
 
 	public String toString()
