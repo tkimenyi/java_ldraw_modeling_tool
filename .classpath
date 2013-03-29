@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="lwjgl-2.8.5/jar/lwjgl_util.jar"/>
 	<classpathentry kind="lib" path="lwjgl-2.8.5/jar/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="java-ldraw-cad/lwjgl-2.8.5/native/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="java-ldraw-cad/lwjgl-2.8.5/native/linux"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
