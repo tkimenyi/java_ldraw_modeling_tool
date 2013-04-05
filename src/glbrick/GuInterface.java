@@ -112,6 +112,8 @@ public class GuInterface extends JFrame implements ActionListener{
 		menuBar.add(modify);
 		menuBar.add(animate);
 
+		toolBar.add(add);
+		toolBar.addSeparator();
 		toolBar.add(newFileB);
 		toolBar.addSeparator();
 		toolBar.add(openFileB);
@@ -119,8 +121,6 @@ public class GuInterface extends JFrame implements ActionListener{
 		toolBar.add(saveB);
 		toolBar.addSeparator();
 		toolBar.add(saveAllB);
-		toolBar.addSeparator();
-		toolBar.add(add);
 		toolBar.addSeparator();
 		toolBar.add(undo);
 		toolBar.addSeparator();
