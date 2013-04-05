@@ -18,10 +18,10 @@ public class GuInterface extends JFrame implements ActionListener{
 	private GLWindow window;
 	JMenuBar menuBar;
 	JMenu file, edit,animate, view, help, modify;
-	JButton add, undo, rotate, Redo, zoomIn, zoomOut, newFileB, openFileB, closeB, saveB, saveAllB, moveLeft, moveRight,moveUp, moveDown;
+	JButton add, undo, rotate, Redo, zoomIn, zoomOut, newFileB, openFileB, closeB, saveB, saveAllB, moveLeft, moveRight,moveUp, moveDown, up, down, left, right;
 	JToolBar toolBar;
 	JLabel cameraPos, cameraDirVect, editObjParam;
-	JTextField up, down, left, right, y2, z2, object, x, y, z, rotateField ;
+	JTextField y2, z2, object, x, y, z, rotateField ;
 	JMenuItem newFile, viewFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete, translate;
 
 	public GuInterface() {
@@ -39,10 +39,10 @@ public class GuInterface extends JFrame implements ActionListener{
 		cameraPos = new JLabel("Camera Position");
 		cameraDirVect = new JLabel("Camera Direction Vector");
 		editObjParam = new JLabel("Edit Object Parameters");
-		up = new JTextField("up",30);
-		down = new JTextField("down",30);
-		left = new JTextField("left",30);
-		right = new JTextField("right",30);
+		up = new JButton("up");
+		down = new JButton("down");
+		left = new JButton("left");
+		right = new JButton("right");
 		rotateField = new JTextField("degree",15);
 		y2 = new JTextField("Y");
 		z2 = new JTextField("Z");
@@ -58,41 +58,24 @@ public class GuInterface extends JFrame implements ActionListener{
 
 
 
-		add = new JButton(new ImageIcon("images/Add.png"));
-		undo = new JButton(new ImageIcon("images/Undo.png"));
-		Redo = new JButton(new ImageIcon("images/Redo.png"));
-		zoomIn = new JButton(new ImageIcon("images/Zoomin.png"));
-		zoomOut = new JButton(new ImageIcon("images/Zoomout.png"));
-		newFileB = new JButton( new ImageIcon("images/New.png"));
-		openFileB = new JButton( new ImageIcon("images/Folder.png"));
-		saveB = new JButton(new ImageIcon("images/Save.png") );
-		saveAllB = new JButton( new ImageIcon("images/Saveall.png") );
-		moveUp =new JButton( new ImageIcon("images/moveup.png") );
-		moveDown = new JButton( new ImageIcon("images/movedown.png") );
-		moveLeft = new JButton( new ImageIcon("images/moveleft.png") );
-		moveRight = new JButton( new ImageIcon("images/moveright.png") );
-		rotate = new JButton( new ImageIcon("images/rotate.png"));
-
-
-
-		removesomecode(add);
-		removesomecode(newFileB);
-		removesomecode(openFileB);
-		removesomecode(saveB);
-		removesomecode(saveAllB);
-		removesomecode(undo);
-		removesomecode(Redo);
-		removesomecode(zoomIn);
-		removesomecode(zoomOut);
-		removesomecode(moveRight);
-		removesomecode(moveLeft);
-		removesomecode(moveDown);
-		removesomecode(moveUp);
-
-
+		add = createButton("add", "Add.png");
+		undo = createButton("undo","Undo.png");
+		Redo = createButton("Redo","Redo.png");
+		zoomIn = createButton("zoomIn","Zoomin.png");
+		zoomOut = createButton("zoomOut","Zoomout.png");
+		newFileB = createButton("newFileB","New.png");
+		openFileB = createButton("openFileB","Folder.png");
+		saveB = createButton("saveB","Save.png");
+		saveAllB = createButton("saveAllB","Saveall.png");
+		moveUp = createButton("moveUp","moveup.png");
+		moveDown = createButton("moveDown","movedown.png");
+		moveLeft = createButton("moveLeft","moveleft.png");
+		moveRight = createButton("moveRight","moveright.png");
+		rotate = createButton("rotate","rotate.png");
 
 		newFile = new JMenuItem("New", new ImageIcon("images/New.png"));
 		newFile.setMnemonic(KeyEvent.VK_B);
+		file.add(newFile);
 		openFile = new JMenuItem("Open", new ImageIcon("images/Folder.png"));
 		close = new JMenuItem("Close", new ImageIcon("images/exit.png"));
 		save = new JMenuItem("Save As",new ImageIcon("images/Save.png") );
@@ -107,7 +90,7 @@ public class GuInterface extends JFrame implements ActionListener{
 		translate = new JMenuItem("Translate");
 		viewFile = new JMenuItem("View Part");
 		
-		file.add(newFile);
+		
 		file.add(openFile);
 		file.add(save);
 		file.add(saveAll);
@@ -202,9 +185,14 @@ public class GuInterface extends JFrame implements ActionListener{
 		
 	}
 	
-	public void removesomecode(JButton button) {
-		button.setBorder(BorderFactory.createEmptyBorder());
-		button.setContentAreaFilled(false);
+	public JButton createButton(String buttonName, String imgString) {
+		ImageIcon icon = new ImageIcon("images/" + imgString);
+		JButton tempButton = new JButton(icon);
+		
+		
+		tempButton.setBorder(BorderFactory.createEmptyBorder());
+		tempButton.setContentAreaFilled(false);
+		return tempButton;
 	}
 	
 	public void actionPerformed(ActionEvent e){
