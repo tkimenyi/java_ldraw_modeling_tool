@@ -6,14 +6,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import org.lwjgl.LWJGLException;
 
 
 
+@SuppressWarnings("serial")
 public class GuInterface extends JFrame implements ActionListener{
 	private GLWindow window;
 	JMenuBar menuBar;
@@ -140,7 +138,7 @@ public class GuInterface extends JFrame implements ActionListener{
 
 		
 
-		JPanel panel  =  new JPanel(new BorderLayout());
+		//JPanel panel  =  new JPanel(new BorderLayout());
 		setJMenuBar(menuBar);
 		add(toolBar, BorderLayout.NORTH);
 		
@@ -210,17 +208,17 @@ public class GuInterface extends JFrame implements ActionListener{
 		
 		if(e.getSource() == moveDown){
 			Double angle = Double.parseDouble(down.getText());
-			GLTest.rotateModel(angle);
+			window.rotateModel(angle,0);
 		}
 		
 		if(e.getSource() == moveRight){
 			Double angle = Double.parseDouble(right.getText());
-			GLTest.rotateModel(360 -angle);
+			window.rotateModel(360 -angle,0);
 		}
 		
 		if(e.getSource() == moveLeft){
 			Double angle = Double.parseDouble(left.getText());
-			GLTest.rotateModel(angle);
+			window.rotateModel(angle,0);
 		}
 		
 		if(e.getSource()==newFile || e.getSource() ==newFileB){
@@ -253,9 +251,9 @@ public class GuInterface extends JFrame implements ActionListener{
 				String partName  = file.getName();
 				try {
 					System.out.println("here");
-					GLTest.main(new String[]{});
+					window.run();
 					System.out.println(partName);
-					GLTest.addObject(partName);
+					window.addObject(partName);
 					
 				} catch (PartNotFoundException ex) {
 					ex.printStackTrace();
