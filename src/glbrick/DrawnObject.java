@@ -36,6 +36,15 @@ public class DrawnObject
 		}
 		return n;
 	}
+	
+	public double[][] twoDArrayCopy(double[][] d){
+		double[][] n = new double[d.length][d[0].length];
+		for (int i =0; i < d.length; i++){
+			n[i] = doubleCopy(d[i]);
+		}
+		return n;
+	}
+	
 	public ArrayList<double[]> doubleArrListCopy(ArrayList<double[]> d){
 		ArrayList<double[]> n = new ArrayList<double[]>();
 		for (double[] i: d){
@@ -57,7 +66,7 @@ public class DrawnObject
 		this.children = children;
 		this.transformation = transformation;
 		this.vertices = vertices;
-		transformVertices();
+		transformVertices(this.transformation);
 		this.location = location;
 		this.color = color;
 	}
@@ -114,6 +123,7 @@ public class DrawnObject
 		}
 	}
 
+	
 	public void transformALL(double[][] trans)
 	{
 		transformVertices(trans);
@@ -131,13 +141,7 @@ public class DrawnObject
 		location[2] += vector[2];
 	}
 
-	public void moveALL(double[] vector)
-	{
-		move(vector);
-		//for(int i = 0; i < children.size(); i++){
-		//	children.get(i).moveALL(vector);
-		//}
-	}
+	
 
 	public static double[][] identityMatrix()
 	{
@@ -145,45 +149,6 @@ public class DrawnObject
 
 	}
 
-	// Returns the location of the object in spherical coordinates,
-	// [r,theta,phi]
-	// These three are -------------------------------------------------------
-	public double[] getSphericalCoordinates()
-	{
-		double[] rtp = new double[3];
-		rtp[0] = Math.sqrt(location[0] * location[0] + location[1] * location[1] + location[2] * location[2]);
-		rtp[1] = 0;// Math.acos(location[1]/rtp[0]);
-		rtp[2] = Math.atan2(location[0], location[2]);
-
-		return rtp;
-	}
-
-	public void setSphericalCoordiates(double[] rtp)
-	{
-		double r = rtp[0];
-		//double theta = rtp[1];
-		double phi = rtp[2];
-
-		location[2] = r * Math.cos(phi);
-		location[0] = r * Math.sin(phi);
-
-	}
-
-	public void revolve(double theta, double phi)
-	{
-
-		double[] rtp = getSphericalCoordinates();
-		rtp[1] += theta;
-		rtp[2] += phi;
-		setSphericalCoordiates(rtp);
-	}
-
-	// ---------------methods used to perform a rendering test (the spiral galaxy test).
-
-	public void transformVertices()
-	{
-		transformVertices(transformation);
-	}
 
 	// This method will change later because of how rendering is currently handled. The transformations should not modify the set of vertices.
 	public void transformVertices(double[][] transformation)
@@ -208,15 +173,6 @@ public class DrawnObject
 		return newv;
 	}
 
-	public double[] copyArray(double[] vertex)
-	{
-		double[] newVertex = new double[vertex.length];
-		for (int i = 0; i < vertex.length; i++)
-		{
-			newVertex[i] = vertex[i];
-		}
-		return newVertex;
-	}
 
 	public void draw()
 	{
@@ -261,34 +217,10 @@ public class DrawnObject
 		}
 	}
 
-	//		public void draw()
-	//		{
-	//			if (comment)
-	//				return;
-	//	
-	//			if (children.size() > 0)
-	//			{
-	//				for (DrawnObject child : children)
-	//				{
-	//					child.draw();
-	//				}
-	//			} else
-	//			{
-	//				glBegin(GL_LINE_LOOP);
-	//				glColor3f(color[0], color[1], color[2]);
-	//				for (double[] vertex : vertices)
-	//				{
-	//					glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
-	//	
-	//				}
-	//				glEnd();
-	//			}
-	//	
-	//		}
 
 	public double[][] getTransformation()
 	{
-		return transformation;
+		return twoDArrayCopy(transformation);
 	}
 
 	public double getx()
