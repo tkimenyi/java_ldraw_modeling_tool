@@ -132,10 +132,6 @@ public class GLWindow
 			gridEnabled = !gridEnabled;
 			Thread.sleep(100);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_R))
-		{
-			reorganize(speed);
-		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_U))
 		{
@@ -440,15 +436,6 @@ public class GLWindow
 		}
 	}
 
-	void reorganize(double speed)
-	{
-		for (DrawnObject d : objects)
-		{
-			double[] rtp = d.getSphericalCoordinates();
-			double angle = speed / rtp[0];
-			d.revolve(0, angle);
-		}
-	}
 
 	void camera() throws InterruptedException
 
