@@ -23,7 +23,7 @@ public class GuInterface extends JFrame implements ActionListener{
 	JMenuItem newFile, viewFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete, translate;
 
 	public GuInterface() {
-		System.out.println("GUI Running");
+
 
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
