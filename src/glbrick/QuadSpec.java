@@ -22,7 +22,6 @@ public class QuadSpec implements BrickSpec {
 	}
 
 	public QuadSpec(String[] lineParts, ColorBase colors) { 
-		System.out.println("quadspec called");
 		
 		//lineParts[0] is quad spec, so we already know that
 		
