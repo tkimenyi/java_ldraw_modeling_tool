@@ -108,6 +108,8 @@ public class GLWindow
 		glViewport(0, 0, 1280, 1024);
 		
 		glLight(GL_LIGHT0, GL_AMBIENT_AND_DIFFUSE, vector_to_buffer(new float[]{1,1,0,0}));
+		drawCubed(1,1,1,red);
+		drawCube(red,0,red);
 		while (!Display.isCloseRequested())
 		{
 			display();
@@ -119,8 +121,7 @@ public class GLWindow
 			// Doing so will lock up the entire machine!
 		}
 		Display.destroy();
-		drawCubed(1,1,1,red);
-		drawCube(red,0,red);
+		
 	}
 
 	public void handleKeyboardEvents() throws InterruptedException, PartNotFoundException
