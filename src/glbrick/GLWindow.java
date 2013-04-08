@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
 
+import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 
 import java.nio.FloatBuffer;
@@ -12,17 +13,20 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 
-
 import static org.lwjgl.opengl.GL11.*;
-
 
 public class GLWindow
 {
 
+	float lightAmbient[] = { .1f, .1f, .1f, .2f };
+	float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float lightPosition[] = { 0f, 1.0f, 0f, 1f };
+	int which = 0;
+
 	FloatBuffer lightpos = BufferUtils.createFloatBuffer(4);
 	DoubleBuffer matrax = BufferUtils.createDoubleBuffer(16);
 	PartFactory pf;
-	double rotateRate = .1;
+	double rotateRate = 1;
 	double[] modelpyr = { 0, 0, 0 };
 	double[] modelloc = { 0, 0, 0 };
 	double[][] rot = DrawnObject.identityMatrix();
@@ -35,7 +39,7 @@ public class GLWindow
 	boolean freeCamera = true;
 	double rotateSpeed = 1;
 	double movementSpeed = .8;
-	boolean gridEnabled = false;
+	boolean gridEnabled = true;
 	static double[] red = { 1, 0, 0 };
 	static double[] blue = { 0, 0, 1 };
 	static double[] green = { 0, 1, 0 };
@@ -44,8 +48,13 @@ public class GLWindow
 	double piover180 = Math.PI / 180.;
 	double[] sineTable = buildSineTable();
 	double[] cosineTable = buildCosineTable();
-	double scalex, scaley, X, Y, Z;
-	double pitch, yaw, roll;
+	double scalex, scaley;
+	double pitch = 46;
+	double yaw = -34;
+	double roll = 0;
+	double X = -27;
+	double Y = -55;
+	double Z = -45;
 
 	double[] zpos = { 0, 0, 1 };
 	double[] zneg = { 0, 0, -1 };
@@ -62,19 +71,22 @@ public class GLWindow
 		Display.setDisplayModeAndFullscreen(new DisplayMode(1280, 1024));
 		Display.create();
 	}
-	public static FloatBuffer vector_to_buffer(float[] vector){
+
+	public static FloatBuffer vector_to_buffer(float[] vector)
+	{
 		FloatBuffer result = BufferUtils.createFloatBuffer(vector.length);
-		for(int i =0; i <vector.length;i++){
+		for (int i = 0; i < vector.length; i++)
+		{
 			result.put(vector[i]);
 		}
 		result.position(0);
-		
+
 		return result;
 	}
 
 	public static DoubleBuffer matrix_to_buffer(double[][] trans)
 	{
-		int size = trans[0].length*trans.length;
+		int size = trans[0].length * trans.length;
 		DoubleBuffer buffer = BufferUtils.createDoubleBuffer(size);
 		for (int i = 0; i < trans.length; i++)
 		{
@@ -85,19 +97,17 @@ public class GLWindow
 		}
 		buffer.position(0);
 		return buffer;
-		
+
 	}
 
 	public void run() throws InterruptedException, PartNotFoundException, FileNotFoundException
 	{
 		pf = new PartFactory("ldraw");
-		objects.add(new DrawnObject(makeCube(), new double[] { 0, 0, 0 }, white));
+		
 
-
-		glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+		glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
 		glEnable(GL_COLOR_MATERIAL);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
+
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_DEPTH_TEST);
 		glShadeModel(GL_SMOOTH);
@@ -106,12 +116,19 @@ public class GLWindow
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 1.2, 2000.0);
 		glMatrixMode(GL_MODELVIEW);
 		glViewport(0, 0, 1280, 1024);
-		
-		glLight(GL_LIGHT0, GL_AMBIENT_AND_DIFFUSE, vector_to_buffer(new float[]{1,1,0,0}));
+
+		glEnable(GL_LIGHT0);
+		GL11.glEnable(GL11.GL_LIGHT1);
+		GL11.glEnable(GL11.GL_LIGHTING);
+
+		glLight(GL_LIGHT0, GL_AMBIENT, (FloatBuffer)BufferUtils.createFloatBuffer(4).put(lightAmbient).flip());
+		drawCubed(1, 1, 1, red);
+		drawCube(red, 0, red);
+		objects.add(new DrawnObject(makeCube(), new double[] { 1, 0, 0 }, white));
 		while (!Display.isCloseRequested())
 		{
 			display();
-			
+
 			Display.sync(60);
 			// You see this line?
 			Display.update();
@@ -119,23 +136,19 @@ public class GLWindow
 			// Doing so will lock up the entire machine!
 		}
 		Display.destroy();
-		drawCubed(1,1,1,red);
-		drawCube(red,0,red);
+
 	}
 
 	public void handleKeyboardEvents() throws InterruptedException, PartNotFoundException
 	{
+		
+	
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
 		{
 			Thread.sleep(90);
 			addObject("3003.dat");
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_G))
-		{
-			gridEnabled = !gridEnabled;
-			Thread.sleep(100);
-		}
-		
+
 		if (Keyboard.isKeyDown(Keyboard.KEY_U))
 		{
 			translateModel(0, 0, -.4);
@@ -153,6 +166,13 @@ public class GLWindow
 			translateModel(.4, 0, 0);
 		}
 
+	}
+
+	private void drawLights(float[] lightDiffuse, float[] lightPosition )
+	{
+		ByteBuffer temp = BufferUtils.createByteBuffer(16);
+		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(lightDiffuse).flip());
+		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
 	}
 
 	void display() throws InterruptedException, PartNotFoundException
@@ -173,6 +193,9 @@ public class GLWindow
 
 		glTranslated(X, Y, Z);
 
+		
+		drawLights(lightDiffuse, lightPosition);
+		
 		if (gridEnabled)
 		{
 			drawGrid(30, 0, 30, yellow, 1, theOrigin);
@@ -195,6 +218,8 @@ public class GLWindow
 		rotateScene();
 		drawSolidCube(new double[] { 2, 2, 2 }, 4, green);
 		drawObjects();
+		
+		
 		glFlush();
 	}
 
@@ -210,9 +235,11 @@ public class GLWindow
 		modelloc[1] += y;
 		modelloc[2] += z;
 	}
-	
-	void removeLastPiece(){
-		objects.remove(objects.size()-1);
+
+	void removeLastPiece()
+	{
+		if(objects.size()>0)
+		objects.remove(objects.size() - 1);
 	}
 
 	void drawCrosshair(double[] loc, double color[])
@@ -285,7 +312,7 @@ public class GLWindow
 	// Currently creates a line loop for the given vertices in the DrawnObject
 	void drawObjects()
 	{
-		
+
 		for (DrawnObject obj : objects)
 		{
 			glPushMatrix();
@@ -294,7 +321,7 @@ public class GLWindow
 			glMultMatrix(matrix_to_buffer(obj.getTransformation()));
 			obj.draw();
 			glPopMatrix();
-			
+
 		}
 
 	}
@@ -330,7 +357,7 @@ public class GLWindow
 		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_QUADS);
 
-		//Front and back faces
+		// Front and back faces
 		glNormal3d(0, 0, -1);
 		glVertex3d(loc[0], loc[1], loc[2]);
 		glVertex3d(size + loc[0], loc[1], loc[2]);
@@ -342,7 +369,7 @@ public class GLWindow
 		glVertex3d(size + loc[0], size + loc[1], loc[2] + size);
 		glVertex3d(loc[0], size + loc[1], loc[2] + size);
 
-		//Top and bottom
+		// Top and bottom
 		glNormal3d(0, -1, 0);
 		glVertex3d(loc[0], loc[1], loc[2]);
 		glVertex3d(loc[0] + size, loc[1], loc[2]);
@@ -354,7 +381,7 @@ public class GLWindow
 		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
 		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
 
-		//Left and Right
+		// Left and Right
 		glNormal3d(-1, 0, 0);
 		glVertex3d(loc[0], loc[1], loc[2]);
 		glVertex3d(loc[0], loc[1], loc[2] + size);
@@ -439,14 +466,20 @@ public class GLWindow
 		}
 	}
 
-
 	void camera() throws InterruptedException
-
 	{
+		if (Keyboard.isKeyDown(Keyboard.KEY_7))
+		{
+			System.out.println("Camera coordinates: " + X + " " + Y + " " + Z);
+			System.out.println("Camera orientation: " + pitch + " " + yaw + " " + roll);
+			Thread.sleep(50);
+		}
 		if (Mouse.isButtonDown(0))
 		{
-			//X = (Mouse.getX() - Display.getDisplayMode().getWidth() / 2.0) / 100.0;
-			//Y = (Mouse.getY() - Display.getDisplayMode().getWidth() / 2.0) / 100.0;
+			// X = (Mouse.getX() - Display.getDisplayMode().getWidth() / 2.0) /
+			// 100.0;
+			// Y = (Mouse.getY() - Display.getDisplayMode().getWidth() / 2.0) /
+			// 100.0;
 			removeLastPiece();
 			Thread.sleep(100);
 		}
@@ -507,22 +540,40 @@ public class GLWindow
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))
 		{
 			rex[2] -= .3;
-			//modelloc[2] -= .3;
+			lightPosition[2]= (float)rex[2];
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_S))
 		{
 			rex[2] += .3;
-			//modelloc[2] += .3;
+			lightPosition[2]=(float)rex[2];
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D))
 		{
 			rex[0] += .3;
-			//	modelloc[0] += .3;
+			lightPosition[0]=(float)rex[1];
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_A))
 		{
 			rex[0] -= .3;
-			//modelloc[0] -= .3;
+			lightPosition[0]=(float)rex[1];
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_Z))
+		{
+			rex[1] -= .3;
+			lightPosition[1] = (float)rex[1];
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_X))
+		{
+			rex[1] += .3;
+			lightPosition[1] = (float)rex[1];
+			
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_B)){
+			lightPosition[3]+=.1;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_N)){
+			lightPosition[3]-=.1;
 		}
 	}
 
@@ -556,14 +607,10 @@ public class GLWindow
 		}
 		glEnd();
 	}
-	
-	double[][] scaleTransform(double scale){
-		return new double[][]{
-				{scale,0,0,0},
-				{0,scale,0,0},
-				{0,0,scale,0},
-				{0,0,0,1}
-				};
+
+	double[][] scaleTransform(double scale)
+	{
+		return new double[][] { { scale, 0, 0, 0 }, { 0, scale, 0, 0 }, { 0, 0, scale, 0 }, { 0, 0, 0, 1 } };
 	}
 
 	void addObject(String partname) throws PartNotFoundException
@@ -613,27 +660,6 @@ public class GLWindow
 		{
 			modelpyr[2] -= rotateRate;
 		}
-		// if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8) ||
-		// Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2))
-		// {
-		// rot[0][0] = Math.cos(modelpyr[0]);
-		// rot[0][1] = Math.sin(modelpyr[0]);
-		// rot[1][0] = -Math.sin(modelpyr[0]);
-		// rot[1][1] = Math.cos(modelpyr[0]);
-		// try
-		// {
-		// Thread.sleep(90);
-		// } catch (InterruptedException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// for (DrawnObject d : objects)
-		// {
-		// d.transformVertices(rot);
-		// System.out.println(d.vertices.get(2)[0]);
-		// }
-		// }
 		glRotated(modelpyr[1], 0, 1, 0);
 		glRotated(modelpyr[0], 1, 0, 0);
 		glRotated(modelpyr[2], 0, 0, 1);
