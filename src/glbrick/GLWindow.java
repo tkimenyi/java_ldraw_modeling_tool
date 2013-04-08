@@ -111,6 +111,7 @@ public class GLWindow
 		while (!Display.isCloseRequested())
 		{
 			display();
+			
 			Display.sync(60);
 			// You see this line?
 			Display.update();
@@ -118,6 +119,8 @@ public class GLWindow
 			// Doing so will lock up the entire machine!
 		}
 		Display.destroy();
+		drawCubed(1,1,1,red);
+		drawCube(red,0,red);
 	}
 
 	public void handleKeyboardEvents() throws InterruptedException, PartNotFoundException

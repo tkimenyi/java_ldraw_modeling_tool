@@ -3,20 +3,18 @@ package junittest;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-import glbrick.GLTest;
+import glbrick.GLWindowTest;
+import glbrick.GuInterface;
 import glbrick.PartNotFoundException;
-import glbrick.PartSpec;
-import glbrick.brickUtilities;
 import glbrick.ldrawParseTest;
 
 import org.junit.Test;
+import org.lwjgl.LWJGLException;
 
 public class Tests
 {
@@ -24,11 +22,12 @@ public class Tests
 
 	//put test back!!!!
 	
+
 	public void test()
 	{
 		try
 		{
-			GLTest.main(new String[]{});
+			GLWindowTest.main(new String[]{});
 		} catch (InterruptedException e)
 		{
 			e.printStackTrace();
@@ -38,12 +37,15 @@ public class Tests
 		} catch (PartNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (LWJGLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		
 	}
-	
 
-	
+
+
 	public void allPartTest() throws IOException
 	{
 		//test succeeds if it doesn't crash
@@ -70,8 +72,7 @@ public class Tests
 		}
 		System.out.println(finaloutPut);
 	}
-	
-	
+
 	@Test
 	public void someParts() throws IOException
 	{
@@ -86,17 +87,20 @@ public class Tests
 			finaloutPut = finaloutPut + s +"\n";
 			try{
 				assertTrue(ldp.lDrawSingleTest(s));
-				
+
 			}
 			catch (PartNotFoundException e){
 			}
 			finaloutPut = finaloutPut + i++ +"\n";
 		}
 		System.out.println(finaloutPut);
-		test();
+
+		System.out.println("did this run?");
+		guiTest gt = new guiTest();
+		//test();
 	}
-	
-	
+
+
 
 
 	public ArrayList<String> getFiles() throws IOException{
