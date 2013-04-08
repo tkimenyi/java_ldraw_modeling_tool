@@ -1,5 +1,6 @@
 package glbrick;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class glbrickUtilities {
@@ -26,7 +27,10 @@ public class glbrickUtilities {
 			}
 		}
 		return printstr;
-
+	}
+	
+	public static String fixPath(String s) {
+		return s.replace('\\', File.separatorChar);
 	}
 
 }
