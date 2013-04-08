@@ -186,8 +186,6 @@ public class GuInterface extends JFrame implements ActionListener{
 	public JButton createButton(String buttonName, String imgString) {
 		ImageIcon icon = new ImageIcon("images/" + imgString);
 		JButton tempButton = new JButton(icon);
-		
-		
 		tempButton.setBorder(BorderFactory.createEmptyBorder());
 		tempButton.setContentAreaFilled(false);
 		return tempButton;

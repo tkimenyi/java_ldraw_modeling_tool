@@ -30,7 +30,7 @@ public class PartFactory
 		addPath(partsPath + File.separator + "S");
 		addPath(pPath + File.separator + "48");
 	}
-
+	
 	public void activateFailureErrors()
 	{
 		printFailures = true;
@@ -87,7 +87,7 @@ public class PartFactory
 
 	private PartSpec tryFile(String path, String partName) throws FileNotFoundException, PartNotFoundException
 	{
-		String fileName = path + File.separator + brickUtilities.fixPath(partName);
+		String fileName = path + File.separator + glbrickUtilities.fixPath(partName);
 		FileReader fr = new FileReader(fileName);
 		BufferedReader reader = new BufferedReader(fr);
 		String snl = "";
