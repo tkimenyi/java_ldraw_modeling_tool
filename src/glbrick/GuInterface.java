@@ -16,14 +16,15 @@ public class GuInterface extends JFrame implements ActionListener{
 	private GLWindow window;
 	JMenuBar menuBar;
 	JMenu file, edit,animate, view, help, modify;
-	JButton add, undo, rotate, Redo, zoomIn, zoomOut, newFileB, openFileB, closeB, saveB, saveAllB, moveLeft, moveRight,moveUp, moveDown, up, down, left, right;
+	JButton add, undo, rotate, Redo, zoomIn, zoomOut, newFileB, openFileB, closeB, saveB, saveAllB, moveLeft, moveRight,moveUp, moveDown;
 	JToolBar toolBar;
 	JLabel cameraPos, cameraDirVect, editObjParam;
-	JTextField y2, z2, object, x, y, z, rotateField ;
+	JTextField y2, z2, object, x, y, z, rotateField , up, down, left, right;
 	JMenuItem newFile, viewFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete, translate;
-
+	final String [] choicesList = {"rotate","translate"};
+	JComboBox choices;
+	
 	public GuInterface() {
-
 
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
@@ -32,17 +33,16 @@ public class GuInterface extends JFrame implements ActionListener{
 		animate = new JMenu("Animate");
 		help = new JMenu("Help");
 		modify = new JMenu("Modify");
-
-
+		
 		toolBar = new JToolBar();
 		cameraPos = new JLabel("Camera Position");
 		cameraDirVect = new JLabel("Camera Direction Vector");
 		editObjParam = new JLabel("Edit Object Parameters");
-		up = new JButton("up");
-		down = new JButton("down");
-		left = new JButton("left");
-		right = new JButton("right");
-		rotateField = new JTextField("degree",15);
+		up = new JTextField("0",30);
+		down = new JTextField("0",30);
+		left = new JTextField("0",30);
+		right = new JTextField("0",30);
+		rotateField = new JTextField("0",15);
 		y2 = new JTextField("Y");
 		z2 = new JTextField("Z");
 		x = new JTextField("X");
@@ -52,11 +52,8 @@ public class GuInterface extends JFrame implements ActionListener{
 		down.setMaximumSize( down.getPreferredSize() );
 		up.setMaximumSize( up.getPreferredSize() );
 		left.setMaximumSize( left.getPreferredSize() );
-		rotateField.setMaximumSize( rotateField.getPreferredSize() );
-
-
-
-
+		rotateField.setMaximumSize( rotateField.getPreferredSize());
+		
 		add = createButton("add", "Add.png");
 		undo = createButton("undo","Undo.png");
 		Redo = createButton("Redo","Redo.png");
@@ -88,7 +85,7 @@ public class GuInterface extends JFrame implements ActionListener{
 		exit  = new JMenuItem("Exit", new ImageIcon("images/exit.png"));
 		translate = new JMenuItem("Translate");
 		viewFile = new JMenuItem("View Part");
-		
+		choices = new JComboBox(choicesList);
 		
 		file.add(openFile);
 		file.add(save);
@@ -110,7 +107,7 @@ public class GuInterface extends JFrame implements ActionListener{
 		menuBar.add(view);
 		menuBar.add(modify);
 		menuBar.add(animate);
-
+		
 		toolBar.add(add);
 		toolBar.addSeparator();
 		toolBar.add(newFileB);
@@ -135,15 +132,11 @@ public class GuInterface extends JFrame implements ActionListener{
 		toolBar.addSeparator();
 		toolBar.add(rotate);
 		toolBar.addSeparator();
-
-
+		toolBar.add(choices);
+		toolBar.addSeparator();
 		
-
-		//JPanel panel  =  new JPanel(new BorderLayout());
 		setJMenuBar(menuBar);
 		add(toolBar, BorderLayout.NORTH);
-		
-	
 		
 		JPanel panel1  =  new JPanel();
 		panel1.setLayout( new BoxLayout(panel1, BoxLayout.X_AXIS));
@@ -162,7 +155,6 @@ public class GuInterface extends JFrame implements ActionListener{
 		panel1.add(moveDown);
 		panel1.add(down);
 		panel1.setBackground(right.getBackground());
-		//panel1.setBorder(new TitledBorder("ROTATE"));
 		panel1.setMaximumSize(panel1.getPreferredSize());
 		
 		//adding action listeners
@@ -174,8 +166,6 @@ public class GuInterface extends JFrame implements ActionListener{
 		moveLeft.addActionListener(this);
 		moveUp.addActionListener(this);
 		moveDown.addActionListener(this);
-
-
 		
 		setTitle("CAD GUI");
 		setSize(600, 600);
@@ -195,51 +185,69 @@ public class GuInterface extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		
 		if(e.getSource() == moveUp){
-			//Double angle = Double.parseDouble(up.getText());
-			//GLTest.rotateModel(angle);
-			System.out.println("angleeee");
-			
-			
-			
-			
-			window.rotateModel(100, 100);
+			Double upPos = Double.parseDouble(up.getText());
+			if(choices.getSelectedIndex()==0){
+				window.rotateModel(0, upPos);
+			}else{
+				window.translateModel(0.0, upPos, 0.0);
+			}
 		}
 		
-		if(e.getSource() == moveDown){
-			Double angle = Double.parseDouble(down.getText());
-			window.rotateModel(angle,0);
+		else if(e.getSource() == moveDown){
+			Double downPos = Double.parseDouble(down.getText());
+			if(choices.getSelectedIndex()==0){
+				window.rotateModel(downPos,0);
+			}else{
+				window.translateModel(0.0, -downPos, 0.0);
+			}
 		}
 		
-		if(e.getSource() == moveRight){
-			Double angle = Double.parseDouble(right.getText());
-			window.rotateModel(360 -angle,0);
+		else if(e.getSource() == moveRight){
+			Double rightPos = Double.parseDouble(right.getText());
+			if(choices.getSelectedIndex()==0){
+				window.rotateModel(360-rightPos,0);
+			}
+			else{
+				window.translateModel(rightPos, 0.0, 0.0);
+			}
 		}
 		
-		if(e.getSource() == moveLeft){
-			Double angle = Double.parseDouble(left.getText());
-			window.rotateModel(angle,0);
+		else if(e.getSource() == moveLeft){
+			Double leftPos = Double.parseDouble(left.getText());
+			if(choices.getSelectedIndex()==0){
+				window.rotateModel(leftPos,0);
+			}
+			else{
+				window.translateModel(-leftPos, 0.0, 0.0);
+			}
 		}
 		
 		if(e.getSource()==newFile || e.getSource() ==newFileB){
 			
-			try {
-				window = new GLWindow();
-				window.run();
-			} catch (LWJGLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			final class MyWindow extends Thread{
+				private int var;
+				public MyWindow(int val){
+					this.var = val;
+				}
+			    public void run() {
+			    	try {
+			    		window = new GLWindow();
+			    		window.run();
+					} catch (LWJGLException e1) {
+						e1.printStackTrace();
+					}
+					catch (FileNotFoundException ex) {
+						ex.printStackTrace();
+					} catch (InterruptedException ex) {
+						ex.printStackTrace();
+					} catch (PartNotFoundException ex) {
+						ex.printStackTrace();
+					}
+			    }
 			}
-			catch (FileNotFoundException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-			} catch (InterruptedException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-			} catch (PartNotFoundException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-			}
-			
+			MyWindow myRunnable = new MyWindow(10);
+			Thread t = new Thread(myRunnable);
+			t.start();
 		}
 
 		if(e.getSource() == openFile  ||e.getSource() == openFileB ){
@@ -264,22 +272,12 @@ public class GuInterface extends JFrame implements ActionListener{
 			}
 		}
 	}
-	
-		
-		
 	public static void main(String[] args) throws InterruptedException{
 		SwingUtilities.invokeLater(new Runnable (){
 			public void run(){
 				GuInterface gui  = new GuInterface();
-
 				gui.setVisible(true);
-
-
 			}
-
 		});
-
 	}
-
-
 }
