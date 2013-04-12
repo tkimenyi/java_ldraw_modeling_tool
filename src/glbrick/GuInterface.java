@@ -11,6 +11,16 @@ import org.lwjgl.LWJGLException;
 
 
 
+
+
+
+		//part bin pictures?
+		//look here, it's down a few sections
+		//http://www.opengl.org/archives/resources/faq/technical/miscellaneous.htm
+
+
+
+
 @SuppressWarnings("serial")
 public class GuInterface extends JFrame implements ActionListener{
 	private GLWindow window;
