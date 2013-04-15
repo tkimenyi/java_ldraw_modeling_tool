@@ -258,7 +258,7 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 				window.addObject(currentSelectedPart.getPartFile());
 				partsBin.addPart(currentSelectedPart);
 			} catch (PartNotFoundException e1) {
-				e1.printStackTrace();
+//				e1.printStackTrace();
 			}
 		}
 		

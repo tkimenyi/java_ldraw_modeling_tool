@@ -75,7 +75,7 @@ public class PartCellRenderer extends DefaultListCellRenderer{
                                 iconTable.put(value, icon);
                         }
                         label.setIcon(icon);
-                        label.setText(res.getPartFile());
+                        label.setText(res.getPartName());
                         label.setHorizontalAlignment(SwingConstants.LEADING);
 
                 }else{
