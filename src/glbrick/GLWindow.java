@@ -465,6 +465,18 @@ public class GLWindow
 			rotateRate -= .01;
 		}
 	}
+	
+	public void zoomIn(){
+		Z += movementSpeed * Math.cos(piover180 * yaw);
+		Y += movementSpeed * Math.sin(piover180 * pitch);
+		X -= movementSpeed * Math.sin(piover180 * yaw);
+	}
+	
+	public void zoomOut(){
+		Z -= movementSpeed * Math.cos(piover180 * yaw);
+		Y -= movementSpeed * Math.sin(piover180 * pitch);
+		X += movementSpeed * Math.sin(piover180 * yaw);
+	}
 
 	void camera() throws InterruptedException
 	{
@@ -486,16 +498,13 @@ public class GLWindow
 		// Does not handle roll!
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
 		{
-			Z += movementSpeed * Math.cos(piover180 * yaw);
-			Y += movementSpeed * Math.sin(piover180 * pitch);
-			X -= movementSpeed * Math.sin(piover180 * yaw);
+			zoomIn();
+		
 		}
 		// Does not handle roll!
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
 		{
-			Z -= movementSpeed * Math.cos(piover180 * yaw);
-			Y -= movementSpeed * Math.sin(piover180 * pitch);
-			X += movementSpeed * Math.sin(piover180 * yaw);
+			zoomOut();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
 		{

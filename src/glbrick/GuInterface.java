@@ -9,18 +9,6 @@ import javax.swing.*;
 
 import org.lwjgl.LWJGLException;
 
-
-
-
-
-
-		//part bin pictures?
-		//look here, it's down a few sections
-		//http://www.opengl.org/archives/resources/faq/technical/miscellaneous.htm
-
-
-
-
 @SuppressWarnings("serial")
 public class GuInterface extends JFrame implements ActionListener{
 	private GLWindow window;
@@ -28,15 +16,44 @@ public class GuInterface extends JFrame implements ActionListener{
 	JMenu file, edit,animate, view, help, modify;
 	JButton add, undo, rotate, Redo, zoomIn, zoomOut, newFileB, openFileB, closeB, saveB, saveAllB, moveLeft, moveRight,moveUp, moveDown;
 	JToolBar toolBar;
-	JLabel cameraPos, cameraDirVect, editObjParam;
-	JTextField y2, z2, object, x, y, z, rotateField , up, down, left, right;
+	JTextField up, down, left, right;
 	JMenuItem newFile, viewFile, openFile, close, save, saveAll, print, exit, rename, cut, copy, selectAll, delete, translate;
 	final String [] choicesList = {"rotate","translate"};
 	JComboBox choices;
+	JLabel warningLabel;
+	JTextArea warnings;
+	JScrollPane warningsPane;
 	
 	public GuInterface() {
-
-		menuBar = new JMenuBar();
+		createAllButtons();
+		menuBar = createMenuBar();
+		toolBar = createToolBar();
+		setJMenuBar(menuBar);
+		add(toolBar, BorderLayout.NORTH);
+		createControlPanel();
+		addAllActionListeners();
+		createWarningsArea();
+		setTitle("CAD GUI");
+		setSize(600, 600);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+	}
+	public void addAllActionListeners(){
+		newFile.addActionListener(this);
+		newFileB.addActionListener(this);
+		openFile.addActionListener(this);
+		openFileB.addActionListener(this);
+		moveRight.addActionListener(this);
+		moveLeft.addActionListener(this);
+		moveUp.addActionListener(this);
+		moveDown.addActionListener(this);
+		zoomIn.addActionListener(this);
+		zoomOut.addActionListener(this);
+	}
+	
+	public JMenuBar createMenuBar(){
+		JMenuBar menu = new JMenuBar();
 		file = new JMenu("File");
 		edit = new JMenu("Edit");
 		view = new JMenu("View");
@@ -44,41 +61,6 @@ public class GuInterface extends JFrame implements ActionListener{
 		help = new JMenu("Help");
 		modify = new JMenu("Modify");
 		
-		toolBar = new JToolBar();
-		cameraPos = new JLabel("Camera Position");
-		cameraDirVect = new JLabel("Camera Direction Vector");
-		editObjParam = new JLabel("Edit Object Parameters");
-		up = new JTextField("0",30);
-		down = new JTextField("0",30);
-		left = new JTextField("0",30);
-		right = new JTextField("0",30);
-		rotateField = new JTextField("0",15);
-		y2 = new JTextField("Y");
-		z2 = new JTextField("Z");
-		x = new JTextField("X");
-		y = new JTextField("Y");
-		z = new JTextField("Z");
-		right.setMaximumSize( right.getPreferredSize() );
-		down.setMaximumSize( down.getPreferredSize() );
-		up.setMaximumSize( up.getPreferredSize() );
-		left.setMaximumSize( left.getPreferredSize() );
-		rotateField.setMaximumSize( rotateField.getPreferredSize());
-		
-		add = createButton("add", "Add.png");
-		undo = createButton("undo","Undo.png");
-		Redo = createButton("Redo","Redo.png");
-		zoomIn = createButton("zoomIn","Zoomin.png");
-		zoomOut = createButton("zoomOut","Zoomout.png");
-		newFileB = createButton("newFileB","New.png");
-		openFileB = createButton("openFileB","Folder.png");
-		saveB = createButton("saveB","Save.png");
-		saveAllB = createButton("saveAllB","Saveall.png");
-		moveUp = createButton("moveUp","moveup.png");
-		moveDown = createButton("moveDown","movedown.png");
-		moveLeft = createButton("moveLeft","moveleft.png");
-		moveRight = createButton("moveRight","moveright.png");
-		rotate = createButton("rotate","rotate.png");
-
 		newFile = new JMenuItem("New", new ImageIcon("images/New.png"));
 		newFile.setMnemonic(KeyEvent.VK_B);
 		file.add(newFile);
@@ -112,75 +94,46 @@ public class GuInterface extends JFrame implements ActionListener{
 		edit.add(delete);
 		view.add(viewFile);
 
-		menuBar.add(file);
-		menuBar.add(edit);
-		menuBar.add(view);
-		menuBar.add(modify);
-		menuBar.add(animate);
-		
-		toolBar.add(add);
-		toolBar.addSeparator();
-		toolBar.add(newFileB);
-		toolBar.addSeparator();
-		toolBar.add(openFileB);
-		toolBar.addSeparator();
-		toolBar.add(saveB);
-		toolBar.addSeparator();
-		toolBar.add(saveAllB);
-		toolBar.addSeparator();
-		toolBar.add(undo);
-		toolBar.addSeparator();
-		toolBar.add(Redo);
-		toolBar.addSeparator();
-		toolBar.add(Redo);
-		toolBar.addSeparator();
-		toolBar.add(zoomOut);
-		toolBar.addSeparator();
-		toolBar.add(zoomIn);
-		toolBar.addSeparator();
-		toolBar.add(rotateField);
-		toolBar.addSeparator();
-		toolBar.add(rotate);
-		toolBar.addSeparator();
-		toolBar.add(choices);
-		toolBar.addSeparator();
-		
-		setJMenuBar(menuBar);
-		add(toolBar, BorderLayout.NORTH);
-		
-		JPanel panel1  =  new JPanel();
-		panel1.setLayout( new BoxLayout(panel1, BoxLayout.X_AXIS));
-		getContentPane().add(panel1);
+		menu.add(file);
+		menu.add(edit);
+		menu.add(view);
+		menu.add(modify);
+		menu.add(animate);
+		return menu;
+	}
+	
+	public void createWarningsArea(){
+		JPanel warningPanel = new JPanel();
+		warningLabel= new JLabel("Warnings");
+		warnings = new JTextArea();
+		warningsPane = new JScrollPane(warnings);
+		warnings.setRows(10);
+		warnings.setLineWrap(true);
+		warningPanel.setLayout(new BorderLayout());
+		warningPanel.add(warningLabel, BorderLayout.NORTH);
+		warningPanel.add(warningsPane, BorderLayout.CENTER);
+		add(warningPanel, BorderLayout.SOUTH);
+	}
+	
+	public void createControlPanel(){
+		JPanel controlPanel  =  new JPanel();
+		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
+		getContentPane().add(controlPanel);
 		moveRight.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel1.add(moveRight);
+		controlPanel.add(moveRight);
 		right.setAlignmentX(LEFT_ALIGNMENT);
-		panel1.add(right);
+		controlPanel.add(right);
 		moveLeft.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel1.add(moveLeft);
-		panel1.add(left);
+		controlPanel.add(moveLeft);
+		controlPanel.add(left);
 		moveUp.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel1.add(moveUp);
-		panel1.add(up);
+		controlPanel.add(moveUp);
+		controlPanel.add(up);
 		moveDown.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel1.add(moveDown);
-		panel1.add(down);
-		panel1.setBackground(right.getBackground());
-		panel1.setMaximumSize(panel1.getPreferredSize());
-		
-		//adding action listeners
-		newFile.addActionListener(this);
-		newFileB.addActionListener(this);
-		openFile.addActionListener(this);
-		openFileB.addActionListener(this);
-		moveRight.addActionListener(this);
-		moveLeft.addActionListener(this);
-		moveUp.addActionListener(this);
-		moveDown.addActionListener(this);
-		
-		setTitle("CAD GUI");
-		setSize(600, 600);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		controlPanel.add(moveDown);
+		controlPanel.add(down);
+		controlPanel.setBackground(right.getBackground());
+		controlPanel.setMaximumSize(controlPanel.getPreferredSize());
 		
 	}
 	
@@ -190,6 +143,61 @@ public class GuInterface extends JFrame implements ActionListener{
 		tempButton.setBorder(BorderFactory.createEmptyBorder());
 		tempButton.setContentAreaFilled(false);
 		return tempButton;
+	}
+	
+	public void createAllButtons(){
+		add = createButton("add", "Add.png");
+		undo = createButton("undo","Undo.png");
+		Redo = createButton("Redo","Redo.png");
+		zoomIn = createButton("zoomIn","Zoomin.png");
+		zoomOut = createButton("zoomOut","Zoomout.png");
+		newFileB = createButton("newFileB","New.png");
+		openFileB = createButton("openFileB","Folder.png");
+		saveB = createButton("saveB","Save.png");
+		saveAllB = createButton("saveAllB","Saveall.png");
+		moveUp = createButton("moveUp","moveup.png");
+		moveDown = createButton("moveDown","movedown.png");
+		moveLeft = createButton("moveLeft","moveleft.png");
+		moveRight = createButton("moveRight","moveright.png");
+		rotate = createButton("rotate","rotate.png");
+	}
+	
+	public JToolBar createToolBar(){
+		JToolBar controlToolBar = new JToolBar();
+		up = new JTextField("0",30);
+		down = new JTextField("0",30);
+		left = new JTextField("0",30);
+		right = new JTextField("0",30);
+		right.setMaximumSize( right.getPreferredSize() );
+		down.setMaximumSize( down.getPreferredSize() );
+		up.setMaximumSize( up.getPreferredSize() );
+		left.setMaximumSize( left.getPreferredSize() );
+		controlToolBar.add(add);
+		controlToolBar.addSeparator();
+		controlToolBar.add(newFileB);
+		controlToolBar.addSeparator();
+		controlToolBar.add(openFileB);
+		controlToolBar.addSeparator();
+		controlToolBar.add(saveB);
+		controlToolBar.addSeparator();
+		controlToolBar.add(saveAllB);
+		controlToolBar.addSeparator();
+		controlToolBar.add(undo);
+		controlToolBar.addSeparator();
+		controlToolBar.add(Redo);
+		controlToolBar.addSeparator();
+		controlToolBar.add(Redo);
+		controlToolBar.addSeparator();
+		controlToolBar.add(zoomOut);
+		controlToolBar.addSeparator();
+		controlToolBar.add(zoomIn);
+		controlToolBar.addSeparator();
+		controlToolBar.add(rotate);
+		controlToolBar.addSeparator();
+		controlToolBar.add(choices);
+		controlToolBar.addSeparator();
+		
+		return controlToolBar;
 	}
 	
 	public void actionPerformed(ActionEvent e){
@@ -233,31 +241,9 @@ public class GuInterface extends JFrame implements ActionListener{
 		}
 		
 		if(e.getSource()==newFile || e.getSource() ==newFileB){
-			
-			final class MyWindow extends Thread{
-				private int var;
-				public MyWindow(int val){
-					this.var = val;
-				}
-			    public void run() {
-			    	try {
-			    		window = new GLWindow();
-			    		window.run();
-					} catch (LWJGLException e1) {
-						e1.printStackTrace();
-					}
-					catch (FileNotFoundException ex) {
-						ex.printStackTrace();
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
-					} catch (PartNotFoundException ex) {
-						ex.printStackTrace();
-					}
-			    }
-			}
-			MyWindow myRunnable = new MyWindow(10);
-			Thread t = new Thread(myRunnable);
-			t.start();
+			MyWindow viewWindow = new MyWindow();
+			Thread viewWindowThread = new Thread(viewWindow);
+			viewWindowThread.start();
 		}
 
 		if(e.getSource() == openFile  ||e.getSource() == openFileB ){
@@ -267,11 +253,8 @@ public class GuInterface extends JFrame implements ActionListener{
 				File file = fc.getSelectedFile();
 				String partName  = file.getName();
 				try {
-					System.out.println("here");
 					window.run();
-					System.out.println(partName);
 					window.addObject(partName);
-					
 				} catch (PartNotFoundException ex) {
 					ex.printStackTrace();
 				} catch (FileNotFoundException ex) {
@@ -281,7 +264,37 @@ public class GuInterface extends JFrame implements ActionListener{
 				}
 			}
 		}
+		
+		if(e.getSource() == zoomIn){
+			window.zoomIn();
+		}
+		if(e.getSource() == zoomOut){
+			window.zoomOut();
+		}
 	}
+	
+	private final class MyWindow extends Thread{
+		private MyWindow(){
+		}
+	    public void run() {
+	    	try {
+	    		window = new GLWindow();
+	    		window.run();
+			} catch (LWJGLException e1) {
+				e1.printStackTrace();
+			}
+			catch (FileNotFoundException ex) {
+				ex.printStackTrace();
+				warnings.append("The specified file was not found");
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			} catch (PartNotFoundException ex) {
+				ex.printStackTrace();
+				warnings.append("The specified part was not found");
+			}
+	    }
+	}
+	
 	public static void main(String[] args) throws InterruptedException{
 		SwingUtilities.invokeLater(new Runnable (){
 			public void run(){
