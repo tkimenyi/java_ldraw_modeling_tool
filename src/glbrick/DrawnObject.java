@@ -206,7 +206,7 @@ public class DrawnObject
 			double[] normal = cross_product(v1, v2);
 			normal = normalize(normal);
 			glNormal3d(normal[0], normal[1], normal[2]);
-
+			
 			for (double[] vertex : vertices)
 			{
 				glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
