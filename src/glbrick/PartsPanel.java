@@ -1,9 +1,18 @@
 package glbrick;
 
 import java.awt.Font;
+import java.awt.datatransfer.StringSelection;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -12,15 +21,19 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
-public class PartsPanel{
+public class PartsPanel implements DragGestureListener, ListSelectionListener, DragSourceListener{
 	private JList partsList;
 	private DefaultListModel partsListModel;
 	private final String partsDirectory = "ldraw/parts";
 	private PartLabel currentPart;
 	private final String MISSINGICON = "MISSING";
+	private DragSource dragSource;
 
+	@SuppressWarnings("unused")
 	public PartsPanel(){
 		this.currentPart = null;
 		this.partsListModel = new DefaultListModel();
@@ -29,6 +42,8 @@ public class PartsPanel{
 		this.partsList.setCellRenderer(new PartCellRenderer());
 		this.partsList.setFont(new Font("Serif", Font.BOLD, 10));
 		this.partsList.setFixedCellWidth(200);
+		this.dragSource = new DragSource();
+		DragGestureRecognizer drg = this.dragSource.createDefaultDragGestureRecognizer(this.partsList, DnDConstants.ACTION_COPY, this);
 		this.loadParts();
 	}
 
@@ -37,7 +52,7 @@ public class PartsPanel{
 		if(partsLocation.exists() && partsLocation.isDirectory()){
 			File[] partsFiles = partsLocation.listFiles();
 			for(File f : partsFiles){
-				if(f.isFile()){
+				if(!f.isDirectory()){
 					String partName = f.getName();
 					FileReader reader;
 					BufferedReader buffer;
@@ -72,21 +87,50 @@ public class PartsPanel{
 	public String getCurrentPart(){return this.currentPart.getPartFile();}
 
 	public JScrollPane getListPane(){
-		return new JScrollPane(this.partsList);
+		JScrollPane res = new JScrollPane();
+		res.getViewport().setView(partsList);
+		return res;
 	}
 
 	public JList getPartsList(){return this.partsList;}
 
+	@Override
+	public void dragGestureRecognized(DragGestureEvent dge) {
+		Object label = this.partsList.getSelectedValue();
+		if(label != null){
+			this.currentPart = (PartLabel)label;
+			StringSelection transferable = new StringSelection(this.currentPart.getPartFile());
+			System.out.println("current part file: " + this.currentPart.getPartFile());
+			this.dragSource.startDrag(dge, DragSource.DefaultCopyDrop, transferable, this);
+		}
+	}
 
-	/*@Override
+
+	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		Object obj = partsList.getSelectedValue();
 		if(obj instanceof PartLabel){
 			PartLabel label = (PartLabel)obj;
 			this.currentPart = label;
+			label.setTransferHandler(new ImageSelection());
 		}
 
-	}*/
+	}
+
+	@Override
+	public void dragEnter(DragSourceDragEvent dsde) {}
+
+	@Override
+	public void dragOver(DragSourceDragEvent dsde) {}
+
+	@Override
+	public void dropActionChanged(DragSourceDragEvent dsde) {}
+
+	@Override
+	public void dragExit(DragSourceEvent dse) {}
+
+	@Override
+	public void dragDropEnd(DragSourceDropEvent dsde) {}
 
 	/*public static void main(String[] args) {
 		JFrame frame = new JFrame("Tasks To Do");
