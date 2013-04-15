@@ -11,9 +11,10 @@ public class PartSpec implements BrickSpec {
 		this.name = name;
 		//this.colors = colors;
 		children = new ArrayList<BrickSpec>();
+		System.out.println("Part name: " + this.name);
 	}
 	public void debugging(){
-		System.out.println("part name = " + name);
+//		System.out.println("part name = " + name);
 	}
 
 	void addLine(BrickSpec l) {

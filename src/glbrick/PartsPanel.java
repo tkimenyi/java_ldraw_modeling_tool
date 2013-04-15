@@ -1,7 +1,12 @@
 package glbrick;
 
 import java.awt.Font;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import javax.swing.DefaultListModel;
 
 import javax.swing.JList;
@@ -22,7 +27,7 @@ public class PartsPanel{
 		this.partsList = new JList(partsListModel);
 		this.partsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.partsList.setCellRenderer(new PartCellRenderer());
-		this.partsList.setFont(new Font("Serif", Font.BOLD, 15));
+		this.partsList.setFont(new Font("Serif", Font.BOLD, 10));
 		this.loadParts();
 	}
 
@@ -31,8 +36,34 @@ public class PartsPanel{
 		if(partsLocation.exists() && partsLocation.isDirectory()){
 			File[] partsFiles = partsLocation.listFiles();
 			for(File f : partsFiles){
-				PartLabel label = new PartLabel(f.getName(), MISSINGICON);
-				partsListModel.addElement(label);
+				if(f.isFile()){
+					String partName = f.getName();
+					FileReader reader;
+					BufferedReader buffer;
+					try {
+						reader = new FileReader(f.getAbsoluteFile());
+						buffer = new BufferedReader(reader);
+						String tempName = buffer.readLine();
+						String[] nameComponents = tempName.split("[ \t\n\r]");
+						tempName = "";
+						for(String str:nameComponents){
+							if(str.length() > 1){
+								tempName += " " + str;
+							}
+						}
+						tempName = tempName.trim();
+						if(tempName.length() != 0){
+							partName = tempName;
+						}
+						reader.close();
+						buffer.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					PartLabel label = new PartLabel(partName, f.getName(), MISSINGICON);
+					partsListModel.addElement(label);
+				}
 			}
 		}
 	}
@@ -42,7 +73,7 @@ public class PartsPanel{
 	public JScrollPane getListPane(){
 		return new JScrollPane(this.partsList);
 	}
-	
+
 	public JList getPartsList(){return this.partsList;}
 
 
