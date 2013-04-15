@@ -1,8 +1,8 @@
 package glbrick;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class PartLabel extends JLabel{
 	private String partName;
 	private String partFile;
@@ -22,7 +22,4 @@ public class PartLabel extends JLabel{
 	
 	public String getPartName(){return this.partName;}
 	
-	public ImageIcon getIcon(){
-		return new ImageIcon(this.partIcon);
-	}
 }
