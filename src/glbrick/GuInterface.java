@@ -56,7 +56,7 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 			this.currentSelectedPart = (PartLabel)obj;
 		}		
 	}
-	//By Safari
+
 	private void createPartsPanel(){
 		this.partsBin = new AddedPartsPanel();
 		JPanel addedParts = new JPanel();
@@ -85,6 +85,7 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 		add(adderPanel, BorderLayout.WEST);
 		add(addedParts, BorderLayout.EAST);
 	}
+	
 	public void addAllActionListeners(){
 		newFile.addActionListener(this);
 		newFileB.addActionListener(this);
@@ -247,25 +248,20 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 	}
 	
 	public void actionPerformed(ActionEvent e){
-		/*Safari
-		 * 
-		 */
-		if(e.getSource() == this.partAdderButton){
+		if(e.getSource() == partAdderButton){
 			try {
 				try {
 					Thread.sleep(90);
 				} catch (InterruptedException e1) {
 					System.out.println("exception in thread");
 				}
-				window.addObject(this.currentSelectedPart.getPartFile());
-				this.partsBin.addPart(this.currentSelectedPart);
+				window.addObject(currentSelectedPart.getPartFile());
+				partsBin.addPart(currentSelectedPart);
 			} catch (PartNotFoundException e1) {
 				e1.printStackTrace();
 			}
 		}
-		/*
-		 * till here
-		 */
+		
 		if(e.getSource() == moveUp){
 			Double upPos = Double.parseDouble(up.getText());
 			if(choices.getSelectedIndex()==0){
