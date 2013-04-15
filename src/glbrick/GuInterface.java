@@ -6,11 +6,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.lwjgl.LWJGLException;
 
 @SuppressWarnings("serial")
-public class GuInterface extends JFrame implements ActionListener{
+public class GuInterface extends JFrame implements ActionListener, ListSelectionListener{
 	private GLWindow window;
 	JMenuBar menuBar;
 	JMenu file, edit,animate, view, help, modify;
@@ -24,6 +27,11 @@ public class GuInterface extends JFrame implements ActionListener{
 	JTextArea warnings;
 	JScrollPane warningsPane;
 	
+	private PartsPanel allPartsPanel;
+	private AddedPartsPanel partsBin;
+	private JButton partAdderButton;
+	private PartLabel currentSelectedPart;
+	
 	public GuInterface() {
 		createAllButtons();
 		menuBar = createMenuBar();
@@ -31,13 +39,51 @@ public class GuInterface extends JFrame implements ActionListener{
 		setJMenuBar(menuBar);
 		add(toolBar, BorderLayout.NORTH);
 		createControlPanel();
+		createPartsPanel();
 		addAllActionListeners();
 		createWarningsArea();
 		setTitle("CAD GUI");
-		setSize(600, 600);
+		setSize(800, 500);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
+	}	
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		this.partAdderButton.setEnabled(true);
+		Object obj = this.allPartsPanel.getPartsList().getSelectedValue();
+		if(obj instanceof PartLabel){
+			this.currentSelectedPart = (PartLabel)obj;
+		}		
+	}
+	//By Safari
+	private void createPartsPanel(){
+		this.partsBin = new AddedPartsPanel();
+		JPanel addedParts = new JPanel();
+		TitledBorder addedPartsBorder = BorderFactory.createTitledBorder("Added Parts");
+		addedPartsBorder.setTitleJustification(TitledBorder.LEADING);
+		addedParts.setBorder(addedPartsBorder);
+		addedParts.setLayout(new GridLayout(1, 1));
+		addedParts.add(this.partsBin.getListPane());
+		
+		this.currentSelectedPart = null;
+		this.allPartsPanel = new PartsPanel();
+		this.allPartsPanel.getPartsList().addListSelectionListener(this);
+		this.partAdderButton = new JButton("Add part");
+		this.partAdderButton.addActionListener(this);
+		this.partAdderButton.setEnabled(false);
+		JPanel adderPanel = new JPanel();
+		adderPanel.setLayout(new BoxLayout(adderPanel, BoxLayout.Y_AXIS));
+		TitledBorder adderBorder = BorderFactory.createTitledBorder("Select a part to add");
+		adderBorder.setTitleJustification(TitledBorder.LEADING);
+		adderPanel.setBorder(adderBorder);
+		this.partAdderButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+		adderPanel.add(this.partAdderButton);
+
+		JScrollPane partsPane = this.allPartsPanel.getListPane();
+		adderPanel.add(partsPane);
+		add(adderPanel, BorderLayout.WEST);
+		add(addedParts, BorderLayout.EAST);
 	}
 	public void addAllActionListeners(){
 		newFile.addActionListener(this);
@@ -112,13 +158,13 @@ public class GuInterface extends JFrame implements ActionListener{
 		warningPanel.setLayout(new BorderLayout());
 		warningPanel.add(warningLabel, BorderLayout.NORTH);
 		warningPanel.add(warningsPane, BorderLayout.CENTER);
-		add(warningPanel, BorderLayout.SOUTH);
+		add(warningPanel, BorderLayout.CENTER);
 	}
 	
 	public void createControlPanel(){
 		JPanel controlPanel  =  new JPanel();
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
-		getContentPane().add(controlPanel);
+		getContentPane().add(controlPanel, BorderLayout.SOUTH);
 		moveRight.setAlignmentX(Component.LEFT_ALIGNMENT);
 		controlPanel.add(moveRight);
 		right.setAlignmentX(LEFT_ALIGNMENT);
@@ -201,7 +247,25 @@ public class GuInterface extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e){
-		
+		/*Safari
+		 * 
+		 */
+		if(e.getSource() == this.partAdderButton){
+			try {
+				try {
+					Thread.sleep(90);
+				} catch (InterruptedException e1) {
+					System.out.println("exception in thread");
+				}
+				window.addObject(this.currentSelectedPart.getPartFile());
+				this.partsBin.addPart(this.currentSelectedPart);
+			} catch (PartNotFoundException e1) {
+				e1.printStackTrace();
+			}
+		}
+		/*
+		 * till here
+		 */
 		if(e.getSource() == moveUp){
 			Double upPos = Double.parseDouble(up.getText());
 			if(choices.getSelectedIndex()==0){
