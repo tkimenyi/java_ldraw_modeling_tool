@@ -159,13 +159,13 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 		warningPanel.setLayout(new BorderLayout());
 		warningPanel.add(warningLabel, BorderLayout.NORTH);
 		warningPanel.add(warningsPane, BorderLayout.CENTER);
-		add(warningPanel, BorderLayout.CENTER);
+		add(warningPanel, BorderLayout.SOUTH);
 	}
 	
 	public void createControlPanel(){
 		JPanel controlPanel  =  new JPanel();
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
-		getContentPane().add(controlPanel, BorderLayout.SOUTH);
+		getContentPane().add(controlPanel, BorderLayout.CENTER);
 		moveRight.setAlignmentX(Component.LEFT_ALIGNMENT);
 		controlPanel.add(moveRight);
 		right.setAlignmentX(LEFT_ALIGNMENT);

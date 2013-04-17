@@ -28,6 +28,7 @@ public class PartsPanel{
 		this.partsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.partsList.setCellRenderer(new PartCellRenderer());
 		this.partsList.setFont(new Font("Serif", Font.BOLD, 10));
+		this.partsList.setFixedCellWidth(200);
 		this.loadParts();
 	}
 
