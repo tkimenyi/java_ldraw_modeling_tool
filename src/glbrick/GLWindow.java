@@ -44,7 +44,7 @@ public class GLWindow extends JFrame
 	private static boolean closeRequested = false;
 	private final static AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
 	float lightAmbient[] = { .1f, .1f, .1f, .2f };
-	float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, .1f};
 	float lightPosition[] = { 0f, 1.0f, 0f, 1f };
 	int which = 0;
 
@@ -74,12 +74,12 @@ public class GLWindow extends JFrame
 	double[] sineTable = buildSineTable();
 	double[] cosineTable = buildCosineTable();
 	double scalex, scaley;
-	double pitch = 46;
-	double yaw = -34;
+	double pitch = 90;
+	double yaw = 0;
 	double roll = 0;
-	double X = -27;
-	double Y = -55;
-	double Z = -45;
+	double X = 0;
+	double Y = -70;
+	double Z = 0;
 
 	double[] zpos = { 0, 0, 1 };
 	double[] zneg = { 0, 0, -1 };
@@ -110,7 +110,7 @@ public class GLWindow extends JFrame
 			public void windowClosing(WindowEvent e)
 			{closeRequested = true;}
 		});
-		add(canvas, BorderLayout.CENTER);
+		getContentPane().add(canvas, BorderLayout.CENTER);
 		setPreferredSize(new Dimension(1024, 686));
 		setMinimumSize(new Dimension(800, 500));
 		pack();
@@ -164,11 +164,11 @@ public class GLWindow extends JFrame
 		glMatrixMode(GL_MODELVIEW);
 		//glViewport(0, 0, 1280, 1024);
 
-		glEnable(GL_LIGHT0);
+		//glEnable(GL_LIGHT0);
 		GL11.glEnable(GL11.GL_LIGHT1);
 		GL11.glEnable(GL11.GL_LIGHTING);
 
-		glLight(GL_LIGHT0, GL_AMBIENT, (FloatBuffer)BufferUtils.createFloatBuffer(4).put(lightAmbient).flip());
+		//glLight(GL_LIGHT0, GL_AMBIENT, (FloatBuffer)BufferUtils.createFloatBuffer(4).put(lightAmbient).flip());
 		drawCubed(1, 1, 1, red);
 		drawCube(red, 0, red);
 		objects.add(new DrawnObject(makeCube(), new double[] { 1, 0, 0 }, white));
@@ -272,8 +272,8 @@ public class GLWindow extends JFrame
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(lightDiffuse).flip());
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
 
-		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(lightAmbient).flip());
-		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
+		//GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(lightAmbient).flip());
+		//GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
 	}
 
 	void display() throws InterruptedException, PartNotFoundException
@@ -296,7 +296,6 @@ public class GLWindow extends JFrame
 
 
 		drawLights(lightDiffuse, lightPosition);
-		drawLights(lightDiffuse, lightPosition);
 
 		if (gridEnabled)
 		{
@@ -309,12 +308,9 @@ public class GLWindow extends JFrame
 		updateSpeed();
 		moveModel();
 
-		drawCubek(0, 0, -4, red);
+		drawCubek(0, 0, 0, red);
 
-		glPushMatrix();
-		glTranslated(50, 4, 9);
-		drawCubek(-4, 0, 0, yellow);
-		glPopMatrix();
+
 
 		glTranslated(modelloc[0], modelloc[1], modelloc[2]);
 		rotateScene();
@@ -637,12 +633,12 @@ public class GLWindow extends JFrame
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_C))
 		{
-			rotateSpeed += .01;
+			
 			System.out.println("ROTATION SPEED = " + rotateSpeed);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_X))
 		{
-			rotateSpeed -= .01;
+			
 			System.out.println("ROTATION SPEED = " + rotateSpeed);
 		}
 	}
