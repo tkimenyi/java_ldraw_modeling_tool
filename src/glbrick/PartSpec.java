@@ -5,22 +5,25 @@ import java.util.ArrayList;
 
 public class PartSpec implements BrickSpec {
 	private ArrayList<BrickSpec> children;
-	private String name;
+	//private String name;
 	//private ColorBase colors;
-	PartSpec(String name, ColorBase colors) {
-		this.name = name;
+
+	public PartSpec(String name, ColorBase colors) {
+		//this.name = name;
 		//this.colors = colors;
-		children = new ArrayList<BrickSpec>();
-//		System.out.println("Part name: " + this.name);
-	}
-	public void debugging(){
-//		System.out.println("part name = " + name);
+		children = new ArrayList<BrickSpec>(); 
+		//		System.out.println("Part name: " + this.name);
 	}
 
-	void addLine(BrickSpec l) {
+	public void debugging(){
+		//		System.out.println("part name = " + name);
+	}
+
+	public void addLine(BrickSpec l) {
 		//System.out.println("am I called");
 		children.add(l);
 	}
+
 	public String toString() {
 		String result = "";
 		for (BrickSpec ln: children) {
@@ -33,7 +36,6 @@ public class PartSpec implements BrickSpec {
 		return false;
 	}
 
-
 	public DrawnObject toDrawnObject() 
 	{
 		ArrayList<DrawnObject> tempchildren = new ArrayList<DrawnObject>();
@@ -43,8 +45,7 @@ public class PartSpec implements BrickSpec {
 		}
 		return new DrawnObject(tempchildren);
 	}
-	
-	
+
 	public ArrayList<DrawnObject> treeTester()
 	{
 		ArrayList<DrawnObject> ret = new ArrayList<DrawnObject>();
@@ -52,10 +53,7 @@ public class PartSpec implements BrickSpec {
 			//System.out.println(l.toString());
 			ret.add(l.toDrawnObject());
 		}
-		return ret;
-		
+		return ret;	
 	}
 
-
 }
- 
