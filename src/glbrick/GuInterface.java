@@ -193,7 +193,6 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 	}
 	
 	public void createAllButtons(){
-		add = createButton("add", "Add.png");
 		undo = createButton("undo","Undo.png");
 		Redo = createButton("Redo","Redo.png");
 		zoomIn = createButton("zoomIn","Zoomin.png");
@@ -219,8 +218,6 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 		down.setMaximumSize( down.getPreferredSize() );
 		up.setMaximumSize( up.getPreferredSize() );
 		left.setMaximumSize( left.getPreferredSize() );
-		controlToolBar.add(add);
-		controlToolBar.addSeparator();
 		controlToolBar.add(newFileB);
 		controlToolBar.addSeparator();
 		controlToolBar.add(openFileB);

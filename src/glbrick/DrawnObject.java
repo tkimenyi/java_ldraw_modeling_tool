@@ -80,6 +80,12 @@ public class DrawnObject
 	public DrawnObject(ArrayList<double[]> vertices, double[] color)
 	{
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
+		System.out.print("color: ");
+		for (double d : color){
+			System.out.print(d + " ");
+		}
+		System.out.print("\n");
+		
 	}
 
 	// constructor for testing purposes
