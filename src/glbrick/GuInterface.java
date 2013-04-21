@@ -359,6 +359,7 @@ public class GuInterface extends JFrame implements ActionListener, ListSelection
 		SwingUtilities.invokeLater(new Runnable (){
 			public void run(){
 				GuInterface gui  = new GuInterface();
+				System.out.println("hitt");
 				gui.setVisible(true);
 			}
 		});

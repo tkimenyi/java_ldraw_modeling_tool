@@ -201,11 +201,19 @@ public class DrawnObject
 			{
 				glBegin(GL_QUADS);
 			}
-			double[] v1 = vertices.get(0);
-			double[] v2 = vertices.get(1);
-			double[] normal = cross_product(v1, v2);
-			normal = normalize(normal);
-			glNormal3d(normal[0], normal[1], normal[2]);
+			if(type == 3 || type ==4)
+			{
+				double[] v1 = vertices.get(0);
+				double[] v2 = vertices.get(1);
+				double[] v3 = vertices.get(2);
+				
+				double[] shit = subtract(v2,v1);
+				double[] gyrocopter = subtract(v3,v2);
+				
+				double[] normal = cross_product(gyrocopter, shit);
+				normal = normalize(normal);
+				glNormal3d(normal[0], normal[1], normal[2]);
+			}
 			
 			for (double[] vertex : vertices)
 			{
@@ -247,7 +255,8 @@ public class DrawnObject
 	{
 		return comment;
 	}
-
+	
+	// v1 - v2
 	public double[] subtract(double[] v1, double[] v2)
 	{
 		double[] result = new double[v1.length];

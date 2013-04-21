@@ -112,7 +112,6 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 		if(obj instanceof PartLabel){
 			PartLabel label = (PartLabel)obj;
 			this.currentPart = label;
-			label.setTransferHandler(new ImageSelection());
 		}
 
 	}
