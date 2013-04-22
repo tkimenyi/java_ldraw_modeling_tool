@@ -30,6 +30,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.lwjgl.*;
 import org.lwjgl.input.Keyboard;
@@ -89,19 +90,26 @@ public class GLWindow extends JFrame
 	boolean keyPressed = false;
 
 	CopyOnWriteArrayList<DrawnObject> objects = new CopyOnWriteArrayList<DrawnObject>();
+	final Canvas canvas = new Canvas();
+	private GuInterface guInterface;
+
 
 	public GLWindow() throws LWJGLException
 	{
 		super("GL Window");
+
 		setLayout(new BorderLayout());
-		final Canvas canvas = new Canvas();
+		guInterface = new GuInterface(this);
+		setJMenuBar(guInterface.createMenuBar());
+		getContentPane().add(guInterface.getToolBar(), BorderLayout.NORTH);
+		
 		canvas.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e)
 			{ newCanvasSize.set(canvas.getSize()); }
 		});
 		addWindowFocusListener(new WindowAdapter() {
-			@Override
+			@Override 
 			public void windowGainedFocus(WindowEvent e)
 			{canvas.requestFocusInWindow(); }
 		});
@@ -111,6 +119,8 @@ public class GLWindow extends JFrame
 			{closeRequested = true;}
 		});
 		getContentPane().add(canvas, BorderLayout.CENTER);
+
+		getContentPane().add(guInterface.getListPanels(), BorderLayout.WEST);
 		setPreferredSize(new Dimension(1024, 686));
 		setMinimumSize(new Dimension(800, 500));
 		pack();
@@ -173,9 +183,9 @@ public class GLWindow extends JFrame
 		drawCube(red, 0, red);
 		objects.add(new DrawnObject(makeCube(), new double[] { 1, 0, 0 }, white));
 		setVisible(true);
-		setDropTarget(new DropTarget());
+		canvas.setDropTarget(new DropTarget());
 		try {
-			getDropTarget().addDropTargetListener(new DropTargetListener(){
+			canvas.getDropTarget().addDropTargetListener(new DropTargetListener(){
 
 				@Override
 				public void dragEnter(DropTargetDragEvent dtde) {}
@@ -724,8 +734,6 @@ public class GLWindow extends JFrame
 
 	void addObject(String partname) throws PartNotFoundException
 	{
-		//		System.out.println(objects.isEmpty());
-		//		System.out.println(partname);
 		DrawnObject added = pf.getPart(partname).toDrawnObject();
 		added.setTransformation(scaleTransform(.3));
 		added.setParentLocation(rex);
@@ -773,6 +781,13 @@ public class GLWindow extends JFrame
 		glRotated(modelpyr[0], 1, 0, 0);
 		glRotated(modelpyr[2], 0, 0, 1);
 
+	}
+	
+	public static void main(String[] args) throws LWJGLException, InterruptedException, PartNotFoundException, FileNotFoundException
+	{
+		GLWindow window = new GLWindow();
+		window.run(); 
+		
 	}
 
 }
