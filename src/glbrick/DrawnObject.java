@@ -82,11 +82,11 @@ public class DrawnObject
 	{
 		//color works from here to the draw.
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
-		System.out.print("color: ");
-		for (double d : color){
-			System.out.print(d + " ");
-		}
-		System.out.print("\n");
+//		System.out.print("color: ");
+//		for (double d : color){
+//			System.out.print(d + " ");
+//		}
+//		System.out.print("\n");
 		
 	}
 
