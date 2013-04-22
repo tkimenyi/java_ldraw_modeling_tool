@@ -15,6 +15,7 @@ public class DrawnObject
 	private double[][] transformation = identityMatrix();
 	private double[] location = { 0, 0, 0 }; // In Cartesian
 	private ArrayList<double[]> vertices = new ArrayList<double[]>();
+	private final static double[] TESTCOLOR = {0.9, 0.2, 0.2}; 
 
 	//This is only called by the CommentSpec.toDrawnObject() method.
 	public DrawnObject()
@@ -79,6 +80,7 @@ public class DrawnObject
 	// constructor for non-linetype 1 specs
 	public DrawnObject(ArrayList<double[]> vertices, double[] color)
 	{
+		//color works from here to the draw.
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
 		System.out.print("color: ");
 		for (double d : color){
