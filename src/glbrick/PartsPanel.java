@@ -131,16 +131,4 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 	@Override
 	public void dragDropEnd(DragSourceDropEvent dsde) {}
 
-	/*public static void main(String[] args) {
-		JFrame frame = new JFrame("Tasks To Do");
-		frame.setSize(300, 200);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		PartsPanel manager = new PartsPanel();
-		Container contents = frame.getContentPane();
-		contents.add(manager.getListPane(), BorderLayout.CENTER);
-
-		frame.pack();
-		frame.setVisible(true);
-	}*/
-
 }

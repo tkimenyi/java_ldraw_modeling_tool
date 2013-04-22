@@ -212,7 +212,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 			if(rotateButton.isSelected()){
 				window.rotateModel(0, angle);
 			}else{
-				window.translateModel(0.0, distance, 0.0);
+				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),0.0, distance, 0.0);
 			}
 		}
 
@@ -220,7 +220,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 			if(rotateButton.isSelected()){
 				window.rotateModel(angle,0);
 			}else{
-				window.translateModel(0.0, -distance, 0.0);
+				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),0.0, -distance, 0.0);
 			}
 		}
 
@@ -229,7 +229,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 				window.rotateModel(360-angle,0);
 			}
 			else{
-				window.translateModel(distance, 0.0, 0.0);
+				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),distance, 0.0, 0.0);
 			}
 		}
 
@@ -238,7 +238,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 				window.rotateModel(angle,0);
 			}
 			else{
-				window.translateModel(-distance, 0.0, 0.0);
+				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),-distance, 0.0, 0.0);
 			}
 		}
 

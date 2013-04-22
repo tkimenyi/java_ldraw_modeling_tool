@@ -6,8 +6,10 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class AddedPartsPanel{
+public class AddedPartsPanel implements ListSelectionListener{
 	private JList partsList;
 	private DefaultListModel partsListModel;
 	private PartLabel currentPart;
@@ -33,4 +35,15 @@ public class AddedPartsPanel{
 	}
 
 	public JList getPartsList(){return this.partsList;}
+
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		Object obj = this.partsList.getSelectedValue();
+		if(obj instanceof PartLabel){
+			PartLabel label = (PartLabel)obj;
+			this.currentPart = label;
+		}
+		
+	}
 }

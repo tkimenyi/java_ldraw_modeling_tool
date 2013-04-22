@@ -30,11 +30,8 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 import org.lwjgl.*;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -59,13 +56,11 @@ public class GLWindow extends JFrame
 	double speed = .3;
 	double[] rankin = { 0, 0, 0 };
 	double rex[] = { 0, 0, 0 };
-	boolean shit = true;
 	double[] theOrigin = { 0, 0, 0 };
 	double[] notTheOrigin = { 0, 100, 0 };
 	boolean freeCamera = true;
 	double rotateSpeed = 1;
 	double movementSpeed = .8;
-	boolean gridEnabled = true;
 	static double[] red = { 1, 0, 0 };
 	static double[] blue = { 0, 0, 1 };
 	static double[] green = { 0, 1, 0 };
@@ -172,16 +167,9 @@ public class GLWindow extends JFrame
 		glLoadIdentity();
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 1.2, 2000.0);
 		glMatrixMode(GL_MODELVIEW);
-		//glViewport(0, 0, 1280, 1024);
 
-		//glEnable(GL_LIGHT0);
 		GL11.glEnable(GL11.GL_LIGHT1);
 		GL11.glEnable(GL11.GL_LIGHTING);
-
-		//glLight(GL_LIGHT0, GL_AMBIENT, (FloatBuffer)BufferUtils.createFloatBuffer(4).put(lightAmbient).flip());
-		drawCubed(1, 1, 1, red);
-		drawCube(red, 0, red);
-		objects.add(new DrawnObject(makeCube(), new double[] { 1, 0, 0 }, white));
 		setVisible(true);
 		canvas.setDropTarget(new DropTarget());
 		try {
@@ -221,7 +209,7 @@ public class GLWindow extends JFrame
 			e1.printStackTrace();
 		}
 		Display.setVSyncEnabled(true);
-		//Display.create();
+
 
 		Dimension newDim;
 
@@ -281,9 +269,6 @@ public class GLWindow extends JFrame
 		ByteBuffer temp = BufferUtils.createByteBuffer(16);
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(lightDiffuse).flip());
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
-
-		//GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(lightAmbient).flip());
-		//GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
 	}
 
 	void display() throws InterruptedException, PartNotFoundException
@@ -306,22 +291,10 @@ public class GLWindow extends JFrame
 
 
 		drawLights(lightDiffuse, lightPosition);
-
-		if (gridEnabled)
-		{
-			drawGrid(30, 0, 30, yellow, 1, theOrigin);
-			drawGrid(300, 0, 300, red, 7, notTheOrigin);
-		}
-
 		drawCrosshair(rex, white);
 
 		updateSpeed();
 		moveModel();
-
-		drawCubek(0, 0, 0, red);
-
-
-
 		glTranslated(modelloc[0], modelloc[1], modelloc[2]);
 		rotateScene();
 		drawObjects();
@@ -341,6 +314,31 @@ public class GLWindow extends JFrame
 		modelloc[0] += x;
 		modelloc[1] += y;
 		modelloc[2] += z;
+	}
+	
+	void rotateModelPart(int index, double xangle, double yangle, double zangle){
+		
+		double [][] xmatrix = {{1,0,0},{0, Math.cos(xangle), -Math.sin(xangle)}, {0, Math.sin(xangle), Math.cos(xangle)}};
+		double [][] ymatrix = {{Math.cos(yangle),0,-Math.sin(yangle)},{0, 1, 0}, {Math.sin(yangle), 0, Math.cos(yangle)}};
+		double [][] zmatrix = {{Math.cos(zangle),-Math.sin(zangle),0},{Math.sin(zangle), Math.cos(zangle),0}, {0, 0, 1}};
+		
+		double [][] xtransform = Matrix.matrixMult2(xmatrix, objects.get(index).getTransformation());
+		double [][] ytransform = Matrix.matrixMult2(ymatrix, objects.get(index).getTransformation());
+		double [][] ztransform = Matrix.matrixMult2(zmatrix, objects.get(index).getTransformation());
+		double [][] transform = Matrix.matrixMult2(ytransform,xtransform);
+		double [][] lastTransform = Matrix.matrixMult2(transform,ztransform);
+		
+		objects.get(index).setTransformation(lastTransform);
+	}
+
+	void translateModelPart(int index, double x, double y, double z)
+	{
+		double newLocX = objects.get(index).getx() + x;
+		double newLocY = objects.get(index).gety() + y;
+		double newLocZ = objects.get(index).getz() + z;
+		double [] loc = {newLocX, newLocY, newLocZ};
+		
+		objects.get(index).setLocation(loc);
 	}
 
 	void removeLastPiece()
@@ -370,59 +368,10 @@ public class GLWindow extends JFrame
 		glEnd();
 	}
 
-	void drawGrid(int x, int y, int z, double[] color, double resolution, double[] loc)
-	{
-		glColor3d(color[0], color[1], color[2]);
-		for (double i = x * -1; i < x; i += resolution)
-		{
-			glBegin(GL_LINE_STRIP);
-			glVertex3d(i + loc[0], y + loc[1], -z + loc[2]);
-			glVertex3d(i + loc[0], y + loc[1], z + loc[2]);
-			glEnd();
-		}
-		for (double i = z * -1; i < z; i += resolution)
-		{
-			glBegin(GL_LINE_STRIP);
-			glVertex3d(-x + loc[0], y + loc[1], i + loc[2]);
-			glVertex3d(x + loc[0], y + loc[1], i + loc[2]);
-			glEnd();
-		}
-	}
-
-	// This will draw a wireframe cube of a fixed size at the location (x,y,z)
-	// with color {red, green, blue}
-	void drawCubed(double x, double y, double z, double[] color)
-	{
-		glColor3d(color[0], color[1], color[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3d(x, y, z);
-		glVertex3d(1 + x, y, z);
-		glVertex3d(1 + x, 1 + y, z);
-		glVertex3d(x, 1 + y, z);
-
-		glVertex3d(x, 1 + y, -1 + z);
-		glVertex3d(x, y, -1 + z);
-		glVertex3d(1 + x, y, -1 + z);
-		glVertex3d(1 + x, 1 + y, -1 + z);
-		glVertex3d(x, 1 + y, -1 + z);
-
-		glVertex3d(x, 1 + y, z);
-		glVertex3d(x, y, z);
-		glVertex3d(x, y, -1 + z);
-		glVertex3d(1 + x, y, -1 + z);
-		glVertex3d(1 + x, y, z);
-		glVertex3d(1 + x, 1 + y, z);
-		glVertex3d(1 + x, 1 + y, -1 + z);
-		glEnd();
-	}
-
-	// Currently creates a line loop for the given vertices in the DrawnObject
 	void drawObjects()
 	{
-		//		Iterator<DrawnObject> iter = objects.iterator();
 		for (DrawnObject obj : objects)
 		{
-			//			DrawnObject obj = iter.next();
 			glPushMatrix();
 			glTranslated(obj.getx(), obj.gety(), obj.getz());
 			glRotated(180, 1, 0, 0);
@@ -431,32 +380,6 @@ public class GLWindow extends JFrame
 			glPopMatrix();
 
 		}
-
-	}
-
-	void drawCubek(double x, double y, double z, double[] color)
-	{
-		glColor3d(color[0], color[1], color[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3d(x, y, z);
-		glVertex3d(1 + x, y, z);
-		glVertex3d(1 + x, 1 + y, z);
-		glVertex3d(x, 1 + y, z);
-
-		glVertex3d(x, 1 + y, -1 + z);
-		glVertex3d(x, y, -1 + z);
-		glVertex3d(1 + x, y, -1 + z);
-		glVertex3d(1 + x, 1 + y, -1 + z);
-		glVertex3d(x, 1 + y, -1 + z);
-
-		glVertex3d(x, 1 + y, z);
-		glVertex3d(x, y, z);
-		glVertex3d(x, y, -1 + z);
-		glVertex3d(1 + x, y, -1 + z);
-		glVertex3d(1 + x, y, z);
-		glVertex3d(1 + x, 1 + y, z);
-		glVertex3d(1 + x, 1 + y, -1 + z);
-		glEnd();
 
 	}
 
@@ -502,32 +425,6 @@ public class GLWindow extends JFrame
 		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
 
 		glEnd();
-	}
-
-	void drawCube(double[] xyz, double size, double[] color)
-	{
-		glColor3d(color[0], color[1], color[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3d(xyz[0], xyz[1], xyz[2]);
-		glVertex3d(size + xyz[0], xyz[1], xyz[2]);
-		glVertex3d(size + xyz[0], size + xyz[1], xyz[2]);
-		glVertex3d(xyz[0], size + xyz[1], xyz[2]);
-
-		glVertex3d(xyz[0], size + xyz[1], -size + xyz[2]);
-		glVertex3d(xyz[0], xyz[1], -size + xyz[2]);
-		glVertex3d(size + xyz[0], xyz[1], -size + xyz[2]);
-		glVertex3d(size + xyz[0], size + xyz[1], -size + xyz[2]);
-		glVertex3d(xyz[0], size + xyz[1], -size + xyz[2]);
-
-		glVertex3d(xyz[0], size + xyz[1], xyz[2]);
-		glVertex3d(xyz[0], xyz[1], xyz[2]);
-		glVertex3d(xyz[0], xyz[1], -size + xyz[2]);
-		glVertex3d(size + xyz[0], xyz[1], -size + xyz[2]);
-		glVertex3d(size + xyz[0], xyz[1], xyz[2]);
-		glVertex3d(size + xyz[0], size + xyz[1], xyz[2]);
-		glVertex3d(size + xyz[0], size + xyz[1], -size + xyz[2]);
-		glEnd();
-
 	}
 
 	public static double[] buildSineTable()
@@ -593,15 +490,6 @@ public class GLWindow extends JFrame
 			System.out.println("Camera coordinates: " + X + " " + Y + " " + Z);
 			System.out.println("Camera orientation: " + pitch + " " + yaw + " " + roll);
 			Thread.sleep(50);
-		}
-		if (Mouse.isButtonDown(0))
-		{
-			// X = (Mouse.getX() - Display.getDisplayMode().getWidth() / 2.0) /
-			// 100.0;
-			// Y = (Mouse.getY() - Display.getDisplayMode().getWidth() / 2.0) /
-			// 100.0;
-			removeLastPiece();
-			Thread.sleep(100);
 		}
 
 		// Does not handle roll!
@@ -715,18 +603,6 @@ public class GLWindow extends JFrame
 		return vertices;
 	}
 
-	void drawCube(DrawnObject beta)
-	{
-		glBegin(GL_LINE_STRIP);
-		glColor3d(beta.getRed(), beta.getGreen(), beta.getBlue());
-		double[] loc = beta.getLocation();
-		for (double[] vertex : beta.getVertices())
-		{
-			glVertex3d(vertex[0] + loc[0], vertex[1] + loc[1], vertex[2] + loc[2]);
-		}
-		glEnd();
-	}
-
 	double[][] scaleTransform(double scale)
 	{
 		return new double[][] { { scale, 0, 0, 0 }, { 0, scale, 0, 0 }, { 0, 0, scale, 0 }, { 0, 0, 0, 1 } };
@@ -738,17 +614,6 @@ public class GLWindow extends JFrame
 		added.setTransformation(scaleTransform(.3));
 		added.setParentLocation(rex);
 		objects.add(added);
-	}
-
-	void addCubes(double[] color) throws InterruptedException
-	{
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
-		{
-			double[] loc = new double[] { rex[0], rex[1], rex[2] };
-			objects.add(new DrawnObject(makeCube(), loc, color));
-		}
-
 	}
 
 	void rotateScene()

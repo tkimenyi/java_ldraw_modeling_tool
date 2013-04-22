@@ -15,8 +15,6 @@ public class DrawnObject
 	private double[][] transformation = identityMatrix();
 	private double[] location = { 0, 0, 0 }; // In Cartesian
 	private ArrayList<double[]> vertices = new ArrayList<double[]>();
-	private final static double[] TESTCOLOR = {0.9, 0.2, 0.2}; 
-
 	//This is only called by the CommentSpec.toDrawnObject() method.
 	public DrawnObject()
 	{
@@ -101,6 +99,8 @@ public class DrawnObject
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
 	}
+	
+	
 
 	public void setTransformation(double[][] trans)
 	{
@@ -165,21 +165,14 @@ public class DrawnObject
 		for (int i = 0; i < vertices.size(); i++)
 		{
 			double[] vertex = vertices.get(i);
-			vertex = matrixMult(transformation, vertex);
+			vertex = Matrix.matrixMult(transformation, vertex);
 			vertices.set(i, vertex);
 
 		}
 
 	}
 
-	public double[] matrixMult(double[][] m, double[] v)
-	{
-		double[] newv = new double[v.length];
-		newv[0] = v[0] * m[0][0] + v[1] * m[0][1] + v[2] * m[0][2];
-		newv[1] = v[0] * m[1][0] + v[1] * m[1][1] + v[2] * m[1][2];
-		newv[2] = v[0] * m[2][0] + v[1] * m[2][1] + v[2] * m[2][2];
-		return newv;
-	}
+
 
 
 	public void draw()
