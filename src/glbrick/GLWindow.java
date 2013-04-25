@@ -16,6 +16,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -88,7 +89,20 @@ public class GLWindow extends JFrame
 	final Canvas canvas = new Canvas();
 	private GuInterface guInterface;
 
-
+	public void save(){
+//		System.out.println("save called");
+//		for(DrawnObject d: objects){
+//			System.out.println(d.getPartName() + "D");
+//			System.out.println(d.getVertices().size());
+//			System.out.println(d);
+//			for (double[] dub: d.getVertices()){
+//				System.out.println(dub + "dub");				
+//			}
+//			
+//		}
+	}
+	
+	
 	public GLWindow() throws LWJGLException
 	{
 		super("GL Window");
@@ -260,6 +274,12 @@ public class GLWindow extends JFrame
 		if (Keyboard.isKeyDown(Keyboard.KEY_K))
 		{
 			translateModel(.4, 0, 0);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_P))
+		{
+			//call once code
+			Thread.sleep(90);
+			save();
 		}
 
 	}
@@ -613,6 +633,7 @@ public class GLWindow extends JFrame
 		DrawnObject added = pf.getPart(partname).toDrawnObject();
 		added.setTransformation(scaleTransform(.3));
 		added.setParentLocation(rex);
+		added.SetPartName(partname);
 		objects.add(added);
 	}
 
