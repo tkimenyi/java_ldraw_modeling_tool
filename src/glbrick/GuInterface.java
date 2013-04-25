@@ -203,8 +203,9 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 				}
 				window.addObject(currentSelectedPart.getPartFile());
 				partsBin.addPart(currentSelectedPart);
+				System.out.println("parts: " + this.allPartsPanel.getPartsCount());
 			} catch (PartNotFoundException e1) {
-				//				e1.printStackTrace();
+				//e1.printStackTrace();
 			}
 		}
 
