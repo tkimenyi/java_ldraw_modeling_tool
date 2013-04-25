@@ -4,8 +4,8 @@ package glbrick;
 
 
 public class SubpartSpec implements BrickSpec {
-	
-	
+
+
 
 	String[] lineParts;
 	//private int c;
@@ -17,17 +17,17 @@ public class SubpartSpec implements BrickSpec {
 	float lineColorValue;
 	String partName = "";
 	private PartSpec part;
-	
-	
+
+
 
 	public SubpartSpec(String[] lineParts) {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public String toString(){
-		return "";//glbrickUtilities.stringer(vertices); // does what you think it does
+		return partName;//glbrickUtilities.stringer(vertices); // does what you think it does
 	}
-	
+
 	public SubpartSpec(String[] lineParts, PartFactory partFactory) throws PartNotFoundException 
 	{
 		this.lineParts = lineParts;
@@ -42,16 +42,16 @@ public class SubpartSpec implements BrickSpec {
 		{
 			trans[(i-5) / 3][(i-5) % 3] = Double.parseDouble(lineParts[i]);
 		}
-		
+
 
 		partName = lineParts[14];
-		
+
 		this.part = partFactory.getPart(this.partName);
-		
+
 		//1 colour x y z a b c d e f g h i part.dat
-		
+
 	}
-	
+
 
 	@Override
 	public boolean isCommment() {
@@ -63,16 +63,11 @@ public class SubpartSpec implements BrickSpec {
 		//something about lineColorValue;
 		//double[] temp = new double[]{1,1,1}; 
 		DrawnObject tempmodel = part.toDrawnObject();
-		
 		tempmodel.setLocation(loc);
 		tempmodel.setTransformation(trans);
+		tempmodel.SetPartName(partName);
+		System.out.println(partName + "SPSln70");
 		return tempmodel;
-		
-		
-		
 
 	}
-
-
-
 }

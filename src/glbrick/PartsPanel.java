@@ -51,6 +51,7 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 			@Override
 			protected Object doInBackground() throws Exception {
 				loadParts();
+//				loadTestParts();
 				return null;
 			}
 			
@@ -95,6 +96,42 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 					partsListModel.addElement(label);
 				}
 			}
+		}
+	}
+	
+	
+	public void loadTestParts(){
+		File partsLocation = new File(partsDirectory);
+		if(partsLocation.exists() && partsLocation.isDirectory()){
+			File f = new File(partsDirectory, "../models/car.dat");
+					System.out.println(f.getAbsoluteFile());
+					String partName = f.getName();
+					FileReader reader;
+					BufferedReader buffer;
+					try {
+						reader = new FileReader(f.getAbsoluteFile());
+						buffer = new BufferedReader(reader);
+						String tempName = buffer.readLine();
+						String[] nameComponents = tempName.split("[ \t\n\r]");
+						tempName = "";
+						for(String str:nameComponents){
+							if(str.length() > 1){
+								tempName += " " + str;
+							}
+						}
+						tempName = tempName.trim();
+						if(tempName.length() != 0){
+							partName = tempName;
+						}
+						reader.close();
+						buffer.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					PartLabel label = new PartLabel(partName, f.getName(), MISSINGICON);
+					partsListModel.addElement(label);
+			
 		}
 	}
 

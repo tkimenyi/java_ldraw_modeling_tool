@@ -15,6 +15,7 @@ public class DrawnObject
 	private double[][] transformation = identityMatrix();
 	private double[] location = { 0, 0, 0 }; // In Cartesian
 	private ArrayList<double[]> vertices = new ArrayList<double[]>();
+	private String partName;
 	//This is only called by the CommentSpec.toDrawnObject() method.
 	public DrawnObject()
 	{
@@ -95,9 +96,16 @@ public class DrawnObject
 	}
 
 	// constructor for linetype 1's
-	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
+	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children, String name)
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
+		System.out.println("the linetype 1 constructor was called, DO#102");
+	}
+	public String getPartName(){
+		return partName;
+	}
+	public void SetPartName(String pn){
+		partName = pn;
 	}
 	
 	

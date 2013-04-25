@@ -14,7 +14,7 @@ public class glbrickUtilities {
 		else{
 			ret = Float.parseFloat(s);
 		}
-		System.out.println(ret);
+		//System.out.println("GBUln17"+ret);
 		return ret;
 	}
 	
