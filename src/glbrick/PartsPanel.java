@@ -21,6 +21,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -44,7 +45,20 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 		this.partsList.setFixedCellWidth(200);
 		this.dragSource = new DragSource();
 		DragGestureRecognizer drg = this.dragSource.createDefaultDragGestureRecognizer(this.partsList, DnDConstants.ACTION_COPY, this);
-		this.loadParts();
+		@SuppressWarnings("rawtypes")
+		SwingWorker loader = new SwingWorker(){
+
+			@Override
+			protected Object doInBackground() throws Exception {
+				loadParts();
+				return null;
+			}
+			
+			
+		};
+		loader.execute();
+		
+		
 	}
 
 	public void loadParts(){
@@ -100,7 +114,7 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 		if(label != null){
 			this.currentPart = (PartLabel)label;
 			StringSelection transferable = new StringSelection(this.currentPart.getPartFile());
-			System.out.println("current part file: " + this.currentPart.getPartFile());
+//			System.out.println("current part file: " + this.currentPart.getPartFile());
 			this.dragSource.startDrag(dge, DragSource.DefaultCopyDrop, transferable, this);
 		}
 	}
@@ -115,6 +129,8 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 		}
 
 	}
+	
+	public int getPartsCount(){return this.partsListModel.getSize();}
 
 	@Override
 	public void dragEnter(DragSourceDragEvent dsde) {}
