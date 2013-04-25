@@ -96,7 +96,7 @@ public class DrawnObject
 	}
 
 	// constructor for linetype 1's
-	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children, String name)
+	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
 		System.out.println("the linetype 1 constructor was called, DO#102");
