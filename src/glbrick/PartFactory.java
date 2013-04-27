@@ -30,7 +30,7 @@ public class PartFactory
 		addPath(partsPath + File.separator + "S");
 		addPath(pPath + File.separator + "48");
 	}
-	
+
 	public void activateFailureErrors()
 	{
 		printFailures = true;
@@ -49,28 +49,28 @@ public class PartFactory
 	public PartSpec getPart(String partName) throws PartNotFoundException
 	{
 		partName = partName.toLowerCase();
-		if (parts.containsKey(partName))
+//		if (parts.containsKey(partName))
+//		{
+//		//	return parts.get(partName);
+//		//} else
+//		}
+		for (String path : paths)
 		{
-		//	return parts.get(partName);
-		//} else
-		}
-			for (String path : paths)
+			try
 			{
-				try
+				PartSpec result = tryFile(path, partName);
+				parts.put(partName, result);
+				return result;
+			} catch (FileNotFoundException e)
+			{
+				if (printFailures)
 				{
-					PartSpec result = tryFile(path, partName);
-					parts.put(partName, result);
-					return result;
-				} catch (FileNotFoundException e)
-				{
-					if (printFailures)
-					{
-						System.out.println(e.getMessage());
-					}
+					System.out.println(e.getMessage());
 				}
 			}
-			throw new PartNotFoundException(partName);
-		
+		}
+		throw new PartNotFoundException(partName);
+
 	}
 
 	public String mkString(String[] strArr)
@@ -105,20 +105,16 @@ public class PartFactory
 				{
 					int code = Integer.parseInt(lineParts[0]);
 					//System.out.println(mkString(lineParts));
-					if (code == 0)
-					{
+					if (code == 0){
 						result.addLine(new CommentSpec(lineParts));
-					} else if (code == 1)
-					{
+					} 
+					else if (code == 1){
 						result.addLine(new SubpartSpec(lineParts, this));
-					} else if (code == 2)
-					{
+					} else if (code == 2){
 						result.addLine(new LineSpec(lineParts, colors));
-					} else if (code == 3)
-					{
+					} else if (code == 3){
 						result.addLine(new TriangleSpec(lineParts, colors));
-					} else if (code == 4)
-					{
+					} else if (code == 4){
 						try
 						{
 							result.addLine(new QuadSpec(lineParts, colors));
