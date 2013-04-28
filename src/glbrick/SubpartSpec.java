@@ -30,6 +30,7 @@ public class SubpartSpec implements BrickSpec {
 
 	public SubpartSpec(String[] lineParts, PartFactory partFactory) throws PartNotFoundException 
 	{
+		//System.out.println("subpartspec call");
 		this.lineParts = lineParts;
 
 		lineColorValue = Float.parseFloat(lineParts[1]);
@@ -60,6 +61,7 @@ public class SubpartSpec implements BrickSpec {
 
 	public DrawnObject toDrawnObject() 
 	{
+		System.out.println("subpartspec todrwanobject called");
 		//something about lineColorValue;
 		//double[] temp = new double[]{1,1,1}; 
 		DrawnObject tempmodel = part.toDrawnObject();

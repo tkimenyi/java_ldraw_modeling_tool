@@ -14,6 +14,7 @@ import glbrick.ColorBase;
 import glbrick.DrawnObject;
 import glbrick.GuInterface;
 import glbrick.LineSpec;
+import glbrick.MalformedLDrawException;
 import glbrick.Matrix;
 import glbrick.PartNotFoundException;
 import glbrick.QuadSpec;
@@ -35,13 +36,13 @@ public class Tests
 	
 	@Test
 	public void test() throws IOException, LWJGLException, 
-					InterruptedException, PartNotFoundException{
+					InterruptedException, PartNotFoundException, MalformedLDrawException{
 	    	    GLWindowTest.main(new String[]{});
 	}
 	
 	@Ignore //this is used by allPartsTest
 	public ArrayList<String> getFiles() throws IOException{
-        String path = "/export/home/f09/dyerjw/eclipse-work/java-ldraw-cad/ldraw/parts.txt";
+        String path = "ldraw/parts.txt";
         String fileName = path;
         ArrayList<String> allFiles = new ArrayList<String>(7118);
 
@@ -61,7 +62,7 @@ public class Tests
         return allFiles;
     }
 
-    @Ignore // It takes too long to run, check testSomeParts() for a shorter version
+    // It takes too long to run, check testSomeParts() for a shorter version
     @Test
     public void allPartTest() throws IOException
     {
