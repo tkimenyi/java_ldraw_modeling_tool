@@ -17,10 +17,14 @@ public class ColorBase {
 	public final static String configFile = "LDConfig.ldr";
 	
 	private Map<Integer,Color> colorEncodings, color2Edge;
+	//ugly hack to solve drawn object color retrieval.  Reverse engineers the color based on caveman logic.  Remove if possible
+	private Map<Color, Integer> uglyMap;
 	
 	public ColorBase(String ldrawPath) throws FileNotFoundException {
 		colorEncodings = new HashMap<Integer,Color>();
 		color2Edge = new HashMap<Integer,Color>();
+		uglyMap = new HashMap<Color, Integer>();
+		
 		
 		File config = new File(ldrawPath + File.separator + configFile);
 		Scanner s = new Scanner(config);
@@ -33,6 +37,7 @@ public class ColorBase {
 					int code = getColorCode(params);
 					int alpha = hasAlpha(params) ? getAlpha(params) : 255;
 					colorEncodings.put(code, getMainColor(params, alpha));
+					uglyMap.put(getMainColor(params, alpha), code);
 					recordEdgeColor(code, params, color2Edge, edgeTemps);
 				}
 			} catch (MalformedLDrawException e) {
@@ -88,6 +93,16 @@ public class ColorBase {
 		int green = Integer.parseInt(color.substring(3, 5), 16);
 		int blue = Integer.parseInt(color.substring(5, 7), 16);
 		return new Color(red, green, blue, alpha);
+	}
+	
+	public String retrieveColorCode(String color, int alpha) throws MalformedLDrawException{
+		color = "#" + color;
+		Color tempColor = decodeColorString(color, alpha);
+		if(colorEncodings.containsValue(tempColor)){
+			return uglyMap.get(tempColor).toString();
+		}
+		//this is the inherit value.  Best default as far as I can tell.
+		return "16";
 	}
 	
 	private static boolean hasAlpha(String[] params) {

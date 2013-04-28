@@ -8,13 +8,15 @@ public class glbrickUtilities {
 	public static float smartDecode(String s){
 		float ret;
 		if (s.length() >1 && s.contains("x")){
+			System.out.println("GBUln17 smartDecode"+s);
 			ret = (float) Integer.decode(s);
+			
 		}
 
 		else{
 			ret = Float.parseFloat(s);
 		}
-		//System.out.println("GBUln17"+ret);
+		
 		return ret;
 	}
 	

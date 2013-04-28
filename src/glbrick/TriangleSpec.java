@@ -62,7 +62,10 @@ public class TriangleSpec implements BrickSpec {
 	
 	public DrawnObject toDrawnObject() 
 	{
-		double[] temp = new double[]{1,1,1}; 
+		double[] temp = new double[]{1,1,1};
+		//This is where coloring needs to be added
+		//double[] temp = new double[3];
+		//colors.g
 		return new DrawnObject(vertices, temp);
 	}
 }
