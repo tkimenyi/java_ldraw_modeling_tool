@@ -2,7 +2,6 @@ package glbrick;
 import java.awt.*;
 
 import java.awt.event.*;
-import java.io.PrintWriter;
 import java.io.File;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -30,7 +29,6 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	private PartLabel currentSelectedPart;
 	private JPanel partsListPanel;
 	private JRadioButton translateButton, rotateButton;
-	private File saveFile;
 
 
 	public GuInterface(GLWindow window) {
@@ -163,7 +161,6 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 					File file = fileChooser.getSelectedFile();
 
 					try {
-						saveFile = file;
 						window.save(file);
 
 					} catch (Exception e) {
@@ -322,7 +319,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 					window.translateModel(-distance, 0.0, 0.0);
 				}else{
 					window.translateModelPart(selectedPartIndex,-distance, 0.0, 0.0);
-				}
+				}  
 			}
 		}
 		

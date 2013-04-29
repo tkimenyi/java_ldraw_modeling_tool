@@ -583,6 +583,7 @@ public class GLWindow extends JFrame
 		//bad file writing code
 		ArrayList<String> PLine = new ArrayList<String>(15);
 		out.write("0 Name: "+f.getName());
+		out.newLine();
 		for(DrawnObject d: objects){
 			System.out.println(objects.size());
 			if (d.getPartName() != ""){
