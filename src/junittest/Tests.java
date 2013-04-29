@@ -12,14 +12,13 @@ import java.util.Arrays;
 import glbrick.BrickSpec;
 import glbrick.ColorBase;
 import glbrick.DrawnObject;
-import glbrick.GuInterface;
+import glbrick.GLWindow;
 import glbrick.LineSpec;
 import glbrick.MalformedLDrawException;
 import glbrick.Matrix;
 import glbrick.PartNotFoundException;
 import glbrick.QuadSpec;
 import glbrick.TriangleSpec;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,21 +27,31 @@ import org.lwjgl.LWJGLException;
 public class Tests
 {
 	private DrawnObject obj;
+	private DrawnObject obj2;
+	private double[][] transformation;
+	private double color;
+	private ArrayList<DrawnObject> children;
+	private ArrayList<double[]> vertices;
+	private double[] location;
+	GLWindow window;
 	
 	@Before
-	public void initialize(){
+	public void initialize() throws LWJGLException{
+		transformation = Matrix.identityMatrix();
 		obj = new DrawnObject();
-	}
+		obj2 = new DrawnObject(children);
+		window = new GLWindow();
+	} 
 	
 	@Test
-	public void test() throws IOException, LWJGLException, 
+	public void testGLWindow() throws IOException, LWJGLException, 
 					InterruptedException, PartNotFoundException, MalformedLDrawException{
-	    	    GLWindowTest.main(new String[]{});
+        window.run();	    
 	}
 	
 	@Ignore //this is used by allPartsTest
 	public ArrayList<String> getFiles() throws IOException{
-        String path = "ldraw/parts.txt";
+        String path = "/export/home/f09/dyerjw/eclipse-work/java-ldraw-cad/ldraw/parts.txt";
         String fileName = path;
         ArrayList<String> allFiles = new ArrayList<String>(7118);
 
@@ -62,7 +71,7 @@ public class Tests
         return allFiles;
     }
 
-    // It takes too long to run, check testSomeParts() for a shorter version
+    @Ignore // It takes too long to run, check testSomeParts() for a shorter version
     @Test
     public void allPartTest() throws IOException
     {
@@ -266,9 +275,9 @@ public class Tests
     	obj.move(to);
     	assertFalse(Arrays.equals(obj.getLocation(), loc));
     	assertTrue(Arrays.equals(obj.getLocation(),at));
-    	assertTrue(obj.getx() == at[0]);
-    	assertTrue(obj.gety() == at[1]);
-    	assertTrue(obj.getz() == at[2]);
+    	assertEquals(obj.getx(), at[0],0.001);
+    	assertEquals(obj.gety(), at[1], 0.001);
+    	assertEquals(obj.getz(), at[2], 0.001);
     }
     
     @Test
@@ -286,9 +295,6 @@ public class Tests
     	assertTrue(Arrays.equals(trans[1], newTrans[1]));
     	assertTrue(Arrays.equals(trans[2], newTrans[2]));
     }
-    
-   
 
 }
-
 
