@@ -1,6 +1,6 @@
 package glbrick;
 
-public  class Matrix {
+public class Matrix {
 	
 	public static double[] matrixMult(double[][] m, double[] v){
 		double[] newv = new double[v.length];
@@ -63,4 +63,11 @@ public  class Matrix {
 		return result;
 
 	}
+	
+	public static double[][] identityMatrix()
+	{
+		return new double[][] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
+	}
+
 }

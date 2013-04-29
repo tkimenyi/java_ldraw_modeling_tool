@@ -11,10 +11,6 @@ public class ldrawParseTest {
 	
 	
 	public ldrawParseTest(){
-		/*PartFactory fact = new PartFactory(ldrawPath);
-		PartSpec model = fact.getPart(pn);
-		//model.debugging();
-		System.out.println("no problems");*/
 		
 	}
 	
@@ -29,22 +25,10 @@ public class ldrawParseTest {
 			
 		}
 	}
-	
-	
 	public boolean lDrawSingleTest(String pn) throws FileNotFoundException, PartNotFoundException{
 		PartFactory fact = new PartFactory(ldrawPath);
 		PartSpec model = fact.getPart(pn);
 		model.treeTester();
 		return true;
 	}
-	
-	
-	
-	public static void main(String[] args) throws FileNotFoundException, PartNotFoundException
-	{
-		new ldrawParseTest();
-		
-		
-	}
-	
 }
