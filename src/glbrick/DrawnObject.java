@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class DrawnObject
 {
 	private boolean comment = false;
-	private double[] color = { .02, .02, .02 }; // Default is white
+	private double[] color = { 1, 1, 1 }; // Default is white
 	private ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
 	private double[][] transformation = identityMatrix();
 	private double[] location = { 0, 0, 0 }; // In Cartesian
@@ -21,7 +21,48 @@ public class DrawnObject
 	{
 		comment = true;
 	}
-
+	public double getRed(){
+		return color[0];
+	}
+	public double getGreen(){
+		return color[1];
+	}public double getBlue(){
+		return color[2];
+	}
+	public double[] doubleCopy(double[] d){
+		double[] n = new double[d.length];
+		for (int i =0; i < d.length; i++){
+			n[i] = d[i];
+		}
+		return n;
+	}
+	
+	public double[] getColorArr(){
+		return color;
+	}
+	
+	public double[][] twoDArrayCopy(double[][] d){
+		double[][] n = new double[d.length][d[0].length];
+		for (int i =0; i < d.length; i++){
+			n[i] = doubleCopy(d[i]);
+		}
+		return n;
+	}
+	
+	public ArrayList<double[]> doubleArrListCopy(ArrayList<double[]> d){
+		ArrayList<double[]> n = new ArrayList<double[]>();
+		for (double[] i: d){
+			n.add(i);		}
+		return n;
+	}
+	
+	public double[] getLocation(){
+		return doubleCopy(location);
+	}
+	public ArrayList<double[]> getVertices(){
+		return doubleArrListCopy(vertices);
+	}
+	
 	//Constructor for a general DrawnObject that requires all of the fields set. This one will not be called except internally (I think)
 	//However, I don't want to make it private just yet.
 	private DrawnObject(ArrayList<double[]> vertices, double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
@@ -44,12 +85,12 @@ public class DrawnObject
 	{
 		//color works from here to the draw.
 		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
-		//			System.out.print("color: ");
-		//			for (double d : color){
-		//				System.out.print(d + " ");
-		//			}
-		//			System.out.print("\n");
-
+//		System.out.print("color: ");
+//		for (double d : color){
+//			System.out.print(d + " ");
+//		}
+//		System.out.print("\n");
+		
 	}
 
 	// constructor for testing purposes
@@ -62,6 +103,7 @@ public class DrawnObject
 	public DrawnObject(double[] location, double[][] transformation, double[] color, ArrayList<DrawnObject> children)
 	{
 		this(new ArrayList<double[]>(), location, transformation, color, children);
+		System.out.println("the linetype 1 constructor was called, DO#102");
 	}
 	public String getPartName(){
 		return partName;
@@ -69,55 +111,8 @@ public class DrawnObject
 	public void SetPartName(String pn){
 		partName = pn;
 	}
-
-	public double getRed(){
-		return color[0];
-	}
-
-	public double getGreen(){
-		return color[1];
-	}
-
-	public double getBlue(){
-		return color[2];
-	}
-	public double[] getColorArr(){
-		return color;
-	}
-
-	public double[] doubleCopy(double[] d){
-		double[] n = new double[d.length];
-		for (int i =0; i < d.length; i++){
-			n[i] = d[i];
-		}
-		return n;
-	}
-
-	public double[][] twoDArrayCopy(double[][] d){
-		double[][] n = new double[d.length][d[0].length];
-		for (int i =0; i < d.length; i++){
-			n[i] = doubleCopy(d[i]);
-		}
-		return n;
-	}
-
-	public ArrayList<double[]> doubleArrListCopy(ArrayList<double[]> d){
-		ArrayList<double[]> n = new ArrayList<double[]>();
-		for (double[] i: d){
-			n.add(i);		}
-		return n;
-	}
-
-	public double[] getLocation(){
-		return doubleCopy(location);
-	}
-	public ArrayList<double[]> getVertices(){
-		return doubleArrListCopy(vertices);
-	}
-
-
-
-
+	
+	
 
 	public void setTransformation(double[][] trans)
 	{
@@ -148,7 +143,7 @@ public class DrawnObject
 		}
 	}
 
-
+	
 	public void transformALL(double[][] trans)
 	{
 		transformVertices(trans);
@@ -166,7 +161,7 @@ public class DrawnObject
 		location[2] += vector[2];
 	}
 
-
+	
 
 	public static double[][] identityMatrix()
 	{
@@ -224,15 +219,15 @@ public class DrawnObject
 				double[] v1 = vertices.get(0);
 				double[] v2 = vertices.get(1);
 				double[] v3 = vertices.get(2);
-
-				double[] diff1 = Matrix.subtract(v2,v1);
-				double[] diff2 = Matrix.subtract(v3,v2);
-
-				double[] normal = Matrix.cross_product(diff2, diff1);
-				normal = Matrix.normalize(normal);
+				
+				double[] shit = subtract(v2,v1);
+				double[] gyrocopter = subtract(v3,v2);
+				
+				double[] normal = cross_product(gyrocopter, shit);
+				normal = normalize(normal);
 				glNormal3d(normal[0], normal[1], normal[2]);
 			}
-
+			
 			for (double[] vertex : vertices)
 			{
 				glVertex3d(vertex[0] + location[0], vertex[1] + location[1], vertex[2] + location[2]);
@@ -247,18 +242,6 @@ public class DrawnObject
 	public double[][] getTransformation()
 	{
 		return twoDArrayCopy(transformation);
-	}
-	public double[][] exportTransformation(){
-		double[][] working = getTransformation();
-		double[][] ret = new double[3][3];
-		for(int i = 0; i<3; i++){
-			for (int j = 0; j<3; j++){
-				ret[i][j]=working[i][j];
-			}
-		}
-		
-		
-		return ret;
 	}
 
 	public double getx()
@@ -285,6 +268,46 @@ public class DrawnObject
 	{
 		return comment;
 	}
-
 	
+	// v1 - v2
+	public double[] subtract(double[] v1, double[] v2)
+	{
+		double[] result = new double[v1.length];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = v1[i] - v2[i];
+		}
+		return result;
+	}
+
+	public double magnitude(double[] v)
+	{
+		double result = 0;
+		for (double i : v)
+		{
+			result += i * i;
+		}
+		return Math.sqrt(result);
+	}
+
+	public double[] normalize(double[] v)
+	{
+		double[] result = new double[v.length];
+		result[0] = v[0] / magnitude(v);
+		result[1] = v[1] / magnitude(v);
+		result[2] = v[2] / magnitude(v);
+		return result;
+	}
+
+	public double[] cross_product(double[] v1, double[] v2)
+	{
+		double[] result = new double[v1.length];
+
+		result[0] = v1[1] * v2[2] - v1[2] * v2[1];
+		result[1] = v1[2] * v2[0] - v1[0] * v2[2];
+		result[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+		return result;
+
+	}
 }

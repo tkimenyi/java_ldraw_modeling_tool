@@ -61,14 +61,14 @@ public class SubpartSpec implements BrickSpec {
 
 	public DrawnObject toDrawnObject() 
 	{
-		System.out.println("subpartspec todrwanobject called");
+//		System.out.println("subpartspec todrwanobject called");
 		//something about lineColorValue;
 		//double[] temp = new double[]{1,1,1}; 
 		DrawnObject tempmodel = part.toDrawnObject();
 		tempmodel.setLocation(loc);
 		tempmodel.setTransformation(trans);
 		tempmodel.SetPartName(partName);
-		System.out.println(partName + "SPSln70");
+//		System.out.println(partName + "SPSln70");
 		return tempmodel;
 
 	}

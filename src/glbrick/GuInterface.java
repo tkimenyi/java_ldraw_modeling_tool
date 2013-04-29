@@ -2,6 +2,7 @@ package glbrick;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.io.PrintWriter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -13,10 +14,10 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	private GLWindow window;
 	JMenuBar menuBar;
 	JMenu file;
-	JButton add, zoomIn, zoomOut,  saveAllB, moveLeft, moveRight,moveUp, moveDown;
+	JButton add, zoomIn, zoomOut,  saveAllB, moveLeft, moveRight,moveUp, moveDown, up3D, down3D;
 	JToolBar toolBar;
 	JTextField up, down, left, right;
-	JMenuItem close, translate;
+	JMenuItem close, translate, saveItem, saveAsItem, openItem;
 
 	JComboBox choices;
 	JLabel warningLabel;
@@ -121,12 +122,57 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		JMenuBar menu = new JMenuBar();
 		file = new JMenu("File");	
 		close = new JMenuItem("Close", new ImageIcon("images/exit.png"));
+		saveItem = new JMenuItem("Save", new ImageIcon("images/Save.png"));
+		saveAsItem = new JMenuItem("Save As", new ImageIcon("images/Saveall.png"));
+		openItem = new JMenuItem("Open Model");
+		openItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				int approve = fileChooser.showOpenDialog(window);
+				if(approve == JFileChooser.APPROVE_OPTION){
+					java.io.File file = fileChooser.getSelectedFile();
+					String partName = file.getName();
+					System.out.println(partName);
+					try {
+						window.addObject(partName);
+					} catch (PartNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});
 		close.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(1);			
 			}			
 		});
+		saveAsItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0){
+				JFileChooser fileChooser = new JFileChooser();
+
+				fileChooser.setDialogTitle("Save Model (with .dat extension)");
+				int approve = fileChooser.showSaveDialog(null);
+				if(approve == JFileChooser.APPROVE_OPTION){
+					java.io.File file = fileChooser.getSelectedFile();
+					PrintWriter writer;
+					try {
+						writer = new PrintWriter(file);
+						window.savePart(0, writer);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+		file.add(openItem);
+		file.add(saveItem);
+		file.add(saveAsItem);
 		file.add(close);
 		menu.add(file);
 		return menu;
@@ -165,6 +211,10 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		moveDown = createButton("moveDown","movedown.png");
 		moveLeft = createButton("moveLeft","moveleft.png");
 		moveRight = createButton("moveRight","moveright.png");
+
+		up3D = createButton("up3D", "rotate.png");
+		down3D = createButton("down3D", "rotateB.png");
+		
 		translateButton = new JRadioButton("Translate");
 		rotateButton = new JRadioButton("Rotate");
 		ButtonGroup bgroup = new ButtonGroup();
@@ -186,7 +236,12 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		controlToolBar.add(moveLeft);
 		controlToolBar.addSeparator();
 		controlToolBar.add(moveRight);
+		controlToolBar.addSeparator();
+		controlToolBar.add(up3D);
+		controlToolBar.addSeparator();
+		controlToolBar.add(down3D);
 		controlToolBar.add(rotateButton);
+		controlToolBar.addSeparator();
 		controlToolBar.add(translateButton);
 		return controlToolBar;
 	}
