@@ -51,7 +51,7 @@ public class PartsPanel implements DragGestureListener, ListSelectionListener, D
 			@Override
 			protected Object doInBackground() throws Exception {
 				loadParts();
-				//loadTestParts();
+//				loadTestParts();
 				return null;
 			}
 			

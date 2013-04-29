@@ -582,6 +582,7 @@ public class GLWindow extends JFrame
 		System.out.println("save called");
 		//bad file writing code
 		ArrayList<String> PLine = new ArrayList<String>(15);
+		out.write("0 Name: "+f.getName());
 		for(DrawnObject d: objects){
 			System.out.println(objects.size());
 			if (d.getPartName() != ""){
@@ -604,7 +605,7 @@ public class GLWindow extends JFrame
 			PLine.add(d.getPartName());
 			
 			System.out.println("save test");
-			out.write("0 Name: "+f.getName());
+			
 			for (String s : PLine){
 				out.write(s + " ");
 				System.out.print(s + " ");
