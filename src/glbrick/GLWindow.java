@@ -95,8 +95,7 @@ public class GLWindow extends JFrame
 	private GuInterface guInterface;
 
 
-	public GLWindow() throws LWJGLException
-	{
+	public GLWindow() throws LWJGLException{
 		super("GL Window");
 
 		setLayout(new BorderLayout());
@@ -243,6 +242,7 @@ public class GLWindow extends JFrame
 		
 		//System.exit(1);
 	}
+	
 	public void handleKeyboardEvents() throws InterruptedException, PartNotFoundException
 	{
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
@@ -277,7 +277,7 @@ public class GLWindow extends JFrame
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
 	}
 
-	void display() throws InterruptedException, PartNotFoundException
+	public void display() throws InterruptedException, PartNotFoundException
 	{
 
 		// These three lines are necessary custodial commands. Don't touch em.
@@ -309,20 +309,20 @@ public class GLWindow extends JFrame
 		glFlush();
 	}
 
-	void rotateModel(double zangle, double xangle)
+	public void rotateModel(double zangle, double xangle)
 	{
 		modelpyr[1] += zangle;
 		modelpyr[0] += xangle;
 	}
 
-	void translateModel(double x, double y, double z)
+	public void translateModel(double x, double y, double z)
 	{
 		modelloc[0] += x;
 		modelloc[1] += y;
 		modelloc[2] += z;
 	}
 	
-	void rotateModelPart(int index, double xangle, double yangle, double zangle){
+	public void rotateModelPart(int index, double xangle, double yangle, double zangle){
 		
 		double [][] xmatrix = {{1,0,0},{0, Math.cos(xangle), -Math.sin(xangle)}, {0, Math.sin(xangle), Math.cos(xangle)}};
 		double [][] ymatrix = {{Math.cos(yangle),0,-Math.sin(yangle)},{0, 1, 0}, {Math.sin(yangle), 0, Math.cos(yangle)}};
@@ -337,7 +337,7 @@ public class GLWindow extends JFrame
 		objects.get(index).setTransformation(lastTransform);
 	}
 
-	void translateModelPart(int index, double x, double y, double z)
+	public void translateModelPart(int index, double x, double y, double z)
 	{
 		double newLocX = objects.get(index).getx() + x;
 		double newLocY = objects.get(index).gety() + y;
@@ -347,14 +347,7 @@ public class GLWindow extends JFrame
 		objects.get(index).setLocation(loc);
 	}
 
-	void removeLastPiece()
-	{
-		if(objects.size()>0)
-			objects.remove(objects.size() - 1);
-	}
-
-	void drawCrosshair(double[] loc, double color[])
-	{
+	private void drawCrosshair(double[] loc, double color[]){
 
 		double x, y, z;
 		x = loc[0];
@@ -374,8 +367,7 @@ public class GLWindow extends JFrame
 		glEnd();
 	}
 
-	void drawObjects()
-	{
+	private void drawObjects(){
 		for (DrawnObject obj : objects)
 		{
 			glPushMatrix();
@@ -389,8 +381,7 @@ public class GLWindow extends JFrame
 
 	}
 
-	void drawSolidCube(double[] loc, double size, double[] color)
-	{
+	void drawSolidCube(double[] loc, double size, double[] color){
 		glColor3d(color[0], color[1], color[2]);
 		glBegin(GL_QUADS);
 
@@ -433,8 +424,7 @@ public class GLWindow extends JFrame
 		glEnd();
 	}
 
-	public static double[] buildSineTable()
-	{
+	public static double[] buildSineTable(){
 		double piover180 = (Math.PI / 180.0);
 		double[] Table = new double[36001];
 		int intdegree = 0;
@@ -448,8 +438,7 @@ public class GLWindow extends JFrame
 		return Table;
 	}
 
-	public static double[] buildCosineTable()
-	{
+	public static double[] buildCosineTable(){
 		double piover180 = (Math.PI / 180.0);
 		double[] cosineTable = new double[36001];
 		int intdegree = 0;
@@ -463,8 +452,7 @@ public class GLWindow extends JFrame
 		return cosineTable;
 	}
 
-	void updateSpeed()
-	{
+	public void updateSpeed(){
 		if (Keyboard.isKeyDown(Keyboard.KEY_ADD))
 		{
 			speed += .01;
@@ -489,8 +477,7 @@ public class GLWindow extends JFrame
 		X += movementSpeed * Math.sin(piover180 * yaw);
 	}
 
-	void camera() throws InterruptedException
-	{
+	public void camera() throws InterruptedException{
 		if (Keyboard.isKeyDown(Keyboard.KEY_7))
 		{
 			System.out.println("Camera coordinates: " + X + " " + Y + " " + Z);
@@ -547,8 +534,7 @@ public class GLWindow extends JFrame
 		}
 	}
 
-	void moveModel()
-	{
+	public void moveModel(){
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))
 		{
 			rex[2] -= .3;
@@ -590,40 +576,18 @@ public class GLWindow extends JFrame
 
 	}
 
-	ArrayList<double[]> makeCube()
-	{
-		ArrayList<double[]> vertices = new ArrayList<double[]>();
-
-		vertices.add(new double[] { 0, 0, 0 });
-		vertices.add(new double[] { 1, 0, 0 });
-		vertices.add(new double[] { 1, 0, 1 });
-		vertices.add(new double[] { 0, 0, 1 }); 
-		vertices.add(new double[] { 0, 0, 0 });
-
-		vertices.add(new double[] { 0, 1, 0 });
-		vertices.add(new double[] { 1, 1, 0 });
-		vertices.add(new double[] { 1, 1, 1 });
-		vertices.add(new double[] { 0, 1, 1 });
-		vertices.add(new double[] { 0, 1, 0 });
-
-		return vertices;
-	}
-
-	double[][] scaleTransform(double scale)
-	{
+	private double[][] scaleTransform(double scale){
 		return new double[][] { { scale, 0, 0, 0 }, { 0, scale, 0, 0 }, { 0, 0, scale, 0 }, { 0, 0, 0, 1 } };
 	}
 
-	void addObject(String partname) throws PartNotFoundException
-	{
+	public void addObject(String partname) throws PartNotFoundException{
 		DrawnObject added = pf.getPart(partname).toDrawnObject();
 		added.setTransformation(scaleTransform(.3));
 		added.setParentLocation(rex);
 		objects.add(added);
 	}
 
-	void rotateScene()
-	{
+	public void rotateScene(){
 		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8))
 		{
 			modelpyr[0] += rotateRate;
@@ -726,10 +690,9 @@ public class GLWindow extends JFrame
         ColorBase CB = new ColorBase(LdrawPath);
         return CB.retrieveColorCode(hexVal, 255);
 
-}
+    }
 	
-	public static void main(String[] args) throws LWJGLException, InterruptedException, PartNotFoundException, FileNotFoundException
-	{
+	public static void main(String[] args) throws LWJGLException, InterruptedException, PartNotFoundException, FileNotFoundException{
 		GLWindow window = new GLWindow();
 		window.run(); 
 		

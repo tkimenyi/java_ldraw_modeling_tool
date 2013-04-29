@@ -43,7 +43,7 @@ public class DrawnObject
 	public DrawnObject(ArrayList<double[]> vertices, double[] color)
 	{
 		//color works from here to the draw.
-		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
+		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>()); 
 		//			System.out.print("color: ");
 		//			for (double d : color){
 		//				System.out.print(d + " ");

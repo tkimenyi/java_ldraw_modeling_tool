@@ -2,6 +2,7 @@ package glbrick;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.io.PrintWriter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -13,10 +14,10 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	private GLWindow window;
 	JMenuBar menuBar;
 	JMenu file;
-	JButton add, zoomIn, zoomOut,  saveAllB, moveLeft, moveRight,moveUp, moveDown;
+	JButton add, zoomIn, zoomOut,  saveAllB, moveLeft, moveRight,moveUp, moveDown, up3D, down3D;
 	JToolBar toolBar;
 	JTextField up, down, left, right;
-	JMenuItem close, translate;
+	JMenuItem close, translate, saveItem, saveAsItem;
 
 	JComboBox choices;
 	JLabel warningLabel;
@@ -93,7 +94,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		gridLayout.setConstraints(adderPanel, constraints);
 		this.partsListPanel.add(adderPanel);
 		constraints.gridx = 0;
-		constraints.gridy = 5;
+		constraints.gridy = 5; 
 		constraints.gridheight = 2;
 		constraints.gridwidth = 1;
 		constraints.weightx = 1;
@@ -121,12 +122,36 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		JMenuBar menu = new JMenuBar();
 		file = new JMenu("File");	
 		close = new JMenuItem("Close", new ImageIcon("images/exit.png"));
+		saveItem = new JMenuItem("Save", new ImageIcon("images/Save.png"));
 		close.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(1);			
 			}			
 		});
+		saveAsItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0){
+				JFileChooser fileChooser = new JFileChooser();
+
+				fileChooser.setDialogTitle("Save Model (with .dat extension)");
+				int approve = fileChooser.showSaveDialog(null);
+				if(approve == JFileChooser.APPROVE_OPTION){
+					java.io.File file = fileChooser.getSelectedFile();
+					PrintWriter writer;
+					try {
+						writer = new PrintWriter(file);
+						window.save(writer);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+		file.add(saveItem);
+		file.add(saveAsItem);
 		file.add(close);
 		menu.add(file);
 		return menu;
@@ -165,6 +190,9 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		moveDown = createButton("moveDown","movedown.png");
 		moveLeft = createButton("moveLeft","moveleft.png");
 		moveRight = createButton("moveRight","moveright.png");
+		up3D = createButton("up3D", "rotate.png");
+		down3D = createButton("down3D", "rotateB.png");
+		
 		translateButton = new JRadioButton("Translate");
 		rotateButton = new JRadioButton("Rotate");
 		ButtonGroup bgroup = new ButtonGroup();
@@ -186,7 +214,12 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		controlToolBar.add(moveLeft);
 		controlToolBar.addSeparator();
 		controlToolBar.add(moveRight);
+		controlToolBar.addSeparator();
+		controlToolBar.add(up3D);
+		controlToolBar.addSeparator();
+		controlToolBar.add(down3D);
 		controlToolBar.add(rotateButton);
+		controlToolBar.addSeparator();
 		controlToolBar.add(translateButton);
 		return controlToolBar;
 	}
@@ -194,6 +227,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	public void actionPerformed(ActionEvent e){
 		double angle = 15;
 		double distance = 2;
+		int selectedPartIndex = partsBin.getPartsList().getSelectedIndex();
 		if(e.getSource() == partAdderButton){
 			try {
 				try {
@@ -213,33 +247,57 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 			if(rotateButton.isSelected()){
 				window.rotateModel(0, angle);
 			}else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),0.0, distance, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(0.0, 0.0, -distance);
+				}else{
+					window.translateModelPart(selectedPartIndex,0.0, 0.0, -distance);
+				}
 			}
 		}
 
 		else if(e.getSource() == moveDown){
 			if(rotateButton.isSelected()){
-				window.rotateModel(angle,0);
+				window.rotateModel(0,360-angle);
 			}else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),0.0, -distance, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(0.0, 0.0, distance);
+				}else{
+					window.translateModelPart(selectedPartIndex,0.0, 0.0, distance);
+				}
 			}
 		}
 
 		else if(e.getSource() == moveRight){
 			if(rotateButton.isSelected()){
-				window.rotateModel(360-angle,0);
+				if(selectedPartIndex < 0){
+					window.rotateModel(angle,0);
+				}else{
+					window.rotateModelPart(selectedPartIndex, 360-angle, 0, 0);
+				}
 			}
 			else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),distance, 0.0, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(distance, 0.0, 0.0);
+				}else{
+					window.translateModelPart(selectedPartIndex,distance, 0.0, 0.0);
+				}
 			}
 		}
 
 		else if(e.getSource() == moveLeft){
 			if(rotateButton.isSelected()){
-				window.rotateModel(angle,0);
+				if(selectedPartIndex < 0){
+					window.rotateModel(360-angle,0);
+				}else{
+					window.rotateModelPart(selectedPartIndex, angle, 0, 0);
+				}
 			}
 			else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),-distance, 0.0, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(-distance, 0.0, 0.0);
+				}else{
+					window.translateModelPart(selectedPartIndex,-distance, 0.0, 0.0);
+				}
 			}
 		}
 
