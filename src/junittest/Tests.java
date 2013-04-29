@@ -40,13 +40,12 @@ public class Tests
 		transformation = Matrix.identityMatrix();
 		obj = new DrawnObject();
 		obj2 = new DrawnObject(children);
-		window = new GLWindow();
 	} 
 	
 	@Test
-	public void testGLWindow() throws IOException, LWJGLException, 
-					InterruptedException, PartNotFoundException, MalformedLDrawException{
-        window.run();	    
+	public void test() throws IOException, LWJGLException, 
+					InterruptedException, PartNotFoundException{
+	    	    GLWindowTest.main(new String[]{});
 	}
 	
 	@Ignore //this is used by allPartsTest
