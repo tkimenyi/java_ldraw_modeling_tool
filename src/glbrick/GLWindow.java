@@ -17,6 +17,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,9 +44,8 @@ public class GLWindow extends JFrame
 {
 	private static boolean closeRequested = false;
 	private final static AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
-	
+
 	private String LdrawPath = "ldraw";
-	private String saveFile = "";
 	
 	float lightAmbient[] = { .1f, .1f, .1f, .2f };
 	float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, .1f};
@@ -102,7 +102,7 @@ public class GLWindow extends JFrame
 		guInterface = new GuInterface(this);
 		setJMenuBar(guInterface.createMenuBar());
 		getContentPane().add(guInterface.getToolBar(), BorderLayout.NORTH);
-		
+
 		canvas.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e)
@@ -159,7 +159,7 @@ public class GLWindow extends JFrame
 
 	public void run() throws InterruptedException, PartNotFoundException, FileNotFoundException
 	{
-		pf = new PartFactory("ldraw");
+		pf = new PartFactory(LdrawPath);
 
 
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -239,10 +239,10 @@ public class GLWindow extends JFrame
 
 		Display.destroy();
 		dispose();
-		
+
 		//System.exit(1);
 	}
-	
+
 	public void handleKeyboardEvents() throws InterruptedException, PartNotFoundException
 	{
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
@@ -321,19 +321,19 @@ public class GLWindow extends JFrame
 		modelloc[1] += y;
 		modelloc[2] += z;
 	}
-	
+
 	public void rotateModelPart(int index, double xangle, double yangle, double zangle){
-		
+
 		double [][] xmatrix = {{1,0,0},{0, Math.cos(xangle), -Math.sin(xangle)}, {0, Math.sin(xangle), Math.cos(xangle)}};
 		double [][] ymatrix = {{Math.cos(yangle),0,-Math.sin(yangle)},{0, 1, 0}, {Math.sin(yangle), 0, Math.cos(yangle)}};
 		double [][] zmatrix = {{Math.cos(zangle),-Math.sin(zangle),0},{Math.sin(zangle), Math.cos(zangle),0}, {0, 0, 1}};
-		
+
 		double [][] xtransform = Matrix.matrixMult2(xmatrix, objects.get(index).getTransformation());
 		double [][] ytransform = Matrix.matrixMult2(ymatrix, objects.get(index).getTransformation());
 		double [][] ztransform = Matrix.matrixMult2(zmatrix, objects.get(index).getTransformation());
 		double [][] transform = Matrix.matrixMult2(ytransform,xtransform);
 		double [][] lastTransform = Matrix.matrixMult2(transform,ztransform);
-		
+
 		objects.get(index).setTransformation(lastTransform);
 	}
 
@@ -343,7 +343,7 @@ public class GLWindow extends JFrame
 		double newLocY = objects.get(index).gety() + y;
 		double newLocZ = objects.get(index).getz() + z;
 		double [] loc = {newLocX, newLocY, newLocZ};
-		
+
 		objects.get(index).setLocation(loc);
 	}
 
@@ -521,8 +521,8 @@ public class GLWindow extends JFrame
 		{
 			rex[1] += .3;
 			lightPosition[1] = (float)rex[1];
-
 		}
+		
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_B)){
 			lightPosition[3]+=.1;
@@ -541,6 +541,7 @@ public class GLWindow extends JFrame
 		DrawnObject added = pf.getPart(partname).toDrawnObject();
 		added.setTransformation(scaleTransform(.3));
 		added.setParentLocation(rex);
+		added.SetPartName(partname);
 		objects.add(added);
 	}
 
@@ -574,18 +575,15 @@ public class GLWindow extends JFrame
 		glRotated(modelpyr[2], 0, 0, 1);
 
 	}
-	
-	public void save() throws MalformedLDrawException, IOException{
-		if (saveFile == ""){
-			saveAs();
-			return;
-		}
+
+	public void save(File f) throws MalformedLDrawException, IOException{
 		BufferedWriter out = null;
-		out = new BufferedWriter(new FileWriter(saveFile, true));
+		out = new BufferedWriter(new FileWriter(f, true));
 		System.out.println("save called");
 		//bad file writing code
+		ArrayList<String> PLine = new ArrayList<String>(15);
 		for(DrawnObject d: objects){
-			ArrayList<String> PLine = new ArrayList<String>(15);
+			System.out.println(objects.size());
 			if (d.getPartName() != ""){
 				PLine.add("1");
 			}
@@ -604,55 +602,54 @@ public class GLWindow extends JFrame
 			}
 			//name
 			PLine.add(d.getPartName());
+			
 			System.out.println("save test");
+			out.write("0 Name: "+f.getName());
 			for (String s : PLine){
 				out.write(s + " ");
 				System.out.print(s + " ");
 			}
-			System.out.println("\n");
-			if (out != null) {
-				out.close();
+			PLine.clear();
+			out.newLine();
+		}
+		
+		if (out != null) {
+			out.close();
+		}
+		
+	}
+
+	public String getColorCodeString(double[] color) throws FileNotFoundException, MalformedLDrawException {
+		//fetches the colorcode (integer in ldraw file, string for convenience here
+		//this code may not work as advertised.  Side effects may include confusion, dizziness, and hair loss.  Please consult a Dr. (or Professor) if you notice any issues.
+		ArrayList<Integer> t = new ArrayList<Integer>(3);
+		double tempCOL = 0.01;
+		color[0] = tempCOL;
+		color[1] = tempCOL;
+		color[2] = tempCOL;
+		for (double d: color){
+			if(d <= 1 && d >= 0){
+				t.add((int)(d*255.0));
 			}
 		}
+		String hexVal = "";
+		for (Integer i: t){
+			String temp = Integer.toHexString(i);
+			if(temp.length()<2){
+				temp = "0" + temp;
+			}
+			hexVal = hexVal+ temp;
+		}
+
+		ColorBase CB = new ColorBase(LdrawPath);
+		return CB.retrieveColorCode(hexVal, 255);
+
 	}
 
-	public void saveAs(){
-		
-		System.out.println("NO FILE TO SAVE");
-		//prompt user for filepath
-	}
-	
-    public String getColorCodeString(double[] color) throws FileNotFoundException, MalformedLDrawException {
-        //fetches the colorcode (integer in ldraw file, string for convenience here
-        //this code may not work as advertised.  Side effects may include confusion, dizziness, and hair loss.  Please consult a Dr. (or Professor) if you notice any issues.
-        ArrayList<Integer> t = new ArrayList<Integer>(3);
-        double tempCOL = 0.01;
-        color[0] = tempCOL;
-        color[1] = tempCOL;
-        color[2] = tempCOL;
-        for (double d: color){
-                if(d <= 1 && d >= 0){
-                        t.add((int)(d*255.0));
-                }
-        }
-        String hexVal = "";
-        for (Integer i: t){
-                String temp = Integer.toHexString(i);
-                if(temp.length()<2){
-                        temp = "0" + temp;
-                }
-                hexVal = hexVal+ temp;
-        }
-
-        ColorBase CB = new ColorBase(LdrawPath);
-        return CB.retrieveColorCode(hexVal, 255);
-
-    }
-	
 	public static void main(String[] args) throws LWJGLException, InterruptedException, PartNotFoundException, FileNotFoundException{
 		GLWindow window = new GLWindow();
 		window.run(); 
-		
+
 	}
 
 }

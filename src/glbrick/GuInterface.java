@@ -3,7 +3,7 @@ import java.awt.*;
 
 import java.awt.event.*;
 import java.io.PrintWriter;
-
+import java.io.File;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -30,6 +30,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	private PartLabel currentSelectedPart;
 	private JPanel partsListPanel;
 	private JRadioButton translateButton, rotateButton;
+	private File saveFile;
 
 
 	public GuInterface(GLWindow window) {
@@ -124,8 +125,8 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		JMenuBar menu = new JMenuBar();
 		file = new JMenu("File");	
 		close = new JMenuItem("Close", new ImageIcon("images/exit.png"));
+		saveAsItem = new JMenuItem("Save As...", new ImageIcon("images/Saveall.png"));
 		saveItem = new JMenuItem("Save", new ImageIcon("images/Save.png"));
-		saveAsItem = new JMenuItem("Save As", new ImageIcon("images/Saveall.png"));
 		close.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -140,11 +141,11 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 				fileChooser.setDialogTitle("Save Model (with .dat extension)");
 				int approve = fileChooser.showSaveDialog(null);
 				if(approve == JFileChooser.APPROVE_OPTION){
-					java.io.File file = fileChooser.getSelectedFile();
-					PrintWriter writer;
+					File file = fileChooser.getSelectedFile();
+
 					try {
-						writer = new PrintWriter(file);
-						//window.save(writer);
+						saveFile = file;
+						window.save(file);
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -207,7 +208,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	public JToolBar getToolBar(){
 		JToolBar controlToolBar = new JToolBar();
 		controlToolBar.add(zoomOut);
-		controlToolBar.addSeparator(); 
+		controlToolBar.addSeparator();
 		controlToolBar.add(zoomIn);
 		controlToolBar.addSeparator();
 		controlToolBar.add(moveUp);
