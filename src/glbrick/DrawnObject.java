@@ -12,7 +12,7 @@ public class DrawnObject
 	private boolean comment = false;
 	private double[] color = { 1, 1, 1 }; // Default is white
 	private ArrayList<DrawnObject> children = new ArrayList<DrawnObject>(); // Non-parts will have no children.
-	private double[][] transformation = identityMatrix();
+	private double[][] transformation = Matrix.identityMatrix();
 	private double[] location = { 0, 0, 0 }; // In Cartesian
 	private ArrayList<double[]> vertices = new ArrayList<double[]>();
 	private String partName;
@@ -77,14 +77,14 @@ public class DrawnObject
 
 	public DrawnObject(ArrayList<DrawnObject> children)
 	{
-		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, identityMatrix(), new double[] { 1, 1, 1 }, children);
+		this(new ArrayList<double[]>(), new double[] { 0, 0, 0 }, Matrix.identityMatrix(), new double[] { 1, 1, 1 }, children);
 	}
 
 	// constructor for non-linetype 1 specs
 	public DrawnObject(ArrayList<double[]> vertices, double[] color)
 	{
 		//color works from here to the draw.
-		this(vertices, new double[] { 0, 0, 0 }, identityMatrix(), color, new ArrayList<DrawnObject>());
+		this(vertices, new double[] { 0, 0, 0 }, Matrix.identityMatrix(), color, new ArrayList<DrawnObject>());
 //		System.out.print("color: ");
 //		for (double d : color){
 //			System.out.print(d + " ");
@@ -96,7 +96,7 @@ public class DrawnObject
 	// constructor for testing purposes
 	public DrawnObject(ArrayList<double[]> vertices, double[] location, double[] color)
 	{
-		this(vertices, location, identityMatrix(), color, new ArrayList<DrawnObject>());
+		this(vertices, location, Matrix.identityMatrix(), color, new ArrayList<DrawnObject>());
 	}
 
 	// constructor for linetype 1's
@@ -161,15 +161,6 @@ public class DrawnObject
 		location[2] += vector[2];
 	}
 
-	
-
-	public static double[][] identityMatrix()
-	{
-		return new double[][] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-
-	}
-
-
 	// This method will change later because of how rendering is currently handled. The transformations should not modify the set of vertices.
 	public void transformVertices(double[][] transformation)
 	{
@@ -183,10 +174,6 @@ public class DrawnObject
 		}
 
 	}
-
-
-
-
 	public void draw()
 	{
 		if (comment)
@@ -220,11 +207,11 @@ public class DrawnObject
 				double[] v2 = vertices.get(1);
 				double[] v3 = vertices.get(2);
 				
-				double[] shit = subtract(v2,v1);
-				double[] gyrocopter = subtract(v3,v2);
+				double[] shit = Matrix.subtract(v2,v1);
+				double[] gyrocopter = Matrix.subtract(v3,v2);
 				
-				double[] normal = cross_product(gyrocopter, shit);
-				normal = normalize(normal);
+				double[] normal = Matrix.cross_product(gyrocopter, shit);
+				normal = Matrix.normalize(normal);
 				glNormal3d(normal[0], normal[1], normal[2]);
 			}
 			
@@ -269,45 +256,15 @@ public class DrawnObject
 		return comment;
 	}
 	
-	// v1 - v2
-	public double[] subtract(double[] v1, double[] v2)
-	{
-		double[] result = new double[v1.length];
-		for (int i = 0; i < result.length; i++)
-		{
-			result[i] = v1[i] - v2[i];
-		}
-		return result;
+	public double[][] exportTransformation(){
+        double[][] working = getTransformation();
+        double[][] ret = new double[3][3];
+        for(int i = 0; i<3; i++){
+                for (int j = 0; j<3; j++){
+                        ret[i][j]=working[i][j];
+                }
+        }
+        return ret;
 	}
-
-	public double magnitude(double[] v)
-	{
-		double result = 0;
-		for (double i : v)
-		{
-			result += i * i;
-		}
-		return Math.sqrt(result);
-	}
-
-	public double[] normalize(double[] v)
-	{
-		double[] result = new double[v.length];
-		result[0] = v[0] / magnitude(v);
-		result[1] = v[1] / magnitude(v);
-		result[2] = v[2] / magnitude(v);
-		return result;
-	}
-
-	public double[] cross_product(double[] v1, double[] v2)
-	{
-		double[] result = new double[v1.length];
-
-		result[0] = v1[1] * v2[2] - v1[2] * v2[1];
-		result[1] = v1[2] * v2[0] - v1[0] * v2[2];
-		result[2] = v1[0] * v2[1] - v1[1] * v2[0];
-
-		return result;
-
-	}
+	
 }

@@ -282,8 +282,6 @@ public class Tests
     @Test
     public void testDrawnObjectTransformation(){
     	double [][] trans = {{-1,-3,3,0},{2,-4,5,0},{1,-3,3,0},{0,0,0,1}};
-    	double [][] t = obj.getTransformation();
-    	double [][] dt = obj.twoDArrayCopy(t);
     	
     	obj.setTransformation(trans);
     	double [][] newTrans = obj.getTransformation();
@@ -295,5 +293,5 @@ public class Tests
     	assertTrue(Arrays.equals(trans[2], newTrans[2]));
     }
 
-}
+} 
 
