@@ -16,9 +16,11 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import java.util.ArrayList;
 import java.util.TooManyListenersException;
@@ -31,8 +33,6 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 import javax.swing.JFrame;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import org.lwjgl.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.*;
@@ -44,6 +44,9 @@ public class GLWindow extends JFrame
 {
 	private static boolean closeRequested = false;
 	private final static AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
+
+	private String LdrawPath = "ldraw";
+	
 	float lightAmbient[] = { .1f, .1f, .1f, .2f };
 	float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, .1f};
 	float lightPosition[] = { 0f, 1.0f, 0f, 1f };
@@ -55,7 +58,7 @@ public class GLWindow extends JFrame
 	double rotateRate = 1;
 	double[] modelpyr = { 0, 0, 0 };
 	double[] modelloc = { 0, 0, 0 };
-	double[][] rot = DrawnObject.identityMatrix();
+	double[][] rot = Matrix.identityMatrix();
 	double speed = .3;
 	double[] rankin = { 0, 0, 0 };
 	double rex[] = { 0, 0, 0 };
@@ -90,72 +93,9 @@ public class GLWindow extends JFrame
 	CopyOnWriteArrayList<DrawnObject> objects = new CopyOnWriteArrayList<DrawnObject>();
 	final Canvas canvas = new Canvas();
 	private GuInterface guInterface;
-	private String LdrawPath = "ldraw";
 
-	public void save(){
-		//		System.out.println("save called");
-		//		for(DrawnObject d: objects){
-		//			System.out.println(d.getPartName() + "D");
-		//			System.out.println(d.getVertices().size());
-		//			System.out.println(d);
-		//			for (double[] dub: d.getVertices()){
-		//				System.out.println(dub + "dub");				
-		//			}
-		//			
-		//		}
-	}
 
-	public void savePart(int partIndex, PrintWriter lineWriter) throws IOException, MalformedLDrawException{
-		if(partIndex >= this.objects.size()){
-			lineWriter.close();
-			return;
-		}
-		DrawnObject curObject = this.objects.get(partIndex);
-		double x = curObject.getLocation()[0];
-		double y = curObject.getLocation()[1];
-		double z = curObject.getLocation()[2];
-		String subLine = "1 " + getColorCodeString(curObject.getColorArr()) + x + " " + y + " " + z;
-		double[][] partTransform = curObject.getTransformation();
-		for(int i = 0; i < 3; i++){
-			for(int j = 0; j < 3; j++){
-				subLine += " " + partTransform[i][j];
-			}
-		}
-		subLine += " " + curObject.getPartName();
-		lineWriter.println(subLine);
-		savePart(partIndex + 1, lineWriter);
-
-	}
-
-    public String getColorCodeString(double[] color) throws FileNotFoundException, MalformedLDrawException {
-        //fetches the colorcode (integer in ldraw file, string for convenience here
-        //this code may not work as advertised.  Side effects may include confusion, dizziness, and hair loss.  Please consult a Dr. (or Professor) if you notice any issues.
-        ArrayList<Integer> t = new ArrayList<Integer>(3);
-        double tempCOL = 0.01;
-        color[0] = tempCOL;
-        color[1] = tempCOL;
-        color[2] = tempCOL;
-        for (double d: color){
-                if(d <= 1 && d >= 0){
-                        t.add((int)(d*255.0));
-                }
-        }
-        String hexVal = "";
-        for (Integer i: t){
-                String temp = Integer.toHexString(i);
-                if(temp.length()<2){
-                        temp = "0" + temp;
-                }
-                hexVal = hexVal+ temp;
-        }
-
-        ColorBase CB = new ColorBase(LdrawPath);
-        return CB.retrieveColorCode(hexVal, 255);
-
-}
-
-	public GLWindow() throws LWJGLException, ClassNotFoundException, InstantiationException
-	{
+	public GLWindow() throws LWJGLException{
 		super("GL Window");
 
 		setLayout(new BorderLayout());
@@ -219,7 +159,7 @@ public class GLWindow extends JFrame
 
 	public void run() throws InterruptedException, PartNotFoundException, FileNotFoundException
 	{
-		pf = new PartFactory("ldraw");
+		pf = new PartFactory(LdrawPath);
 
 
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -302,15 +242,13 @@ public class GLWindow extends JFrame
 
 		//System.exit(1);
 	}
+
 	public void handleKeyboardEvents() throws InterruptedException, PartNotFoundException
 	{
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
 		{
 			Thread.sleep(90);
 			addObject("3003.dat");
-//			addObject("ldrawtest.dat");
-			System.out.println("Weird printlines");
-			System.out.println(objects.get(objects.size()-1).getPartName());
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_U))
@@ -329,12 +267,6 @@ public class GLWindow extends JFrame
 		{
 			translateModel(.4, 0, 0);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_P))
-		{
-			//call once code
-			Thread.sleep(90);
-			save();
-		}
 
 	}
 
@@ -345,7 +277,7 @@ public class GLWindow extends JFrame
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
 	}
 
-	void display() throws InterruptedException, PartNotFoundException
+	public void display() throws InterruptedException, PartNotFoundException
 	{
 
 		// These three lines are necessary custodial commands. Don't touch em.
@@ -377,20 +309,20 @@ public class GLWindow extends JFrame
 		glFlush();
 	}
 
-	void rotateModel(double zangle, double xangle)
+	public void rotateModel(double zangle, double xangle)
 	{
 		modelpyr[1] += zangle;
 		modelpyr[0] += xangle;
 	}
 
-	void translateModel(double x, double y, double z)
+	public void translateModel(double x, double y, double z)
 	{
 		modelloc[0] += x;
 		modelloc[1] += y;
 		modelloc[2] += z;
 	}
 
-	void rotateModelPart(int index, double xangle, double yangle, double zangle){
+	public void rotateModelPart(int index, double xangle, double yangle, double zangle){
 
 		double [][] xmatrix = {{1,0,0},{0, Math.cos(xangle), -Math.sin(xangle)}, {0, Math.sin(xangle), Math.cos(xangle)}};
 		double [][] ymatrix = {{Math.cos(yangle),0,-Math.sin(yangle)},{0, 1, 0}, {Math.sin(yangle), 0, Math.cos(yangle)}};
@@ -405,7 +337,7 @@ public class GLWindow extends JFrame
 		objects.get(index).setTransformation(lastTransform);
 	}
 
-	void translateModelPart(int index, double x, double y, double z)
+	public void translateModelPart(int index, double x, double y, double z)
 	{
 		double newLocX = objects.get(index).getx() + x;
 		double newLocY = objects.get(index).gety() + y;
@@ -415,14 +347,7 @@ public class GLWindow extends JFrame
 		objects.get(index).setLocation(loc);
 	}
 
-	void removeLastPiece()
-	{
-		if(objects.size()>0)
-			objects.remove(objects.size() - 1);
-	}
-
-	void drawCrosshair(double[] loc, double color[])
-	{
+	private void drawCrosshair(double[] loc, double color[]){
 
 		double x, y, z;
 		x = loc[0];
@@ -442,8 +367,7 @@ public class GLWindow extends JFrame
 		glEnd();
 	}
 
-	void drawObjects()
-	{
+	private void drawObjects(){
 		for (DrawnObject obj : objects)
 		{
 			glPushMatrix();
@@ -457,52 +381,7 @@ public class GLWindow extends JFrame
 
 	}
 
-	void drawSolidCube(double[] loc, double size, double[] color)
-	{
-		glColor3d(color[0], color[1], color[2]);
-		glBegin(GL_QUADS);
-
-		// Front and back faces
-		glNormal3d(0, 0, -1);
-		glVertex3d(loc[0], loc[1], loc[2]);
-		glVertex3d(size + loc[0], loc[1], loc[2]);
-		glVertex3d(size + loc[0], size + loc[1], loc[2]);
-		glVertex3d(loc[0], size + loc[1], loc[2]);
-		glNormal3d(0, 0, 1);
-		glVertex3d(loc[0], loc[1], loc[2] + size);
-		glVertex3d(size + loc[0], loc[1], loc[2] + size);
-		glVertex3d(size + loc[0], size + loc[1], loc[2] + size);
-		glVertex3d(loc[0], size + loc[1], loc[2] + size);
-
-		// Top and bottom
-		glNormal3d(0, -1, 0);
-		glVertex3d(loc[0], loc[1], loc[2]);
-		glVertex3d(loc[0] + size, loc[1], loc[2]);
-		glVertex3d(loc[0] + size, loc[1], loc[2] + size);
-		glVertex3d(loc[0], loc[1], loc[2] + size);
-		glNormal3d(0, 1, 0);
-		glVertex3d(loc[0], loc[1] + size, loc[2]);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
-		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
-
-		// Left and Right
-		glNormal3d(-1, 0, 0);
-		glVertex3d(loc[0], loc[1], loc[2]);
-		glVertex3d(loc[0], loc[1], loc[2] + size);
-		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
-		glVertex3d(loc[0], loc[1] + size, loc[2]);
-		glNormal3d(1, 0, 0);
-		glVertex3d(loc[0] + size, loc[1], loc[2]);
-		glVertex3d(loc[0] + size, loc[1], loc[2] + size);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
-
-		glEnd();
-	}
-
-	public static double[] buildSineTable()
-	{
+	public static double[] buildSineTable(){
 		double piover180 = (Math.PI / 180.0);
 		double[] Table = new double[36001];
 		int intdegree = 0;
@@ -516,8 +395,7 @@ public class GLWindow extends JFrame
 		return Table;
 	}
 
-	public static double[] buildCosineTable()
-	{
+	public static double[] buildCosineTable(){
 		double piover180 = (Math.PI / 180.0);
 		double[] cosineTable = new double[36001];
 		int intdegree = 0;
@@ -531,8 +409,7 @@ public class GLWindow extends JFrame
 		return cosineTable;
 	}
 
-	void updateSpeed()
-	{
+	public void updateSpeed(){
 		if (Keyboard.isKeyDown(Keyboard.KEY_ADD))
 		{
 			speed += .01;
@@ -557,8 +434,7 @@ public class GLWindow extends JFrame
 		X += movementSpeed * Math.sin(piover180 * yaw);
 	}
 
-	void camera() throws InterruptedException
-	{
+	public void camera() throws InterruptedException{
 		if (Keyboard.isKeyDown(Keyboard.KEY_7))
 		{
 			System.out.println("Camera coordinates: " + X + " " + Y + " " + Z);
@@ -605,18 +481,17 @@ public class GLWindow extends JFrame
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_C))
 		{
-
+			
 			System.out.println("ROTATION SPEED = " + rotateSpeed);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_X))
 		{
-
+			
 			System.out.println("ROTATION SPEED = " + rotateSpeed);
 		}
 	}
 
-	void moveModel()
-	{
+	public void moveModel(){
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))
 		{
 			rex[2] -= .3;
@@ -646,8 +521,8 @@ public class GLWindow extends JFrame
 		{
 			rex[1] += .3;
 			lightPosition[1] = (float)rex[1];
-
 		}
+		
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_B)){
 			lightPosition[3]+=.1;
@@ -658,32 +533,11 @@ public class GLWindow extends JFrame
 
 	}
 
-	ArrayList<double[]> makeCube()
-	{
-		ArrayList<double[]> vertices = new ArrayList<double[]>();
-
-		vertices.add(new double[] { 0, 0, 0 });
-		vertices.add(new double[] { 1, 0, 0 });
-		vertices.add(new double[] { 1, 0, 1 });
-		vertices.add(new double[] { 0, 0, 1 });
-		vertices.add(new double[] { 0, 0, 0 });
-
-		vertices.add(new double[] { 0, 1, 0 });
-		vertices.add(new double[] { 1, 1, 0 });
-		vertices.add(new double[] { 1, 1, 1 });
-		vertices.add(new double[] { 0, 1, 1 });
-		vertices.add(new double[] { 0, 1, 0 });
-
-		return vertices;
-	}
-
-	double[][] scaleTransform(double scale)
-	{
+	private double[][] scaleTransform(double scale){
 		return new double[][] { { scale, 0, 0, 0 }, { 0, scale, 0, 0 }, { 0, 0, scale, 0 }, { 0, 0, 0, 1 } };
 	}
 
-	void addObject(String partname) throws PartNotFoundException
-	{
+	public void addObject(String partname) throws PartNotFoundException{
 		DrawnObject added = pf.getPart(partname).toDrawnObject();
 		added.setTransformation(scaleTransform(.3));
 		added.setParentLocation(rex);
@@ -691,8 +545,7 @@ public class GLWindow extends JFrame
 		objects.add(added);
 	}
 
-	void rotateScene()
-	{
+	public void rotateScene(){
 		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8))
 		{
 			modelpyr[0] += rotateRate;
@@ -723,8 +576,78 @@ public class GLWindow extends JFrame
 
 	}
 
-	public static void main(String[] args) throws LWJGLException, InterruptedException, PartNotFoundException, FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
-	{
+	public void save(File f) throws MalformedLDrawException, IOException{
+		BufferedWriter out = null;
+		out = new BufferedWriter(new FileWriter(f, true));
+		System.out.println("save called");
+		//bad file writing code
+		ArrayList<String> PLine = new ArrayList<String>(15);
+		out.write("0 Name: "+f.getName());
+		for(DrawnObject d: objects){
+			System.out.println(objects.size());
+			if (d.getPartName() != ""){
+				PLine.add("1");
+			}
+			//color
+			PLine.add(getColorCodeString(d.getColorArr()));
+			//location
+			for (double i : d.getLocation()){
+				//should run exactly three times
+				PLine.add(String.valueOf(i));
+			}
+			//transformation
+			for (double[] dub: d.exportTransformation()){
+				for (double d2: dub){
+					PLine.add(String.valueOf(d2)); 
+				}
+			}
+			//name
+			PLine.add(d.getPartName());
+			
+			System.out.println("save test");
+			
+			for (String s : PLine){
+				out.write(s + " ");
+				System.out.print(s + " ");
+			}
+			PLine.clear();
+			out.newLine();
+		}
+		
+		if (out != null) {
+			out.close();
+		}
+		
+	}
+
+	public String getColorCodeString(double[] color) throws FileNotFoundException, MalformedLDrawException {
+		//fetches the colorcode (integer in ldraw file, string for convenience here
+		//this code may not work as advertised.  Side effects may include confusion, dizziness, and hair loss.  Please consult a Dr. (or Professor) if you notice any issues.
+		ArrayList<Integer> t = new ArrayList<Integer>(3);
+		double tempCOL = 0.01;
+		color[0] = tempCOL;
+		color[1] = tempCOL;
+		color[2] = tempCOL;
+		for (double d: color){
+			if(d <= 1 && d >= 0){
+				t.add((int)(d*255.0));
+			}
+		}
+		String hexVal = "";
+		for (Integer i: t){
+			String temp = Integer.toHexString(i);
+			if(temp.length()<2){
+				temp = "0" + temp;
+			}
+			hexVal = hexVal+ temp;
+		}
+
+		ColorBase CB = new ColorBase(LdrawPath);
+		return CB.retrieveColorCode(hexVal, 255);
+
+	}
+
+	public static void main(String[] args) throws LWJGLException, InterruptedException, PartNotFoundException, FileNotFoundException{
 		GLWindow window = new GLWindow();
 		window.run(); 
 
