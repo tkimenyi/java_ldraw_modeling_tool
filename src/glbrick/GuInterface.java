@@ -3,7 +3,7 @@ import java.awt.*;
 
 import java.awt.event.*;
 import java.io.PrintWriter;
-
+import java.io.File;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -30,6 +30,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	private PartLabel currentSelectedPart;
 	private JPanel partsListPanel;
 	private JRadioButton translateButton, rotateButton;
+	private File saveFile;
 
 
 	public GuInterface(GLWindow window) {
@@ -116,14 +117,16 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 		moveDown.addActionListener(this);
 		zoomIn.addActionListener(this);
 		zoomOut.addActionListener(this);
+		up3D.addActionListener(this);
+		down3D.addActionListener(this);
 	}
 
 	public JMenuBar createMenuBar(){
 		JMenuBar menu = new JMenuBar();
 		file = new JMenu("File");	
 		close = new JMenuItem("Close", new ImageIcon("images/exit.png"));
+		saveAsItem = new JMenuItem("Save As...", new ImageIcon("images/Saveall.png"));
 		saveItem = new JMenuItem("Save", new ImageIcon("images/Save.png"));
-		saveAsItem = new JMenuItem("Save As", new ImageIcon("images/Saveall.png"));
 		openItem = new JMenuItem("Open Model");
 		openItem.addActionListener(new ActionListener(){
 			@Override
@@ -157,11 +160,11 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 				fileChooser.setDialogTitle("Save Model (with .dat extension)");
 				int approve = fileChooser.showSaveDialog(null);
 				if(approve == JFileChooser.APPROVE_OPTION){
-					java.io.File file = fileChooser.getSelectedFile();
-					PrintWriter writer;
+					File file = fileChooser.getSelectedFile();
+
 					try {
-						writer = new PrintWriter(file);
-						window.savePart(0, writer);
+						saveFile = file;
+						window.save(file);
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -249,6 +252,7 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 	public void actionPerformed(ActionEvent e){
 		double angle = 15;
 		double distance = 2;
+		int selectedPartIndex = partsBin.getPartsList().getSelectedIndex();
 		if(e.getSource() == partAdderButton){
 			try {
 				try {
@@ -268,34 +272,94 @@ public class GuInterface implements ActionListener, ListSelectionListener{
 			if(rotateButton.isSelected()){
 				window.rotateModel(0, angle);
 			}else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),0.0, distance, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(0.0, 0.0, -distance);
+				}else{
+					window.translateModelPart(selectedPartIndex,0.0, 0.0, -distance);
+				}
 			}
 		}
 
 		else if(e.getSource() == moveDown){
 			if(rotateButton.isSelected()){
-				window.rotateModel(angle,0);
+				window.rotateModel(0,360-angle);
 			}else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),0.0, -distance, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(0.0, 0.0, distance);
+				}else{
+					window.translateModelPart(selectedPartIndex,0.0, 0.0, distance);
+				}
 			}
 		}
 
 		else if(e.getSource() == moveRight){
 			if(rotateButton.isSelected()){
-				window.rotateModel(360-angle,0);
+				if(selectedPartIndex < 0){
+					window.rotateModel(angle,0);
+				}else{
+					window.rotateModelPart(selectedPartIndex, 360-angle, 0, 0);
+				}
 			}
 			else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),distance, 0.0, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(distance, 0.0, 0.0);
+				}else{
+					window.translateModelPart(selectedPartIndex,distance, 0.0, 0.0);
+				}
 			}
 		}
 
 		else if(e.getSource() == moveLeft){
 			if(rotateButton.isSelected()){
-				window.rotateModel(angle,0);
+				if(selectedPartIndex < 0){
+					window.rotateModel(360-angle,0);
+				}else{
+					window.rotateModelPart(selectedPartIndex, angle, 0, 0);
+				}
 			}
 			else{
-				window.translateModelPart(partsBin.getPartsList().getSelectedIndex(),-distance, 0.0, 0.0);
+				if(selectedPartIndex < 0){
+					window.translateModel(-distance, 0.0, 0.0);
+				}else{
+					window.translateModelPart(selectedPartIndex,-distance, 0.0, 0.0);
+				}
 			}
+		}
+		
+		else if(e.getSource() == up3D){
+			if(rotateButton.isSelected()){
+				if(selectedPartIndex < 0){
+					window.rotateModel(360-angle,0);
+				}else{
+					window.rotateModelPart(selectedPartIndex, angle, 0, 0);
+				}
+			}
+			else{
+				if(selectedPartIndex < 0){
+					window.translateModel(0.0, distance, 0.0);
+				}else{
+					window.translateModelPart(selectedPartIndex,0.0, distance, 0.0);
+				}
+			}
+			System.out.println("here");
+		}
+		
+		else if(e.getSource() == down3D){
+			if(rotateButton.isSelected()){
+				if(selectedPartIndex < 0){
+					window.rotateModel(360-angle,0);
+				}else{
+					window.rotateModelPart(selectedPartIndex, angle, 0, 0);
+				}
+			}
+			else{
+				if(selectedPartIndex < 0){
+					window.translateModel(0.0, -distance, 0.0);
+				}else{
+					window.translateModelPart(selectedPartIndex,0.0, -distance, 0.0);
+				}
+			}
+			System.out.println("here");
 		}
 
 		if(e.getSource() == zoomIn){
