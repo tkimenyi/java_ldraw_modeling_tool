@@ -381,49 +381,6 @@ public class GLWindow extends JFrame
 
 	}
 
-	void drawSolidCube(double[] loc, double size, double[] color){
-		glColor3d(color[0], color[1], color[2]);
-		glBegin(GL_QUADS);
-
-		// Front and back faces
-		glNormal3d(0, 0, -1);
-		glVertex3d(loc[0], loc[1], loc[2]);
-		glVertex3d(size + loc[0], loc[1], loc[2]);
-		glVertex3d(size + loc[0], size + loc[1], loc[2]);
-		glVertex3d(loc[0], size + loc[1], loc[2]);
-		glNormal3d(0, 0, 1);
-		glVertex3d(loc[0], loc[1], loc[2] + size);
-		glVertex3d(size + loc[0], loc[1], loc[2] + size);
-		glVertex3d(size + loc[0], size + loc[1], loc[2] + size);
-		glVertex3d(loc[0], size + loc[1], loc[2] + size);
-
-		// Top and bottom
-		glNormal3d(0, -1, 0);
-		glVertex3d(loc[0], loc[1], loc[2]);
-		glVertex3d(loc[0] + size, loc[1], loc[2]);
-		glVertex3d(loc[0] + size, loc[1], loc[2] + size);
-		glVertex3d(loc[0], loc[1], loc[2] + size);
-		glNormal3d(0, 1, 0);
-		glVertex3d(loc[0], loc[1] + size, loc[2]);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
-		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
-
-		// Left and Right
-		glNormal3d(-1, 0, 0);
-		glVertex3d(loc[0], loc[1], loc[2]);
-		glVertex3d(loc[0], loc[1], loc[2] + size);
-		glVertex3d(loc[0], loc[1] + size, loc[2] + size);
-		glVertex3d(loc[0], loc[1] + size, loc[2]);
-		glNormal3d(1, 0, 0);
-		glVertex3d(loc[0] + size, loc[1], loc[2]);
-		glVertex3d(loc[0] + size, loc[1], loc[2] + size);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2] + size);
-		glVertex3d(loc[0] + size, loc[1] + size, loc[2]);
-
-		glEnd();
-	}
-
 	public static double[] buildSineTable(){
 		double piover180 = (Math.PI / 180.0);
 		double[] Table = new double[36001];
