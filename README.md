@@ -6,11 +6,12 @@ This project was an assignment for CS350 taught by Dr. Ferrer in Spring 2013.
 
 # Contributors
 
-Brandon
-Jeanette
-Thierry
-Safari
-John
+* Brandon
+* Jeanette
+* Thierry
+* Safari
+* John
+* Michael
 
 # Project Overview
 
